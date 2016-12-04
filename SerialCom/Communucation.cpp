@@ -12,12 +12,12 @@ Communucation::Communucation(string str, SerialPort::BaudRate baud) {
     angleMotor2 = -1;
 }
 
-void Communucation::read() {
+bool Communucation::read() {
     string readdata;
     char angle[20];
     if(!port->open()){
         std::cout << "Port Acılamadı";
-        return;
+        return false;
     }
     char ch;
     do {
@@ -48,6 +48,7 @@ void Communucation::read() {
     angleMotor2 = atof(inp);
 
     port->close();
+    return true;
 }
 
 

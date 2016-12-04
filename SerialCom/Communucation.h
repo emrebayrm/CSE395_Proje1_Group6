@@ -28,7 +28,7 @@ class Communucation {
          * Attention: received data should be like ("X%3.2lfY%3.2lf!",double ,double)
          * Reads the serial port and assigns the motor angles
          */
-        void read();
+        bool read();
         /**
          * Attention: you need call first read method
          * get motor1 Angle
