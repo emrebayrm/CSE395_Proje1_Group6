@@ -268,7 +268,7 @@ bool SerialPort::read(char * byte) {
     }
     return (true);
 #else /* Linux, Mac */
-    int n = readData(port, byte, 1);  // read a char at a time
+    int n = readData(port, byte, 1);  // readAngles a char at a time
     if(n == 1) {
     	return (false);
     }
@@ -284,7 +284,7 @@ bool SerialPort::read(int * byte) {
     }
     return (true);
 #else /* Linux, Mac */
-    int n = readData(port, (char *)byte, 1);  // read a char at a time
+    int n = readData(port, (char *)byte, 1);  // readAngles a char at a time
     if(n == 1) {
     	return (false);
     }
@@ -314,7 +314,7 @@ bool SerialPort::readUntil(std::string& str, char until) {
 #else
 	char b;
 	do {
-		int n = readData(port, &b, 1);  // read a char at a time
+		int n = readData(port, &b, 1);  // readAngles a char at a time
         if(n == -1) {
         	continue;
         } else {
