@@ -19,7 +19,7 @@ Communucation::Communucation(string str, SerialPort::BaudRate baud) {
         std::cerr << "Not prepared \n";
     }
 
-    makeHandShake();
+    while(!makeHandShake());
     angleMotor1 = -1;
     angleMotor2 = -1;
 }
@@ -31,8 +31,8 @@ bool Communucation::read() {
     int i=0;
     port->wait(50);
     do {
-        //std::cerr<< ch;
         port->read(&ch);
+        std::cerr<< ch;
         if(ch == 'F')
             return false;
     }while(ch != 'X');
