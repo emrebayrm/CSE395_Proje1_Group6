@@ -7,6 +7,23 @@
 
 #include "SerialPort.h"
 #include <string>
+
+#define START_CHAR '{'
+#define END_CHAR '}'
+#define PACKET_SIZE 25
+#define X_MOTOR_START 'X'
+#define Y_MOTOR_START 'Y'
+#define BALL_X_COORDINATE 'x'
+#define BALL_Y_COORDINATE 'y'
+#define XCOORDMMAX 940
+#define XCOORDMIN 140
+#define YCOORDMMAX 960
+#define YCOORDMIN 130
+#define XOUTMAX 40
+#define XOUTMIN -40
+#define YOUTMAX 30
+#define YOUTMIN -30
+
 using namespace std;
 
 /**
@@ -14,11 +31,22 @@ using namespace std;
  */
 class Communucation {
 private :
-    bool readytocom ;
-    double angleMotor1 ;
-    double angleMotor2;
+    bool communicationReady ;
+    double XMotorAngle ;
+    double YMotorAngle;
+    int ballXCoordinate;
+    int ballYCoordinate;
     SerialPort *port;
     bool makeHandShake();
+    void checkConnection();
+    inline void setXMotorAngle(double angle){ XMotorAngle = angle };
+    inline void setYMotorAngle(double angle){YMotorAngle = angle };
+    inline void setBallXCoordinate(int x){ballXCoordinate = map(x,XCOORDMIN,XCOORDMMAX,XOUTMIN,XOUTMAX)};
+    inline void setBallYCoordinate(int y){ballYCoordinate = map(y,YCOORDMIN,YCOORDMMAX,YOUTMIN,YOUTMAX)};
+    inline float map(long x, long in_min, long in_max, long out_min, long out_max)
+    {
+        return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
+    }
 public:
     /**
      * Constructor
@@ -27,28 +55,38 @@ public:
      */
     Communucation(string str,SerialPort::BaudRate baud);
     /**
-     * Attention: received data should be like ("X%3.2lfY%3.2lf!",double ,double)
+     * Attention: received data should be like ("X%3.2lfY%3.2lfx%dy%d!",double ,double,int,int)
      * Reads the serial port and assigns the motor angles
      */
-    bool read();
-    /**
-     * Attention: you need call first read method
-     * get motor1 Angle
-     */
-    inline double getMotor1Angle(){
-        return angleMotor1;
+    //bool read();
+
+    bool readUntil();
+
+    bool isCommunicationReady() const {
+        return communicationReady;
     }
-    /**
-     * Attention: you need call first read method
-     * get motor2 Angle
-     */
-    inline double getMotor2Angle(){
-        return angleMotor2;
+
+    double getXMotorAngle() const {
+        return XMotorAngle;
+    }
+
+
+    double getYMotorAngle() const {
+        return YMotorAngle;
+    }
+
+    int getBallXCoordinate() const {
+        return ballXCoordinate;
+    }
+
+    int getBallYCoordinate() const {
+        return ballYCoordinate;
     }
 
     bool write(char *msg);
 
     bool write(char ch);
+
 };
 
 

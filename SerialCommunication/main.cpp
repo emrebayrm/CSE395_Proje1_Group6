@@ -15,9 +15,11 @@ int main() {
     int i;
     signal(SIGINT,signalHandler);
     while (1) {
-        if(com->read()){
-            cout << "motor1 angle " << com->getMotor1Angle() << endl;
-            cout << "motor2 angle " << com->getMotor2Angle() << endl;
+        if(com->readUntil()){
+            cout << "motorx angle " << com->getXMotorAngle() << endl;
+            cout << "motory angle " << com->getYMotorAngle() << endl;
+            cout << "Ball X :" << com->getBallXCoordinate() << endl;
+            cout << "Ball Y :" << com->getBallYCoordinate() << endl;
             cout << " Entry :: " << i++ << endl << endl;
         }else {
             cout << "Board has left";

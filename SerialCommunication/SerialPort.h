@@ -75,6 +75,9 @@ class SerialPort {
 	 */
 	public: void setPortName(const std::string& portName);
 
+	public: int getPortFd(){
+		return fd;
+	};
 	/**
 	 *
 	 */
@@ -120,6 +123,8 @@ class SerialPort {
 	private: void init();
 
 	private: static SP_BAUDRATE getBaudRateInOS(BaudRate baudRate);
+
+	private: int fd;
 
 };
 
