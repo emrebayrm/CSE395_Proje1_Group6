@@ -157,7 +157,7 @@ public:
                     switch (id) {
                         case DOWN:
                         {
-                            //Serial Communication için down buttonu.
+                            //Serial Communication iï¿½in down buttonu.
                             cout << "down pressed\n";
                         }
                             return true;
@@ -177,13 +177,13 @@ public:
 
                         case LEFT:
                         {
-                            //Serial Communication için Left buttonu.
+                            //Serial Communication iï¿½in Left buttonu.
                             cout << "left pressed\n";
                         }
                             return true;
                         case RIGHT:
                         {
-                            //Serial Communication için right buttonu.
+                            //Serial Communication iï¿½in right buttonu.
                             cout << "right pressed\n";
                         }
                             return true;
@@ -301,7 +301,7 @@ int main() {
     // Plate node
     plateModel = smgr-> addCubeSceneNode();
     if (plateModel) {
-        plateModel->setMaterialTexture(0, driver->getTexture("../../media/plate_texture.jpg"));
+        plateModel->setMaterialTexture(0, driver->getTexture("./Textures/plate_texture.jpg"));
         plateModel->setMaterialFlag(EMF_LIGHTING, false);
 
     }
@@ -313,7 +313,7 @@ int main() {
     // Ball node
     ballModel = smgr->addSphereSceneNode();
     if (ballModel) {
-        ballModel->setMaterialTexture(0, driver->getTexture("../../media/ball_texture.jpg"));
+        ballModel->setMaterialTexture(0, driver->getTexture("./Textures/ball_texture.jpg"));
         ballModel->setMaterialFlag(EMF_LIGHTING, false);
     }
     vector3df ballScale = ballModel->getScale();
@@ -325,7 +325,7 @@ int main() {
 
     plateModelTwo = smgr-> addCubeSceneNode();
     if (plateModelTwo) {
-        plateModelTwo->setMaterialTexture(0, driver->getTexture("../../media/red_texture.jpg"));
+        plateModelTwo->setMaterialTexture(0, driver->getTexture("./Textures/red_texture.jpg"));
         plateModelTwo->setMaterialFlag(EMF_LIGHTING, false);
 
     }
@@ -340,7 +340,7 @@ int main() {
 
     poleNode = smgr-> addCubeSceneNode();
     if (poleNode) {
-        poleNode->setMaterialTexture(0, driver->getTexture("../../media/metal_texture.jpg"));
+        poleNode->setMaterialTexture(0, driver->getTexture("./Textures/metal_texture.jpg"));
         poleNode->setMaterialFlag(EMF_LIGHTING, false);
 
     }
@@ -354,7 +354,7 @@ int main() {
 
     jointNode = smgr->addSphereSceneNode();
     if (jointNode) {
-        jointNode->setMaterialTexture(0, driver->getTexture("../../media/metal_texture.jpg"));
+        jointNode->setMaterialTexture(0, driver->getTexture("./Textures/metal_texture.jpg"));
         jointNode->setMaterialFlag(EMF_LIGHTING, false);
 
     }
