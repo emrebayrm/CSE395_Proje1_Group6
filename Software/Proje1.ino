@@ -69,13 +69,13 @@ void loop(void) {
       yPID.Compute();
       OutputY = map(OutputY,0,255,60,120);
       OutputX = map(OutputX,0,255,55,125);
-     /* Serial.print("   InputX:"); Serial.print(InputX);
+      Serial.print("   InputX:"); Serial.print(InputX);
       Serial.print("   InputY:"); Serial.print(InputY);
       Serial.print("   Xoutput1:");Serial.print(OutputX);
-      Serial.print("   Youtput1:");Serial.println(OutputY);*/
+      Serial.print("   Youtput1:");Serial.println(OutputY);
     } else // Ball is not on plate
     {
-      //Serial.print("No touch:"); Serial.println(noTouchCount);
+      Serial.print("No touch:"); Serial.println(noTouchCount);
       noTouchCount++;
       if (noTouchCount == 75)
       {

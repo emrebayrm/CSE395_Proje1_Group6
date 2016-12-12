@@ -1,3 +1,0 @@
-/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/BallAndPlate.Build.cs
-/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate.Target.cs
-/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlateEditor.Target.cs
