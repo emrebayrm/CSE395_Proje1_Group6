@@ -105,6 +105,7 @@ bool SerialPort::open() {
 	return (true);
 #else
 	port = openPort(portName.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
+	fd = port;
     if(port == -1)  {
         std::cerr << "Unable to open port.\n" << std::endl;
         return (false);
