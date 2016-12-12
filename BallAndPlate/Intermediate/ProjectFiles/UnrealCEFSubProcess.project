@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="UnrealCEFSubProcess">
+  <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/UnrealCEFSubProcess.Target.cs" />
+  <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/UnrealCEFSubProcess.Build.cs" />
+  <VirtualDirectory Name="Private">
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/UnrealCEFSubProcess.cpp" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/UnrealCEFSubProcess.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/UnrealCEFSubProcessApp.cpp" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/UnrealCEFSubProcessApp.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/UnrealCEFSubProcessCallbackRegistry.cpp" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/UnrealCEFSubProcessCallbackRegistry.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/UnrealCEFSubProcessRemoteMethodHandler.cpp" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/UnrealCEFSubProcessRemoteMethodHandler.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/UnrealCEFSubProcessRemoteScripting.cpp" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/UnrealCEFSubProcessRemoteScripting.h" />
+    <VirtualDirectory Name="Linux">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/Linux/UnrealCEFSubProcessLinux.cpp" />
+    </VirtualDirectory>
+    <VirtualDirectory Name="Mac">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/Mac/UnrealCEFSubProcessMac.cpp" />
+    </VirtualDirectory>
+    <VirtualDirectory Name="Windows">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealCEFSubProcess/Private/Windows/UnrealCEFSubProcessWindows.cpp" />
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings>
+    <Settings />
+    <Configuration Name="Debug">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealCEFSubProcess-Linux-Debug" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealCEFSubProcess-Linux-Debug" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="DebugGame">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealCEFSubProcess-Linux-DebugGame" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealCEFSubProcess-Linux-DebugGame" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealCEFSubProcess Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Development">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealCEFSubProcess" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealCEFSubProcess" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Shipping">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealCEFSubProcess-Linux-Shipping" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealCEFSubProcess-Linux-Shipping" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Test">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealCEFSubProcess-Linux-Test" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealCEFSubProcess-Linux-Test" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealCEFSubProcess Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <GlobalSettings />
+  </Settings>
+</CodeLite_Project>

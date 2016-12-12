@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="CrossCompilerTool">
+  <File Name="/opt/UnrealEngine/Engine/Source/Programs/CrossCompilerTool/CrossCompilerTool.Target.cs" />
+  <File Name="/opt/UnrealEngine/Engine/Source/Programs/CrossCompilerTool/CrossCompilerTool.Build.cs" />
+  <VirtualDirectory Name="Private">
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/CrossCompilerTool/Private/CrossCompilerTool.cpp" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/CrossCompilerTool/Private/CrossCompilerTool.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/CrossCompilerTool/Private/CrossCompilerUtils.cpp" />
+  </VirtualDirectory>
+  <Settings>
+    <Settings />
+    <Configuration Name="Debug">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./CrossCompilerTool-Linux-Debug" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./CrossCompilerTool-Linux-Debug" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe CrossCompilerTool Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="DebugGame">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./CrossCompilerTool-Linux-DebugGame" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./CrossCompilerTool-Linux-DebugGame" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe CrossCompilerTool Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Development">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./CrossCompilerTool" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./CrossCompilerTool" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe CrossCompilerTool Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Shipping">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./CrossCompilerTool-Linux-Shipping" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./CrossCompilerTool-Linux-Shipping" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe CrossCompilerTool Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Test">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./CrossCompilerTool-Linux-Test" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./CrossCompilerTool-Linux-Test" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe CrossCompilerTool Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe CrossCompilerTool Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <GlobalSettings />
+  </Settings>
+</CodeLite_Project>

@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="UnrealVersionSelector">
+  <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/UnrealVersionSelector.Target.cs" />
+  <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/UnrealVersionSelector.Build.cs" />
+  <VirtualDirectory Name="Private">
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/Private/PlatformInstallation.cpp" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/Private/PlatformInstallation.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/Private/UnrealVersionSelector.cpp" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/Private/UnrealVersionSelector.h" />
+    <VirtualDirectory Name="GenericPlatform">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/Private/GenericPlatform/GenericPlatformInstallation.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/Private/GenericPlatform/GenericPlatformInstallation.h" />
+    </VirtualDirectory>
+    <VirtualDirectory Name="Windows">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/Private/Windows/WindowsPlatformInstallation.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/Private/Windows/WindowsPlatformInstallation.h" />
+      <VirtualDirectory Name="Resources">
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealVersionSelector/Private/Windows/Resources/Resource.h" />
+      </VirtualDirectory>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings>
+    <Settings />
+    <Configuration Name="Debug">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealVersionSelector-Linux-Debug" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealVersionSelector-Linux-Debug" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealVersionSelector Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="DebugGame">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealVersionSelector-Linux-DebugGame" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealVersionSelector-Linux-DebugGame" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealVersionSelector Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Development">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealVersionSelector" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealVersionSelector" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealVersionSelector Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Shipping">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealVersionSelector-Linux-Shipping" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealVersionSelector-Linux-Shipping" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealVersionSelector Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Test">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealVersionSelector-Linux-Test" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealVersionSelector-Linux-Test" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealVersionSelector Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealVersionSelector Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <GlobalSettings />
+  </Settings>
+</CodeLite_Project>

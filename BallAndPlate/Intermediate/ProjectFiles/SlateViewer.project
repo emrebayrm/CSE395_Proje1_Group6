@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="SlateViewer">
+  <File Name="/opt/UnrealEngine/Engine/Source/Programs/SlateViewer/SlateViewer.Target.cs" />
+  <File Name="/opt/UnrealEngine/Engine/Source/Programs/SlateViewer/SlateViewer.Build.cs" />
+  <VirtualDirectory Name="Private">
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/SlateViewer/Private/SlateViewerApp.cpp" />
+    <VirtualDirectory Name="IOS">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/SlateViewer/Private/IOS/IOSSlateViewerMain.cpp" />
+    </VirtualDirectory>
+    <VirtualDirectory Name="Linux">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/SlateViewer/Private/Linux/SlateViewerMainLinux.cpp" />
+    </VirtualDirectory>
+    <VirtualDirectory Name="Mac">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/SlateViewer/Private/Mac/SlateViewerMainMac.cpp" />
+    </VirtualDirectory>
+    <VirtualDirectory Name="Windows">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/SlateViewer/Private/Windows/SlateViewerMainWindows.cpp" />
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Public">
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/SlateViewer/Public/SlateViewer.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/SlateViewer/Public/SlateViewerApp.h" />
+  </VirtualDirectory>
+  <Settings>
+    <Settings />
+    <Configuration Name="Debug">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./SlateViewer-Linux-Debug" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./SlateViewer-Linux-Debug" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe SlateViewer Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe SlateViewer Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe SlateViewer Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe SlateViewer Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="DebugGame">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./SlateViewer-Linux-DebugGame" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./SlateViewer-Linux-DebugGame" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe SlateViewer Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe SlateViewer Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe SlateViewer Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe SlateViewer Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Development">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./SlateViewer" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./SlateViewer" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe SlateViewer Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe SlateViewer Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe SlateViewer Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe SlateViewer Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Shipping">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./SlateViewer-Linux-Shipping" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./SlateViewer-Linux-Shipping" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe SlateViewer Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe SlateViewer Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe SlateViewer Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe SlateViewer Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Test">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./SlateViewer-Linux-Test" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./SlateViewer-Linux-Test" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe SlateViewer Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe SlateViewer Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe SlateViewer Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe SlateViewer Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <GlobalSettings />
+  </Settings>
+</CodeLite_Project>

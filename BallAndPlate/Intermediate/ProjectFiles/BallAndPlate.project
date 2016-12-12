@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="BallAndPlate">
+  <VirtualDirectory Name=" 4.14">
+    <File Name="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" />
+    <VirtualDirectory Name="Source">
+      <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate.Target.cs" />
+      <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlateEditor.Target.cs" />
+      <VirtualDirectory Name="BallAndPlate">
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/BallAndPlate.Build.cs" />
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/BallAndPlate.cpp" />
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/BallAndPlate.h" />
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/BallAndPlateGameModeBase.cpp" />
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/BallAndPlateGameModeBase.h" />
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/BallAndPlatePawn.cpp" />
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/BallAndPlatePawn.h" />
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/PlateAndBallActor.cpp" />
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/PlateAndBallActor.h" />
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/PlateAndBallPawn.cpp" />
+        <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Source/BallAndPlate/PlateAndBallPawn.h" />
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Config">
+      <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Config/DefaultEditor.ini" />
+      <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Config/DefaultEngine.ini" />
+      <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Config/DefaultGame.ini" />
+      <File Name="/home/hasan/Desktop/BallAndPlate 4.14/Config/DefaultInput.ini" />
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings>
+    <Settings />
+    <Configuration Name="Debug">
+      <General CommandArguments=" -debug" WorkingDirectory="/home/hasan/Desktop/BallAndPlate 4.14/Binaries/Linux" Command="./BallAndPlate-Linux-Debug" />
+      <General CommandArguments=" -debug" WorkingDirectory="/home/hasan/Desktop/BallAndPlate 4.14/Binaries/Linux" Command="./BallAndPlate-Linux-Debug" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe BallAndPlate Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe BallAndPlate Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe BallAndPlate Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe BallAndPlate Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+        <Target Name="Cook Game">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Debug -serverconfig=Debug -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -cook</Target>
+        <Target Name="Cook Game on the fly">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Debug -serverconfig=Debug -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -cookonthefly</Target>
+        <Target Name="Skip Cook Game">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Debug -serverconfig=Debug -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -skipcook</Target>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="DebugGame">
+      <General CommandArguments=" -debug" WorkingDirectory="/home/hasan/Desktop/BallAndPlate 4.14/Binaries/Linux" Command="./BallAndPlate-Linux-DebugGame" />
+      <General CommandArguments=" -debug" WorkingDirectory="/home/hasan/Desktop/BallAndPlate 4.14/Binaries/Linux" Command="./BallAndPlate-Linux-DebugGame" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe BallAndPlate Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe BallAndPlate Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe BallAndPlate Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe BallAndPlate Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+        <Target Name="Cook Game">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=DebugGame -serverconfig=DebugGame -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -cook</Target>
+        <Target Name="Cook Game on the fly">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=DebugGame -serverconfig=DebugGame -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -cookonthefly</Target>
+        <Target Name="Skip Cook Game">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=DebugGame -serverconfig=DebugGame -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -skipcook</Target>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Development">
+      <General WorkingDirectory="/home/hasan/Desktop/BallAndPlate 4.14/Binaries/Linux" Command="./BallAndPlate" />
+      <General WorkingDirectory="/home/hasan/Desktop/BallAndPlate 4.14/Binaries/Linux" Command="./BallAndPlate" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe BallAndPlate Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe BallAndPlate Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe BallAndPlate Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe BallAndPlate Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+        <Target Name="Cook Game">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Development -serverconfig=Development -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -cook</Target>
+        <Target Name="Cook Game on the fly">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Development -serverconfig=Development -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -cookonthefly</Target>
+        <Target Name="Skip Cook Game">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Development -serverconfig=Development -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -skipcook</Target>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Shipping">
+      <General WorkingDirectory="/home/hasan/Desktop/BallAndPlate 4.14/Binaries/Linux" Command="./BallAndPlate-Linux-Shipping" />
+      <General WorkingDirectory="/home/hasan/Desktop/BallAndPlate 4.14/Binaries/Linux" Command="./BallAndPlate-Linux-Shipping" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe BallAndPlate Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe BallAndPlate Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe BallAndPlate Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe BallAndPlate Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+        <Target Name="Cook Game">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Shipping -serverconfig=Shipping -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -cook</Target>
+        <Target Name="Cook Game on the fly">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Shipping -serverconfig=Shipping -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -cookonthefly</Target>
+        <Target Name="Skip Cook Game">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Shipping -serverconfig=Shipping -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -skipcook</Target>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Test">
+      <General WorkingDirectory="/home/hasan/Desktop/BallAndPlate 4.14/Binaries/Linux" Command="./BallAndPlate-Linux-Test" />
+      <General WorkingDirectory="/home/hasan/Desktop/BallAndPlate 4.14/Binaries/Linux" Command="./BallAndPlate-Linux-Test" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe BallAndPlate Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe BallAndPlate Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe BallAndPlate Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe BallAndPlate Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+        <Target Name="Cook Game">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Test -serverconfig=Test -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -cook</Target>
+        <Target Name="Cook Game on the fly">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Test -serverconfig=Test -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -cookonthefly</Target>
+        <Target Name="Skip Cook Game">mono AutomationTool.exe BuildCookRun -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -noP4 -nokill -clientconfig=Test -serverconfig=Test -platform=Linux -targetplatform=Linux -nocompile -compressed -stage -deploy -skipcook</Target>
+      </CustomBuild>
+    </Configuration>
+    <GlobalSettings />
+  </Settings>
+</CodeLite_Project>

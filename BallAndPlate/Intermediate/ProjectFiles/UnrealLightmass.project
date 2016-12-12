@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="UnrealLightmass">
+  <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/UnrealLightmass.Target.cs" />
+  <VirtualDirectory Name="Config">
+    <File Name="/opt/UnrealEngine/Engine/Programs/UnrealLightmass/Config/DefaultEngine.ini" />
+  </VirtualDirectory>
+  <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/UnrealLightmass.Build.cs" />
+  <VirtualDirectory Name="Private">
+    <VirtualDirectory Name="CPUSolver">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/CPUSolver/CPUSolver.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/CPUSolver/CPUSolver.h" />
+    </VirtualDirectory>
+    <VirtualDirectory Name="ImportExport">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/3DVisualizer.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/3DVisualizer.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/Exporter.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/Exporter.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/Importer.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/Importer.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/LightmassScene.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/LightmassScene.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/LightmassSwarm.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/LightmassSwarm.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/Material.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/Material.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/Mesh.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/ImportExport/Mesh.h" />
+    </VirtualDirectory>
+    <VirtualDirectory Name="Launch">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Launch/LightmassPCH.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Launch/LightmassPCH.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Launch/UnitTest.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Launch/UnitTest.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Launch/UnrealLightmass.cpp" />
+    </VirtualDirectory>
+    <VirtualDirectory Name="Lighting">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/BSP.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/BSP.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/BuildOptions.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Cache.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Cache.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Collision.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Collision.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Embree.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Embree.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/FinalGather.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/FluidSurface.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/FluidSurface.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Landscape.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Landscape.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Lighting.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/LightingMesh.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/LightingMesh.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/LightingSystem.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/LightingSystem.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/LightmapData.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/LightmapData.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Mappings.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Mappings.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/MonteCarlo.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/MonteCarlo.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/PhotonMapping.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/PrecomputedVisibility.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Raster.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/SampleVolume.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/StaticMesh.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/StaticMesh.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/Texture.h" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/TextureMapping.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/Lighting/VolumeDistanceField.cpp" />
+    </VirtualDirectory>
+    <VirtualDirectory Name="LightmassCore">
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/LMCore.cpp" />
+      <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/LMCore.h" />
+      <VirtualDirectory Name="Math">
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Math/LMCollision.h" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Math/LMMath.cpp" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Math/LMMath.h" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Math/LMMathSSE.h" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Math/LMOctree.h" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Math/LMkDOP.h" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Math/SFMT.cpp" />
+      </VirtualDirectory>
+      <VirtualDirectory Name="Misc">
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Misc/LMDebug.cpp" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Misc/LMDebug.h" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Misc/LMHelpers.h" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Misc/LMStats.h" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Misc/LMThreading.cpp" />
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Misc/LMThreading.h" />
+      </VirtualDirectory>
+      <VirtualDirectory Name="Templates">
+        <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Private/LightmassCore/Templates/LMQueue.h" />
+      </VirtualDirectory>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Public">
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Public/FluidExport.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Public/ImportExport.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Public/LightmassPublic.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Public/MaterialExport.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Public/MeshExport.h" />
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Public/SceneExport.h" />
+  </VirtualDirectory>
+  <VirtualDirectory Name="Resources">
+    <File Name="/opt/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Resources/resource.h" />
+  </VirtualDirectory>
+  <Settings>
+    <Settings />
+    <Configuration Name="Debug">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealLightmass-Linux-Debug" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealLightmass-Linux-Debug" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealLightmass Linux Debug -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="DebugGame">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealLightmass-Linux-DebugGame" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealLightmass-Linux-DebugGame" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealLightmass Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealLightmass Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealLightmass Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealLightmass Linux DebugGame -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Development">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealLightmass" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealLightmass" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealLightmass Linux Development -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Shipping">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealLightmass-Linux-Shipping" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealLightmass-Linux-Shipping" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealLightmass Linux Shipping -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <Configuration Name="Test">
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealLightmass-Linux-Test" />
+      <General WorkingDirectory="/opt/UnrealEngine/Engine/Binaries/Linux" Command="./UnrealLightmass-Linux-Test" />
+      <CustomBuild Enabled="yes">
+        <WorkingDirectory>/opt/UnrealEngine/Engine/Binaries/DotNET</WorkingDirectory>
+        <BuildCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</BuildCommand>
+        <CleanCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean</CleanCommand>
+        <RebuildCommand>mono UnrealBuildTool.exe UnrealLightmass Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject" -clean
+mono UnrealBuildTool.exe UnrealLightmass Linux Test -project="/home/hasan/Desktop/BallAndPlate 4.14/BallAndPlate.uproject"</RebuildCommand>
+      </CustomBuild>
+    </Configuration>
+    <GlobalSettings />
+  </Settings>
+</CodeLite_Project>
