@@ -2,7 +2,10 @@
 // Created by emre on 03.12.2016.
 //
 
-
+#include <iostream>
+#include <cstdio>
+#include <stdlib.h>
+#include <zconf.h>
 #include "Communucation.h"
 
 using namespace std;
