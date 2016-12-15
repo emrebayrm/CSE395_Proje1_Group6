@@ -1,13 +1,17 @@
-#include"tools.h"
+#include "tools.h"
 
-Tool::CommunucateWithArduino(void *message){
-    threadMessage message = (threadMessage)message;
+namespace Tool{
+    // EMREEEE, What are you doing man?
 
-    Communucation com(message.portname,SerialPort::BR_9600);
+    /*void CommunucateWithArduino(void *message){
+        threadMessage message = (threadMessage)message;
 
-    while (1) {
-        if(com.readUntil()){
-            //Todo:
+        Communucation com(message.portname,SerialPort::BR_9600);
+
+        while (1) {
+            if(com.readUntil()){
+                //Todo:
+            }
         }
-    }
+    }*/
 }

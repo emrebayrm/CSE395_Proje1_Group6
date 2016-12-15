@@ -27,6 +27,6 @@ HEADERS += \
     mainwindow.h \
     qcustomplot.h \
     SerialPort.h \
-    Communucation.h \
-    tools.h
+    tools.h \
+    Communication.h
 

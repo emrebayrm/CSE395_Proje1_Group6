@@ -1,6 +1,6 @@
 #ifndef TOOL_H
 #define TOOL_H
-#include"Communucation.h"
+#include"Communication.h"
 /*
             Thread (grafik çizme)
               ^
@@ -34,8 +34,8 @@ namespace Tool {
         int pipeid;
     };
 
-    void CommunucateWithArduino(void* message);
-    void CommunucateWith3DSim(void* message);
-    void CommunucateWithGrafik(void* message);
+    void CommunicateWithArduino(void* message);
+    void CommunicateWith3DSim(void* message);
+    void CommunicateWithGrafik(void* message);
 }
 #endif // TOOL_H

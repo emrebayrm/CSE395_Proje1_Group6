@@ -2,8 +2,8 @@
 // Created by emre on 03.12.2016.
 //
 
-#ifndef PROJE_COMMUNUCATION_H
-#define PROJE_COMMUNUCATION_H
+#ifndef PROJE_COMMUNICATION_H
+#define PROJE_COMMUNICATION_H
 
 #include "SerialPort.h"
 #include <cstdio>
@@ -30,9 +30,9 @@
 using namespace std;
 
 /**
- * Serial Commucation
+ * Serial Communication
  */
-class Communucation {
+class Communication {
 private :
     bool communicationReady ;
     double XMotorAngle ;
@@ -42,10 +42,10 @@ private :
     SerialPort *port;
     bool makeHandShake();
     void checkConnection();
-    inline void setXMotorAngle(double angle){ XMotorAngle = angle; };
-    inline void setYMotorAngle(double angle){YMotorAngle = angle; };
-    inline void setBallXCoordinate(int x){ballXCoordinate = map(x,XCOORDMIN,XCOORDMMAX,XOUTMIN,XOUTMAX);};
-    inline void setBallYCoordinate(int y){ballYCoordinate = map(y,YCOORDMIN,YCOORDMMAX,YOUTMIN,YOUTMAX);};
+    inline void setXMotorAngle(double angle){ XMotorAngle = angle; }
+    inline void setYMotorAngle(double angle){YMotorAngle = angle; }
+    inline void setBallXCoordinate(int x){ballXCoordinate = map(x,XCOORDMIN,XCOORDMMAX,XOUTMIN,XOUTMAX);}
+    inline void setBallYCoordinate(int y){ballYCoordinate = map(y,YCOORDMIN,YCOORDMMAX,YOUTMIN,YOUTMAX);}
     inline float map(long x, long in_min, long in_max, long out_min, long out_max)
     {
         return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
@@ -56,7 +56,7 @@ public:
      * str : Serail port name
      * baud : baud rate
      */
-    Communucation(string str,SerialPort::BaudRate baud);
+    Communication(string str,SerialPort::BaudRate baud);
     /**
      * Attention: received data should be like ("X%3.2lfY%3.2lfx%dy%d!",double ,double,int,int)
      * Reads the serial port and assigns the motor angles
