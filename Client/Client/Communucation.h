@@ -6,6 +6,9 @@
 #define PROJE_COMMUNUCATION_H
 
 #include "SerialPort.h"
+#include <cstdio>
+#include <iostream>
+#include <zconf.h>
 #include <string>
 
 #define START_CHAR '{'
