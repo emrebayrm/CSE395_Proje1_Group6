@@ -11,7 +11,7 @@
               |
               |pipe
               |
-              |     fifo
+             \ /    fifo
             Thread -----> Unreal Exe
                             */
 namespace Tool {
