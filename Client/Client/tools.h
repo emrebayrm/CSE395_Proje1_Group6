@@ -1,6 +1,24 @@
 #ifndef TOOL_H
 #define TOOL_H
-#include"Communication.h"
+#include <fcntl.h>
+#include<iostream>
+#include <unistd.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <cstring>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include "Communucation.h"
+
+#define THREADCOMSIZE 6
+#define PRESSED "pres"
+#define READY "ready"
+#define QUIT "quit"
+#define FIFONAME "fifo"
+#define EXEADDRESS "3dsim.exe"
+char Packet_format[] = "{%lf %lf %d %d}";
+
+static bool isButtonPressed; // uses Unreal Button pressed
 /*
             Thread (grafik çizme)
               ^
@@ -11,7 +29,7 @@
               |
               |pipe
               |
-              |     fifo
+             \ /    fifo
             Thread -----> Unreal Exe
                             */
 namespace Tool {
@@ -25,17 +43,24 @@ namespace Tool {
     //TODO:
     /*Maybe Missing something*/
     struct threadMessage3D{
-        int pipeid;
+        int pipefd[2];
     };
 
     //TODO:
     /*Maybe Missing something*/
     struct threadMessageGrafik {
-        int pipeid;
+        int pipefd[2];
     };
 
-    void CommunicateWithArduino(void* message);
-    void CommunicateWith3DSim(void* message);
-    void CommunicateWithGrafik(void* message);
+    struct InfoPacket{
+        int ballX;
+        int ballY;
+        float motorXangle;
+        float motorYangle;
+    };
+
+    void* CommunucateWithArduino(void* message);
+    void* CommunucateWith3DSim(void* message);
+    void* CommunucateWithGrafik(void* message);
 }
 #endif // TOOL_H
