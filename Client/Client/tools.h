@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <cstring>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "Communucation.h"
 
 #define THREADCOMSIZE 6
@@ -15,6 +17,8 @@
 #define FIFONAME "fifo"
 #define EXEADDRESS "3dsim.exe"
 char Packet_format[] = "{%lf %lf %d %d}";
+
+static bool isButtonPressed; // uses Unreal Button pressed
 /*
             Thread (grafik çizme)
               ^
@@ -55,8 +59,8 @@ namespace Tool {
         float motorYangle;
     };
 
-    void CommunucateWithArduino(void* message);
-    void CommunucateWith3DSim(void* message);
-    void CommunucateWithGrafik(void* message);
+    void* CommunucateWithArduino(void* message);
+    void* CommunucateWith3DSim(void* message);
+    void* CommunucateWithGrafik(void* message);
 }
 #endif // TOOL_H
