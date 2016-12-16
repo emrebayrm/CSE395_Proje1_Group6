@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>600</x>
-      <y>310</y>
+      <y>300</y>
       <width>501</width>
-      <height>381</height>
+      <height>411</height>
      </rect>
     </property>
     <property name="title">
@@ -42,19 +42,6 @@
       </sizepolicy>
      </property>
     </widget>
-    <widget class="QScrollBar" name="verScrollServo">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>50</y>
-       <width>16</width>
-       <height>291</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
     <widget class="QScrollBar" name="horScrollServo">
      <property name="geometry">
       <rect>
@@ -68,14 +55,24 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
+    <widget class="QTextBrowser" name="textBPlotServo">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>370</y>
+       <width>271</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupXYCoords">
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>310</y>
+      <y>300</y>
       <width>501</width>
-      <height>381</height>
+      <height>411</height>
      </rect>
     </property>
     <property name="title">
@@ -97,19 +94,6 @@
       </sizepolicy>
      </property>
     </widget>
-    <widget class="QScrollBar" name="verScrollXY">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>50</y>
-       <width>16</width>
-       <height>291</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
     <widget class="QScrollBar" name="horScrollXY">
      <property name="geometry">
       <rect>
@@ -121,6 +105,16 @@
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QTextBrowser" name="textBPlotXY">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>370</y>
+       <width>271</width>
+       <height>31</height>
+      </rect>
      </property>
     </widget>
    </widget>
@@ -203,7 +197,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
-   <header>../../qcustomplot.h</header>
+   <header>qcustomplot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

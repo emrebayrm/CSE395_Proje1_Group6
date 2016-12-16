@@ -28,5 +28,6 @@ HEADERS += \
     qcustomplot.h \
     SerialPort.h \
     tools.h \
-    Communication.h
+    Communication.h \
+    requirements.h
 
