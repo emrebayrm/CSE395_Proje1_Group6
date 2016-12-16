@@ -1,6 +1,20 @@
 #ifndef TOOL_H
 #define TOOL_H
-#include"Communucation.h"
+#include <fcntl.h>
+#include<iostream>
+#include <unistd.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <cstring>
+#include "Communucation.h"
+
+#define THREADCOMSIZE 6
+#define PRESSED "pres"
+#define READY "ready"
+#define QUIT "quit"
+#define FIFONAME "fifo"
+#define EXEADDRESS "3dsim.exe"
+char Packet_format[] = "{%lf %lf %d %d}";
 /*
             Thread (grafik çizme)
               ^
@@ -25,13 +39,20 @@ namespace Tool {
     //TODO:
     /*Maybe Missing something*/
     struct threadMessage3D{
-        int pipeid;
+        int pipefd[2];
     };
 
     //TODO:
     /*Maybe Missing something*/
     struct threadMessageGrafik {
-        int pipeid;
+        int pipefd[2];
+    };
+
+    struct InfoPacket{
+        int ballX;
+        int ballY;
+        float motorXangle;
+        float motorYangle;
     };
 
     void CommunucateWithArduino(void* message);

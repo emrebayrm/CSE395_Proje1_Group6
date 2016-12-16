@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include "Communication.h"
+#include "Communucation.h"
 #include <csignal>
 #include <iostream>
 #include <stdlib.h>
