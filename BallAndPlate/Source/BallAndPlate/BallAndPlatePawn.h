@@ -24,17 +24,23 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
 	UPROPERTY(EditAnywhere)
-		USceneComponent* OurVisibleComponent2;
+		USceneComponent* OurVisibleComponent1; // ball 
 	UPROPERTY(EditAnywhere)
-		USceneComponent* OurVisibleComponent1;
-	/*UPROPERTY(EditAnywhere)
-		UCameraComponent* OurCamera;*/
+		USceneComponent* OurVisibleComponent2; // plate 
+	UPROPERTY(EditAnywhere)
+		AActor* kolX;
+	UPROPERTY(EditAnywhere)
+		AActor* kolY;
+	UPROPERTY(EditAnywhere)
+		AActor* kolXReference;
+	UPROPERTY(EditAnywhere)
+		AActor* kolYReference;
 
+	
 	// Input functions
 	void Move_XAxis(float AxisValue);
 	void Move_YAxis(float AxisValue);
-	void StartGrowing();
-	void StopGrowing();
+
 
 	// Input variables
 	FVector CurrentVelocity;
