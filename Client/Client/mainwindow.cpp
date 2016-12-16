@@ -28,11 +28,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-// test icin threadi baslat
-void MainWindow::testThread(){
-    guiThread->start();
-}
-
 
 // initialize XY graphic plot
 void MainWindow::setXYPlot(){
@@ -182,5 +177,7 @@ void MainWindow::updateServoPlotData(){
 }
 
 
-
-
+void MainWindow::on_btnConnPlate_clicked()
+{
+    guiThread->start();
+}

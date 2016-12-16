@@ -15,9 +15,6 @@ int main(int argc, char *argv[])
   QApplication a(argc, argv);
   MainWindow w;
 
-  w.testThread();
-  // burasını normalde baglan diyince baslatacak
-
   w.show();
   return a.exec();
 }

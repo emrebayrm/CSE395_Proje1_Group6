@@ -18,13 +18,17 @@ public:
     Ui::MainWindow* getUI(){return ui;}
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void testThread();
 
 public slots:
     void updateServoPlotData();
     void updateXYPlotData();
 
+
+private slots:
+    void on_btnConnPlate_clicked();
+
 private:
+
     void setXYPlot();
     void setServoPlot();
     Ui::MainWindow *ui;
