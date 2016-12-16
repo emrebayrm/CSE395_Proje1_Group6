@@ -18,11 +18,11 @@ void* Tool::CommunicateWithArduino(void *message){
     messageGrafik.pipefd[0] = fdGrafik[0];
     messageGrafik.pipefd[1] = fdGrafik[1];
 
-    int error = pthread_create(&idGrafik,NULL,CommunicateWithGrafik,&messageGrafik);//create thread for Grafic Drawing.
+    int error = pthread_create(&idGrafik,NULL,CommunicateWithGrafic,&messageGrafik);//create thread for Grafic Drawing.
 
     if(error){
-        std::cerr << "Error Creating Grafic thread" << std::endl;
-        //TODO: Exit
+        std::cerr << "Error Creating Grafic thread " << std::endl;
+        exit(EXIT_FAILURE);
     }
 
     pipe(fd3DSim);     //create pipe for 3Dsim
@@ -34,7 +34,7 @@ void* Tool::CommunicateWithArduino(void *message){
 
     if(error){
         std::cerr << "Error Creating 3DSim thread" << std::endl;
-        //TODO: Exit
+        exit(EXIT_FAILURE);
     }
 
 
@@ -54,7 +54,8 @@ void* Tool::CommunicateWithArduino(void *message){
             std::cerr << com.getBallXCoordinate()  << std::endl;
             writeRet = write(fdGrafik[1],sendBuffer,sizeof(char)*PACKET_SIZE);   //Send packet to grafik pipe.
             if(writeRet < 0){
-                //TODO: ERROR
+                std::cerr << "Error Writing " << std::endl;
+                exit(EXIT_FAILURE);
             }
             read(fd3DSim[0],getBuffer,THREADCOMSIZE);
 
@@ -69,7 +70,8 @@ void* Tool::CommunicateWithArduino(void *message){
                 writeRet = write(fd3DSim[1],sendBuffer,sizeof(char)*PACKET_SIZE);//Send Packet to 3d
 
                 if(writeRet < 0){
-                    //TODO: ERROR
+                    std::cerr << "Write Error. EXITING !!!" << std::endl;
+                    exit(EXIT_FAILURE);
                 }
             }
 
@@ -108,7 +110,7 @@ void* Tool::CommunicateWith3DSim(void* message){
             if(pid == 0){
                 execl(EXEADDRESS," "); //start exe
 
-                //exit(EXIT_SUCCESS);
+                exit(EXIT_SUCCESS);
             }
 
             sprintf(procname,"/proc/%d",(int)pid);
@@ -119,7 +121,7 @@ void* Tool::CommunicateWith3DSim(void* message){
                 read(fds[0],buf,PACKET_SIZE* sizeof(char));   //then get packet from pipe
                 write(fifofd,buf,PACKET_SIZE * sizeof(char)); //send Packet to fifo
 
-            }while(1);//while(!(stat(procname, &sts) == -1 && errno == ENOENT));//until Exe died
+            }while(!(stat(procname, &sts) == -1 && errno == ENOENT));//until Exe died
 
             strcpy(buf,QUIT);
             write(fds[1],buf,5); //send Exe Died Message
@@ -128,7 +130,7 @@ void* Tool::CommunicateWith3DSim(void* message){
     }
 }
 
-void* Tool::CommunicateWithGrafik(void* message){
+void *Tool::CommunicateWithGrafic(void* message){
     Tool::threadMessageGrafik mes = *((Tool::threadMessageGrafik*) message);
     int fds[2]; fds[0] = mes.pipefd[0]; fds[1] = mes.pipefd[1];
     char buffer[PACKET_SIZE];

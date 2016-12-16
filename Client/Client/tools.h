@@ -63,6 +63,6 @@ namespace Tool {
 
     void* CommunicateWithArduino(void* message);
     void* CommunicateWith3DSim(void* message);
-    void* CommunicateWithGrafik(void* message);
+    void* CommunicateWithGrafic(void* message);
 }
 #endif // TOOL_H
