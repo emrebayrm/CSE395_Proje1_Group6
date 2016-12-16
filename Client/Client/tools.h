@@ -1,5 +1,6 @@
 #ifndef TOOL_H
 #define TOOL_H
+
 #include <fcntl.h>
 #include<iostream>
 #include <unistd.h>
@@ -8,7 +9,10 @@
 #include <cstring>
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #include "Communication.h"
+#include "requirements.h"
+
 
 #define THREADCOMSIZE 6
 #define PRESSED "pres"
@@ -16,9 +20,7 @@
 #define QUIT "quit"
 #define FIFONAME "fifo"
 #define EXEADDRESS "3dsim.exe"
-char Packet_format[] = "{%lf %lf %d %d}";
 
-static bool isButtonPressed; // uses Unreal Button pressed
 /*
             Thread (grafik çizme)
               ^
@@ -32,6 +34,7 @@ static bool isButtonPressed; // uses Unreal Button pressed
              \ /    fifo
             Thread -----> Unreal Exe
                             */
+
 namespace Tool {
 
     //TODO:

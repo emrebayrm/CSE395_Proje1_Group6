@@ -1,8 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qcustomplot.h"
+#include "requirements.h"
 
 using namespace std;
+using namespace Tool;
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -11,6 +15,11 @@ MainWindow::MainWindow(QWidget *parent) :
     setServoPlot();
     setXYPlot();
 
+    guiThread = new GraphicThread(this);
+
+    // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
+    connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
+    connect(guiThread,SIGNAL(startThread()),this,SLOT(updateXYPlotData()));
 
 }
 
@@ -19,6 +28,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+// test icin threadi baslat
+void MainWindow::testThread(){
+    guiThread->start();
+}
+
+
+// initialize XY graphic plot
 void MainWindow::setXYPlot(){
 
     // add X Coordinat Graph
@@ -56,20 +72,21 @@ void MainWindow::setXYPlot(){
     ui->plotXY->xAxis->setLabelColor("blue");
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
-    connect(&timerXYPlot,SIGNAL(timeout()),this,SLOT(updateXYPlotData()));
-    timerXYPlot.start(0);
+    //connect(&timerXYPlot,SIGNAL(timeout()),this,SLOT(updateXYPlotData()));
+    //timerXYPlot.start(0);
 
 }
 
 
 void MainWindow::updateXYPlotData(){
 
+    cout<<"test2";
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
     static double lastPointKey = 0;
-    double coordX=150;
-    double coordY=200;
+    int coordX=150;
+    int coordY=200;
     if (key-lastPointKey > 0.002) // at most add point every 2 ms
     {
       // add data to lines:
@@ -84,12 +101,13 @@ void MainWindow::updateXYPlotData(){
     ui->plotXY->xAxis->setRange(key, 8, Qt::AlignRight);
     ui->plotXY->replot();
 
-      ui->textBPlotXY->setText(
+    ui->textBPlotXY->setText(
             QString("X: %1 \t  Y: %2")
             .arg(coordX)
             .arg(coordY));
 
 }
+
 
 
 void MainWindow::setServoPlot(){
@@ -129,8 +147,8 @@ void MainWindow::setServoPlot(){
     ui->plotServo->xAxis->setLabelColor("blue");
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
-    connect(&timerServoPlot,SIGNAL(timeout()),this,SLOT(updateServoPlotData()));
-    timerServoPlot.start(0);
+   // connect(&timerServoPlot,SIGNAL(timeout()),this,SLOT(updateServoPlotData()));
+   // timerServoPlot.start(0);
 }
 
 
@@ -161,7 +179,8 @@ void MainWindow::updateServoPlotData(){
           .arg(servoXAngle)
           .arg(servoYAngle));
 
-
 }
+
+
 
 
