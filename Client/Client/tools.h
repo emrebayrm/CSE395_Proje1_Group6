@@ -8,7 +8,7 @@
 #include <cstring>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "Communucation.h"
+#include "Communication.h"
 
 #define THREADCOMSIZE 6
 #define PRESSED "pres"
@@ -59,8 +59,8 @@ namespace Tool {
         float motorYangle;
     };
 
-    void* CommunucateWithArduino(void* message);
-    void* CommunucateWith3DSim(void* message);
-    void* CommunucateWithGrafik(void* message);
+    void* CommunicateWithArduino(void* message);
+    void* CommunicateWith3DSim(void* message);
+    void* CommunicateWithGrafik(void* message);
 }
 #endif // TOOL_H

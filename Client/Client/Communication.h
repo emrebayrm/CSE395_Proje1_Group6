@@ -32,7 +32,7 @@ using namespace std;
 /**
  * Serial Communication
  */
-class Communucation {
+class Communication {
 private :
     bool communicationReady ;
     double XMotorAngle ;
@@ -56,7 +56,7 @@ public:
      * str : Serail port name
      * baud : baud rate
      */
-    Communucation(string str,SerialPort::BaudRate baud);
+    Communication(string str,SerialPort::BaudRate baud);
     /**
      * Attention: received data should be like ("X%3.2lfY%3.2lfx%dy%d!",double ,double,int,int)
      * Reads the serial port and assigns the motor angles

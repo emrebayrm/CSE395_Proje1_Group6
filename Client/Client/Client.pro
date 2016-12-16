@@ -7,8 +7,8 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     qcustomplot.cpp \
     SerialPort.cpp \
-    Communucation.cpp \
-    tools.cpp
+    tools.cpp \
+    Communication.cpp
 
 RESOURCES += qml.qrc
 
@@ -28,6 +28,6 @@ HEADERS += \
     qcustomplot.h \
     SerialPort.h \
     tools.h \
-    Communication.h \
-    requirements.h
+    requirements.h \
+    Communication.h
 
