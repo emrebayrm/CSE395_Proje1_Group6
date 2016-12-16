@@ -1,6 +1,6 @@
 #ifndef TOOL_H
 #define TOOL_H
-#include"Communication.h"
+#include"Communucation.h"
 /*
             Thread (grafik çizme)
               ^
@@ -11,7 +11,7 @@
               |
               |pipe
               |
-              |     fifo
+             \ /    fifo
             Thread -----> Unreal Exe
                             */
 namespace Tool {
@@ -34,8 +34,8 @@ namespace Tool {
         int pipeid;
     };
 
-    void CommunicateWithArduino(void* message);
-    void CommunicateWith3DSim(void* message);
-    void CommunicateWithGrafik(void* message);
+    void CommunucateWithArduino(void* message);
+    void CommunucateWith3DSim(void* message);
+    void CommunucateWithGrafik(void* message);
 }
 #endif // TOOL_H

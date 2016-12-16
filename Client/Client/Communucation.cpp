@@ -6,11 +6,11 @@
 #include <cstdio>
 #include <stdlib.h>
 #include <zconf.h>
-#include "Communication.h"
+#include "Communucation.h"
 
 using namespace std;
 
-Communication::Communication(string str, SerialPort::BaudRate baud) {
+Communucation::Communucation(string str, SerialPort::BaudRate baud) {
     port = new SerialPort(str,baud);
     communicationReady = false;
     checkConnection();
@@ -83,7 +83,7 @@ Communication::Communication(string str, SerialPort::BaudRate baud) {
 //    return true;
 //}
 
-bool Communication::makeHandShake() {
+bool Communucation::makeHandShake() {
     char ch;
     cerr << "Handshake starting" << endl;
     do {
@@ -96,15 +96,15 @@ bool Communication::makeHandShake() {
     return true;
 }
 
-bool Communication::write(char *msg) {
+bool Communucation::write(char *msg) {
     return port->write(msg);
 }
 
-bool Communication::write(char ch) {
+bool Communucation::write(char ch) {
     return port->write(ch);
 }
 
-void Communication::checkConnection() {
+void Communucation::checkConnection() {
     while( !( port->open()) ){
         usleep(100);
         cerr << "Open failed" << endl;
@@ -117,7 +117,7 @@ void Communication::checkConnection() {
     }
 }
 
-bool Communication::readUntil() {
+bool Communucation::readUntil() {
     if(!communicationReady)
         return false;
     write('N');
