@@ -13,13 +13,15 @@
 #include "Communication.h"
 #include "requirements.h"
 
-
+#define PORTNAMESIZE 30
 #define THREADCOMSIZE 6
+#define NONE "none"
 #define PRESSED "pres"
 #define READY "ready"
 #define QUIT "quit"
 #define FIFONAME "fifo"
 #define EXEADDRESS "3dsim.exe"
+#define Packet_format "{ %3.2lf %3.2lf %3d %3d}"
 
 /*
             Thread (grafik çizme)
@@ -40,7 +42,7 @@ namespace Tool {
     //TODO:
     /*Maybe Missing something*/
     struct threadMessageArdu{
-        char* portname;
+        char portname[PORTNAMESIZE];
     };
 
     //TODO:
@@ -64,6 +66,6 @@ namespace Tool {
 
     void* CommunicateWithArduino(void* message);
     void* CommunicateWith3DSim(void* message);
-    void* CommunicateWithGrafik(void* message);
+    void* CommunicateWithGrafic(void* message);
 }
 #endif // TOOL_H

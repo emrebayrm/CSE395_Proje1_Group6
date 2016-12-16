@@ -127,8 +127,11 @@ bool Communication::readUntil() {
 
     port->readUntil(input,END_CHAR);
     //{XdoubleYdoublexintyint}
-    sscanf(input.c_str(),"{X%lfY%lfx%dy%d}",&xangle,&yangle,&x,&y);
+    char dead;
+
+    sscanf(input.c_str(),"%c%c%lf%c%lf%c%d%c%d%c",&dead,&dead,&xangle,&dead,&yangle,&dead,&x,&dead,&y,&dead);
     //if is not valid values false 
+
     setXMotorAngle(xangle);
     setYMotorAngle(yangle);
     setBallXCoordinate(x);
