@@ -31,5 +31,4 @@ HEADERS += \
     requirements.h \
     Communication.h
     Communucation.h \
-    requirements.h
 

@@ -10,13 +10,15 @@
 #include <sys/stat.h>
 #include "Communication.h"
 
+#define PORTNAMESIZE 30
 #define THREADCOMSIZE 6
+#define NONE "none"
 #define PRESSED "pres"
 #define READY "ready"
 #define QUIT "quit"
 #define FIFONAME "fifo"
 #define EXEADDRESS "3dsim.exe"
-char Packet_format[] = "{%lf %lf %d %d}";
+#define Packet_format "{ %3.2lf %3.2lf %3d %3d}"
 
 static bool isButtonPressed; // uses Unreal Button pressed
 /*
@@ -37,7 +39,7 @@ namespace Tool {
     //TODO:
     /*Maybe Missing something*/
     struct threadMessageArdu{
-        char* portname;
+        char portname[PORTNAMESIZE];
     };
 
     //TODO:

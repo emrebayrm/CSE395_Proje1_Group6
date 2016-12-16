@@ -3,7 +3,7 @@
  * read 0
  * write 1
             */
-void* Tool::CommunucateWithArduino(void *message){
+void* Tool::CommunicateWithArduino(void *message){
     Tool::threadMessageArdu mes = *((Tool::threadMessageArdu*)message);
     Tool::threadMessage3D message3D;
     Tool::threadMessageGrafik messageGrafik;
@@ -18,7 +18,7 @@ void* Tool::CommunucateWithArduino(void *message){
     messageGrafik.pipefd[0] = fdGrafik[0];
     messageGrafik.pipefd[1] = fdGrafik[1];
 
-    int error = pthread_create(&idGrafik,NULL,CommunucateWithGrafik,&messageGrafik);//create thread for Grafic Drawing.
+    int error = pthread_create(&idGrafik,NULL,CommunicateWithGrafik,&messageGrafik);//create thread for Grafic Drawing.
 
     if(error){
         std::cerr << "Error Creating Grafic thread" << std::endl;
@@ -30,7 +30,7 @@ void* Tool::CommunucateWithArduino(void *message){
     message3D.pipefd[0] = fd3DSim[0];
     message3D.pipefd[1] = fd3DSim[1];
 
-    error = pthread_create(&id3DSim,NULL,CommunucateWith3DSim,&message3D);          //create thread for 3Dsim
+    error = pthread_create(&id3DSim,NULL,CommunicateWith3DSim,&message3D);          //create thread for 3Dsim
 
     if(error){
         std::cerr << "Error Creating 3DSim thread" << std::endl;
@@ -38,7 +38,7 @@ void* Tool::CommunucateWithArduino(void *message){
     }
 
 
-    Communucation com(mes.portname,SerialPort::BR_9600);
+    Communication com(mes.portname,SerialPort::BR_9600);
     char sendBuffer[PACKET_SIZE];
     char getBuffer[THREADCOMSIZE];
     bool sim3DisOpen = false;
@@ -48,9 +48,10 @@ void* Tool::CommunucateWithArduino(void *message){
 
             sprintf(sendBuffer,Packet_format,com.getXMotorAngle(),
                                              com.getYMotorAngle(),
-                                             com.getXMotorAngle(),
-                                             com.getYMotorAngle());
+                                             com.getBallXCoordinate(),
+                                             com.getBallYCoordinate());
 
+            std::cerr << com.getBallXCoordinate()  << std::endl;
             writeRet = write(fdGrafik[1],sendBuffer,sizeof(char)*PACKET_SIZE);   //Send packet to grafik pipe.
             if(writeRet < 0){
                 //TODO: ERROR
@@ -77,11 +78,14 @@ void* Tool::CommunucateWithArduino(void *message){
                 //pthread_join(id3DSim,NULL);
                 sim3DisOpen = false;
             }
+
+            //Send To Grafic Thread
+            writeRet = write(fdGrafik[1],sendBuffer,sizeof(char)*PACKET_SIZE);
         }//EndRead
     }//End while
 }
 
-void* Tool::CommunucateWith3DSim(void* message){
+void* Tool::CommunicateWith3DSim(void* message){
     //Add Action listener button
     threadMessage3D mes = *((threadMessage3D*) message);
     char buf[PACKET_SIZE]; //Buffer
@@ -89,6 +93,7 @@ void* Tool::CommunucateWith3DSim(void* message){
     struct stat sts; // for checking is there exist still
 
     int fds[2] ; fds[0] = mes.pipefd[0];fds[1] = mes.pipefd[1];
+    strcpy(buf,NONE);
     while(1){
         if (isButtonPressed) {
             strcpy(buf,PRESSED);
@@ -113,24 +118,26 @@ void* Tool::CommunucateWith3DSim(void* message){
             do{
                 read(fds[0],buf,PACKET_SIZE* sizeof(char));   //then get packet from pipe
                 write(fifofd,buf,PACKET_SIZE * sizeof(char)); //send Packet to fifo
-            }while(!(stat(procname, &sts) == -1 && errno == ENOENT));//until Exe died
+
+            }while(1);//while(!(stat(procname, &sts) == -1 && errno == ENOENT));//until Exe died
 
             strcpy(buf,QUIT);
             write(fds[1],buf,5); //send Exe Died Message
-        }
+        }//end if
+        write(fds[1],buf,5);
     }
 }
 
-void* Tool::CommunucateWithGrafik(void* message){
+void* Tool::CommunicateWithGrafik(void* message){
     Tool::threadMessageGrafik mes = *((Tool::threadMessageGrafik*) message);
     int fds[2]; fds[0] = mes.pipefd[0]; fds[1] = mes.pipefd[1];
     char buffer[PACKET_SIZE];
     int ballX,ballY;
-    float motorXAngle,motorYAngle;
+    double motorXAngle,motorYAngle;
     while(1){
         read(fds[0],buffer,sizeof(char)*PACKET_SIZE); //get Packet
         //Parse
-        sscanf(buffer,Packet_format,&motorXAngle,&motorYAngle,&ballX,&ballY);
+        sscanf(buffer,Packet_format,&ballX,&ballY,&motorXAngle,&motorYAngle);
         //Draw Grafic
     }
 }

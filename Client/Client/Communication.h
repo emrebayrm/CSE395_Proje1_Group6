@@ -44,8 +44,8 @@ private :
     void checkConnection();
     inline void setXMotorAngle(double angle){ XMotorAngle = angle; }
     inline void setYMotorAngle(double angle){YMotorAngle = angle; }
-    inline void setBallXCoordinate(int x){ballXCoordinate = map(x,XCOORDMIN,XCOORDMMAX,XOUTMIN,XOUTMAX);}
-    inline void setBallYCoordinate(int y){ballYCoordinate = map(y,YCOORDMIN,YCOORDMMAX,YOUTMIN,YOUTMAX);}
+    inline void setBallXCoordinate(int x){ballXCoordinate = x;}//map(x,XCOORDMIN,XCOORDMMAX,XOUTMIN,XOUTMAX);}
+    inline void setBallYCoordinate(int y){ballYCoordinate = y;}// map(y,YCOORDMIN,YCOORDMMAX,YOUTMIN,YOUTMAX);}
     inline float map(long x, long in_min, long in_max, long out_min, long out_max)
     {
         return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
