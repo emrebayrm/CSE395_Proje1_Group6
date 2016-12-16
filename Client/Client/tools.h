@@ -21,7 +21,7 @@
 #define QUIT "quit"
 #define FIFONAME "fifo"
 #define EXEADDRESS "3dsim.exe"
-#define Packet_format "{ %3.2lf %3.2lf %3d %3d}"
+#define PACKETFORMAT "{ %3.2lf %3.2lf %3d %3d}"
 
 /*
             Thread (grafik çizme)
@@ -53,7 +53,7 @@ namespace Tool {
 
     //TODO:
     /*Maybe Missing something*/
-    struct threadMessageGrafik {
+    struct threadMessageGrafic {
         int pipefd[2];
     };
 

@@ -4,30 +4,31 @@
  * write 1
             */
 using namespace std;
+
 namespace Tool{
-    char Packet_format[] = "{%lf %lf %d %d}";
+
     bool isButtonPressed; // uses Unreal Button pressed
 
     void* CommunicateWithArduino(void *message){
-        Tool::threadMessageArdu *mes = (Tool::threadMessageArdu*)message;
-        Tool::threadMessage3D message3D;
-        Tool::threadMessageGrafik messageGrafik;
+        threadMessageArdu *mes = (Tool::threadMessageArdu*)message;
+        threadMessage3D message3D;
+        threadMessageGrafic messageGrafic;
 
-        int fdGrafik[2];
-        pthread_t idGrafik;
+        int fdGrafic[2];
+        pthread_t idGrafic;
         int fd3DSim[2];
         pthread_t id3DSim;
 
-        pipe(fdGrafik); //create pipe between grafik draw.
+        pipe(fdGrafic); //create pipe between grafik draw.
         //SetMessage
-        messageGrafik.pipefd[0] = fdGrafik[0];
-        messageGrafik.pipefd[1] = fdGrafik[1];
+        messageGrafic.pipefd[0] = fdGrafic[0];
+        messageGrafic.pipefd[1] = fdGrafic[1];
 
-        int error = pthread_create(&idGrafik,NULL,CommunicateWithGrafik,&messageGrafik);//create thread for Grafic Drawing.
+        int error = pthread_create(&idGrafic,NULL,CommunicateWithGrafic,&messageGrafic);//create thread for Grafic Drawing.
 
         if(error){
             std::cerr << "Error Creating Grafic thread" << std::endl;
-            //TODO: Exit
+            exit(EXIT_FAILURE);
         }
 
         pipe(fd3DSim);     //create pipe for 3Dsim
@@ -39,7 +40,7 @@ namespace Tool{
 
         if(error){
             std::cerr << "Error Creating 3DSim thread" << std::endl;
-            //TODO: Exit
+            exit(EXIT_FAILURE);
         }
 
         QString str = mes->portname;
@@ -52,45 +53,45 @@ namespace Tool{
         while (1) {
             if(com.readUntil()){
 
-            sprintf(sendBuffer,Packet_format,com.getXMotorAngle(),
+            sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
                                              com.getYMotorAngle(),
                                              com.getBallXCoordinate(),
                                              com.getBallYCoordinate());
 
             std::cerr << com.getBallXCoordinate()  << std::endl;
-            writeRet = write(fdGrafik[1],sendBuffer,sizeof(char)*PACKET_SIZE);   //Send packet to grafik pipe.
+            writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);   //Send packet to grafik pipe.
             if(writeRet < 0){
                 std::cerr << "Error Writing " << std::endl;
                 exit(EXIT_FAILURE);
             }
             read(fd3DSim[0],getBuffer,THREADCOMSIZE);
 
-                //check button unreal button has pressed.
-                if(std::strcmp(getBuffer,PRESSED) == 0){
-                    //TODO:Pressed Section
-                    sim3DisOpen = true;
-                }
+            //check button unreal button has pressed.
+            if(std::strcmp(getBuffer,PRESSED) == 0){
+                //TODO:Pressed Section
+                sim3DisOpen = true;
+            }
 
-                //check 3D is open if openned check if it is ready Message
-                if(sim3DisOpen && (std::strcmp(getBuffer,READY)) == 0){
-                    writeRet = write(fd3DSim[1],sendBuffer,sizeof(char)*PACKET_SIZE);//Send Packet to 3d
+            //check 3D is open if openned check if it is ready Message
+            if(sim3DisOpen && (std::strcmp(getBuffer,READY)) == 0){
+                writeRet = write(fd3DSim[1],sendBuffer,sizeof(char)*PACKET_SIZE);//Send Packet to 3d
 
                 if(writeRet < 0){
                     std::cerr << "Write Error. EXITING !!!" << std::endl;
                     exit(EXIT_FAILURE);
                 }
+            }
 
             //check 3D sim is quitted ?
             if(std::strcmp(getBuffer,QUIT) == 0){
                 //pthread_join(id3DSim,NULL);
                 sim3DisOpen = false;
             }
-
             //Send To Grafic Thread
-            writeRet = write(fdGrafik[1],sendBuffer,sizeof(char)*PACKET_SIZE);
-        }//EndRead
-    }//End while
-}
+            writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);
+            }//EndRead
+        }//End while
+    }
 
     void* CommunicateWith3DSim(void* message){
         //Add Action listener button
@@ -99,52 +100,54 @@ namespace Tool{
         char procname[30]; // Procces name
         struct stat sts; // for checking is there exist still
 
-    int fds[2] ; fds[0] = mes.pipefd[0];fds[1] = mes.pipefd[1];
-    strcpy(buf,NONE);
-    while(1){
-        if (isButtonPressed) {
-            strcpy(buf,PRESSED);
-            write(fds[1],buf,THREADCOMSIZE); //Send Message PRESSED
+        int fds[2] ; fds[0] = mes.pipefd[0];fds[1] = mes.pipefd[1];
+        strcpy(buf,NONE);
+        while(1){
+            if (isButtonPressed) {
+                strcpy(buf,PRESSED);
+                write(fds[1],buf,THREADCOMSIZE); //Send Message PRESSED
 
-                mkfifo(FIFONAME,0666); //create fifo
+                    mkfifo(FIFONAME,0666); //create fifo
 
-                int fifofd = open(FIFONAME,O_RDWR);
+                    int fifofd = open(FIFONAME,O_RDWR);
 
-                pid_t pid = fork(); // fork for 3d sim
+                    pid_t pid = fork(); // fork for 3d sim
 
-                if(pid == 0){
-                    execl(EXEADDRESS," "); //start exe
+                    if(pid == 0){
+                        execl(EXEADDRESS," "); //start exe
 
-                exit(EXIT_SUCCESS);
-            }
+                    exit(EXIT_SUCCESS);
+                }
 
-                sprintf(procname,"/proc/%d",(int)pid);
+                    sprintf(procname,"/proc/%d",(int)pid);
 
-                write(fds[1],buf,THREADCOMSIZE * sizeof(char));   //then send Ready message to pipe
+                    write(fds[1],buf,THREADCOMSIZE * sizeof(char));   //then send Ready message to pipe
 
-            do{
-                read(fds[0],buf,PACKET_SIZE* sizeof(char));   //then get packet from pipe
-                write(fifofd,buf,PACKET_SIZE * sizeof(char)); //send Packet to fifo
+                do{
+                    read(fds[0],buf,PACKET_SIZE* sizeof(char));   //then get packet from pipe
+                    write(fifofd,buf,PACKET_SIZE * sizeof(char)); //send Packet to fifo
 
-            }while(!(stat(procname, &sts) == -1 && errno == ENOENT));//until Exe died
+                }while(!(stat(procname, &sts) == -1 && errno == ENOENT));//until Exe died
 
-            strcpy(buf,QUIT);
-            write(fds[1],buf,5); //send Exe Died Message
-        }//end if
-        write(fds[1],buf,5);
+                strcpy(buf,QUIT);
+                write(fds[1],buf,5); //send Exe Died Message
+            }//end if
+            write(fds[1],buf,5);
+        }
     }
 
-void *Tool::CommunicateWithGrafic(void* message){
-    int fds[2]; fds[0] = mes.pipefd[0]; fds[1] = mes.pipefd[1];
-    char buffer[PACKET_SIZE];
-    int ballX,ballY;
-    double motorXAngle,motorYAngle;
-    while(1){
-        read(fds[0],buffer,sizeof(char)*PACKET_SIZE); //get Packet
-        //Parse
-        sscanf(buffer,Packet_format,&ballX,&ballY,&motorXAngle,&motorYAngle);
-        //Draw Grafic
-    Tool::threadMessageGrafik mes = *((Tool::threadMessageGrafik*) message);
-    }
+    void *CommunicateWithGrafic(void* message){
+        threadMessageGrafic mes = *((threadMessageGrafic*) message);
+        int fds[2]; fds[0] = mes.pipefd[0]; fds[1] = mes.pipefd[1];
+        char buffer[PACKET_SIZE];
+        int ballX,ballY;
+        double motorXAngle,motorYAngle;
+        while(1){
+            read(fds[0],buffer,sizeof(char)*PACKET_SIZE); //get Packet
+            //Parse
+            sscanf(buffer,PACKETFORMAT,&ballX,&ballY,&motorXAngle,&motorYAngle);
 
+        }
+
+    }
 }
