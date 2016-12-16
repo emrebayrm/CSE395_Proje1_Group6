@@ -30,4 +30,6 @@ HEADERS += \
     tools.h \
     requirements.h \
     Communication.h
+    Communucation.h \
+    requirements.h
 

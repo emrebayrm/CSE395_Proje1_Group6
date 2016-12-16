@@ -3,7 +3,7 @@
  * read 0
  * write 1
             */
-void* Tool::CommunicateWithArduino(void *message){
+void* Tool::CommunucateWithArduino(void *message){
     Tool::threadMessageArdu mes = *((Tool::threadMessageArdu*)message);
     Tool::threadMessage3D message3D;
     Tool::threadMessageGrafik messageGrafik;
@@ -18,7 +18,7 @@ void* Tool::CommunicateWithArduino(void *message){
     messageGrafik.pipefd[0] = fdGrafik[0];
     messageGrafik.pipefd[1] = fdGrafik[1];
 
-    int error = pthread_create(&idGrafik,NULL,CommunicateWithGrafik,&messageGrafik);//create thread for Grafic Drawing.
+    int error = pthread_create(&idGrafik,NULL,CommunucateWithGrafik,&messageGrafik);//create thread for Grafic Drawing.
 
     if(error){
         std::cerr << "Error Creating Grafic thread" << std::endl;
@@ -30,7 +30,7 @@ void* Tool::CommunicateWithArduino(void *message){
     message3D.pipefd[0] = fd3DSim[0];
     message3D.pipefd[1] = fd3DSim[1];
 
-    error = pthread_create(&id3DSim,NULL,CommunicateWith3DSim,&message3D);          //create thread for 3Dsim
+    error = pthread_create(&id3DSim,NULL,CommunucateWith3DSim,&message3D);          //create thread for 3Dsim
 
     if(error){
         std::cerr << "Error Creating 3DSim thread" << std::endl;
@@ -38,7 +38,7 @@ void* Tool::CommunicateWithArduino(void *message){
     }
 
 
-    Communication com(mes.portname,SerialPort::BR_9600);
+    Communucation com(mes.portname,SerialPort::BR_9600);
     char sendBuffer[PACKET_SIZE];
     char getBuffer[THREADCOMSIZE];
     bool sim3DisOpen = false;
@@ -81,7 +81,7 @@ void* Tool::CommunicateWithArduino(void *message){
     }//End while
 }
 
-void* Tool::CommunicateWith3DSim(void* message){
+void* Tool::CommunucateWith3DSim(void* message){
     //Add Action listener button
     threadMessage3D mes = *((threadMessage3D*) message);
     char buf[PACKET_SIZE]; //Buffer
@@ -121,8 +121,8 @@ void* Tool::CommunicateWith3DSim(void* message){
     }
 }
 
-void* Tool::CommunicateWithGrafik(void* message){
-    threadMessageGrafik mes = *((threadMessageGrafik*) message);
+void* Tool::CommunucateWithGrafik(void* message){
+    Tool::threadMessageGrafik mes = *((Tool::threadMessageGrafik*) message);
     int fds[2]; fds[0] = mes.pipefd[0]; fds[1] = mes.pipefd[1];
     char buffer[PACKET_SIZE];
     int ballX,ballY;
