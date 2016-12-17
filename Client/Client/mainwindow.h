@@ -19,6 +19,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    GraphicThread *guiThread; // TODO: check this
+
 public slots:
     void updateServoPlotData();
     void updateXYPlotData();
@@ -35,7 +37,7 @@ private:
     QTimer timerXYPlot;
     QTimer timerServoPlot;
 
-    GraphicThread *guiThread;
+
 
 
 };

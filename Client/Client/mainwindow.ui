@@ -121,8 +121,8 @@
    <widget class="QPushButton" name="btnConnPlate">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>10</y>
+      <x>300</x>
+      <y>20</y>
       <width>211</width>
       <height>51</height>
      </rect>
@@ -172,6 +172,58 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>PID Katsayıları</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="inputPortName">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>30</y>
+      <width>113</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>/dev/ttyACM0</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="inputBaudRate">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>30</y>
+      <width>113</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>9600</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>10</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Port Name</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>10</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Baud Rate</string>
     </property>
    </widget>
   </widget>

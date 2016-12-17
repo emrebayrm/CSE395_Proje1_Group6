@@ -179,5 +179,16 @@ void MainWindow::updateServoPlotData(){
 
 void MainWindow::on_btnConnPlate_clicked()
 {
+    QString portName = ui->inputPortName->text();
+    QString baudRate = ui->inputBaudRate->text();
+
+    ui->textBMsg->append("Port name:"+portName);
+    ui->textBMsg->append("Baud rate:"+baudRate);
+
+    threadMessageArdu msg;
+    strcpy(msg.portname,portName.toStdString().c_str());
+
+    CommunicateWithArduino();
+
     guiThread->start();
 }
