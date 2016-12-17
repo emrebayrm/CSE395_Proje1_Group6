@@ -107,8 +107,7 @@ void MainWindow::updateXYPlotData(){
 
 void MainWindow::ardConnection()
 {
-    guiThread->start();
-    std::cout<<ardThread->msg.portName;
+
     /*threadMessage3D message3D;
     threadMessageGrafic messageGrafic;
 
@@ -140,11 +139,16 @@ void MainWindow::ardConnection()
         std::cerr << "Error Creating 3DSim thread" << std::endl;
         exit(EXIT_FAILURE);
     }
+*/
+    Communication com(ardThread->msg.portName,ardThread->msg.baudRate);
+    if(!com.isCommunicationReady()){
+        ardThread->stop=true;
+        ui->textBMsg->append("Connection Failed");
+    }
 
-    QString str = mes.portname;
-    std::cout<<str.toStdString();
-    Communication com(str.toStdString(),mes.baudrate);
-    char sendBuffer[PACKET_SIZE];
+    guiThread->start();
+
+   /* char sendBuffer[PACKET_SIZE];
     char getBuffer[THREADCOMSIZE];
     bool sim3DisOpen = false;
     int writeRet;

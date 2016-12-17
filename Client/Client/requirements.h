@@ -7,7 +7,7 @@
 
 #include "qcustomplot.h"
 #include "SerialPort.h"
-//#include "tools.h"
+#include "Communication.h"
 #include "graphicthread.h"
 #include "arduinothread.h"
 
