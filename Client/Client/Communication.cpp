@@ -13,8 +13,8 @@ using namespace std;
 Communication::Communication(string str, SerialPort::BaudRate baud) {
     port = new SerialPort(str,baud);
     communicationReady = false;
-    checkConnection();
-    makeHandShake();
+    if(checkConnection())
+        makeHandShake();
     XMotorAngle = 999;
     YMotorAngle = 999;
     ballXCoordinate = 999;
@@ -104,17 +104,20 @@ bool Communication::write(char ch) {
     return port->write(ch);
 }
 
-void Communication::checkConnection() {
-    while( !( port->open()) ){
-        usleep(100);
+bool Communication::checkConnection() {
+
+    if(!port->open()){
         cerr << "Open failed" << endl;
         cerr << "Trying to connect again " << endl;
+        return false;
     }
-    while( !( port->prepare()) ){
+    if( !( port->prepare()) ){
         usleep(100);
         cerr << "Prepare failed" << endl;
         cerr << "Trying to connect again " << endl;
+        return false;
     }
+    return true;
 }
 
 bool Communication::readUntil() {
