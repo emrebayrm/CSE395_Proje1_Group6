@@ -8,9 +8,11 @@
 #include <zconf.h>
 #include "Communication.h"
 
+
 using namespace std;
 
-Communication::Communication(string str, SerialPort::BaudRate baud) {
+Communication::Communication(string str, SerialPort::BaudRate baud,QMutex *mtx) {
+
     port = new SerialPort(str,baud);
     communicationReady = false;
     if(checkConnection())
@@ -19,6 +21,7 @@ Communication::Communication(string str, SerialPort::BaudRate baud) {
     YMotorAngle = 999;
     ballXCoordinate = 999;
     ballYCoordinate = 999;
+    this->mtx = mtx;
 }
 //bool Communucation::read() {
 //    if(!communicationReady)
@@ -87,6 +90,7 @@ bool Communication::makeHandShake() {
     char ch;
     cerr << "Handshake starting" << endl;
     do {
+
         write('S');
         port->wait(100);
         port->read(&ch);
@@ -121,10 +125,11 @@ bool Communication::checkConnection() {
 }
 
 bool Communication::readUntil() {
+   // std::cout<<"read until";
     if(!communicationReady)
         return false;
     write('N');
-    double xangle,yangle;
+    int xangle,yangle;
     int x,y;
     string input;
 
@@ -132,13 +137,17 @@ bool Communication::readUntil() {
     //{XdoubleYdoublexintyint}
     char dead;
 
-    sscanf(input.c_str(),"%c%c%lf%c%lf%c%d%c%d%c",&dead,&dead,&xangle,&dead,&yangle,&dead,&x,&dead,&y,&dead);
+    sscanf(input.c_str(),"%c%c%d%c%d%c%d%c%d%c",&dead,&dead,&xangle,&dead,&yangle,&dead,&x,&dead,&y,&dead);
     //if is not valid values false 
 
+    mtx->lock();
+    cerr<<"inmutexCoom"<<endl;
     setXMotorAngle(xangle);
     setYMotorAngle(yangle);
     setBallXCoordinate(x);
     setBallYCoordinate(y);
+    cerr<<"outmutexcomm"<<endl;
+    mtx->unlock();
 
     return true;
 }

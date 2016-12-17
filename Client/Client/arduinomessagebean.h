@@ -2,6 +2,7 @@
 #define ARDUINOMESSAGEBEAN_H
 
 #include <string>
+#include <QString>
 #include "SerialPort.h"
 #include "arduinomessagebean.h"
 
@@ -13,6 +14,10 @@ public:
     ArduinoMessageBean();
     string portName;
     SerialPort::BaudRate baudRate;
+    int ballX;
+    int ballY;
+    int motorXangle;
+    int motorYangle;
 
 };
 
