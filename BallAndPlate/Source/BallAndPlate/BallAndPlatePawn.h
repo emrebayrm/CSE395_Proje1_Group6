@@ -22,6 +22,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+	
+	void setUpLights();
 
 	UPROPERTY(EditAnywhere)
 		USceneComponent* OurVisibleComponent1; // ball 
@@ -64,6 +66,7 @@ public:
 		TArray<APointLight*> UprightLights13;
 	
 
+	TArray<TArray<APointLight*>> lights;
 	
 	// Input functions
 	void Move_XAxis(float AxisValue);

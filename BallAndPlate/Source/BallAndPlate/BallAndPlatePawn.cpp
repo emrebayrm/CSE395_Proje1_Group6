@@ -34,6 +34,8 @@ void ABallAndPlatePawn::BeginPlay()
 	differenceX_Z = kolXReference->GetActorLocation().Z - kolX->GetActorLocation().Z;
 	differenceY_Z = kolYReference->GetActorLocation().Z - kolY->GetActorLocation().Z;
 	rotation = FRotator(RootComponent->GetRelativeTransform().GetRotation());
+
+	setUpLights();
 }
 
 // Called every frame
@@ -83,4 +85,33 @@ void ABallAndPlatePawn::Move_YAxis(float AxisValue)
 	CurrentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * 100.0f;
 	rot.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f)* 5.0f;
 	rotation.Roll += (a = AxisValue + 0.01f);
+}
+
+void ABallAndPlatePawn::setUpLights()
+{
+	int i = 0, j=0;
+
+	lights.Add(UprightLights1);
+	lights.Add(UprightLights2);
+	lights.Add(UprightLights3);
+	lights.Add(UprightLights4);
+	lights.Add(UprightLights5);
+	lights.Add(UprightLights6);
+	lights.Add(UprightLights7);
+	lights.Add(UprightLights8);
+	lights.Add(UprightLights9);
+	lights.Add(UprightLights10);
+	lights.Add(UprightLights11);
+	lights.Add(UprightLights12);
+	lights.Add(UprightLights13);
+
+
+	for (i = 0; i < lights.Num(); ++i) {
+		for (j = 0; j < lights[i].Num(); ++j) {
+			if (lights[i][j] != nullptr) {
+				lights[i][j]->SetEnabled(false);
+			}
+			
+		}
+	}
 }
