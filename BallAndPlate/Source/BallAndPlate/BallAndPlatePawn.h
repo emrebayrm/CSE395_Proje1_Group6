@@ -36,6 +36,34 @@ public:
 	UPROPERTY(EditAnywhere)
 		AActor* kolYReference;
 
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights1;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights2;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights3;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights4;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights5;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights6;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights7;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights8;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights9;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights10;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights11;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights12;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights13;
+	
+
 	
 	// Input functions
 	void Move_XAxis(float AxisValue);
