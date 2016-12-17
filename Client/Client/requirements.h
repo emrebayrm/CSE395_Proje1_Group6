@@ -6,7 +6,10 @@
 #include <QMainWindow>
 
 #include "qcustomplot.h"
-#include "tools.h"
+#include "SerialPort.h"
+//#include "tools.h"
+#include "graphicthread.h"
+#include "arduinothread.h"
 
 
 #endif // REQUIREMENTS_H

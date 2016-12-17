@@ -7,9 +7,10 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     qcustomplot.cpp \
     SerialPort.cpp \
-    tools.cpp \
     Communication.cpp \
-    graphicthread.cpp
+    graphicthread.cpp \
+    arduinothread.cpp \
+    arduinomessagebean.cpp
 
 RESOURCES += qml.qrc
 
@@ -28,8 +29,9 @@ HEADERS += \
     mainwindow.h \
     qcustomplot.h \
     SerialPort.h \
-    tools.h \
     requirements.h \
     Communication.h \
-    graphicthread.h
+    graphicthread.h \
+    arduinothread.h \
+    arduinomessagebean.h
 

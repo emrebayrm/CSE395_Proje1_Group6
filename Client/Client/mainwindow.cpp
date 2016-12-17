@@ -4,7 +4,6 @@
 #include "requirements.h"
 
 using namespace std;
-using namespace Tool;
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -16,10 +15,13 @@ MainWindow::MainWindow(QWidget *parent) :
     setXYPlot();
 
     guiThread = new GraphicThread(this);
+    ardThread = new ArduinoThread(this);
 
     // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateXYPlotData()));
+
+    connect(ardThread,SIGNAL(startThread()),this, SLOT(ardConnection()));
 
 }
 
@@ -103,6 +105,94 @@ void MainWindow::updateXYPlotData(){
 
 }
 
+void MainWindow::ardConnection()
+{
+    guiThread->start();
+    std::cout<<ardThread->msg.portName;
+    /*threadMessage3D message3D;
+    threadMessageGrafic messageGrafic;
+
+    int fdGrafic[2];
+    pthread_t idGrafic;
+    int fd3DSim[2];
+    pthread_t id3DSim;
+
+    pipe(fdGrafic); //create pipe between grafik draw.
+    //SetMessage
+    messageGrafic.pipefd[0] = fdGrafic[0];
+    messageGrafic.pipefd[1] = fdGrafic[1];
+
+    int error = pthread_create(&idGrafic,NULL,CommunicateWithGrafic,&messageGrafic);//create thread for Grafic Drawing.
+
+    if(error){
+        std::cerr << "Error Creating Grafic thread" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    pipe(fd3DSim);     //create pipe for 3Dsim
+    //Set Message
+    message3D.pipefd[0] = fd3DSim[0];
+    message3D.pipefd[1] = fd3DSim[1];
+
+    error = pthread_create(&id3DSim,NULL,CommunicateWith3DSim,&message3D);          //create thread for 3Dsim
+
+    if(error){
+        std::cerr << "Error Creating 3DSim thread" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    QString str = mes.portname;
+    std::cout<<str.toStdString();
+    Communication com(str.toStdString(),mes.baudrate);
+    char sendBuffer[PACKET_SIZE];
+    char getBuffer[THREADCOMSIZE];
+    bool sim3DisOpen = false;
+    int writeRet;
+    while (1) {
+        if(com.readUntil()){
+
+        sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
+                                         com.getYMotorAngle(),
+                                         com.getBallXCoordinate(),
+                                         com.getBallYCoordinate());
+
+        std::cerr << com.getBallXCoordinate()  << std::endl;
+        writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);   //Send packet to grafik pipe.
+        if(writeRet < 0){
+            std::cerr << "Error Writing " << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        read(fd3DSim[0],getBuffer,THREADCOMSIZE);
+
+        //check button unreal button has pressed.
+        if(std::strcmp(getBuffer,PRESSED) == 0){
+            //TODO:Pressed Section
+            sim3DisOpen = true;
+        }
+
+        //check 3D is open if openned check if it is ready Message
+        if(sim3DisOpen && (std::strcmp(getBuffer,READY)) == 0){
+            writeRet = write(fd3DSim[1],sendBuffer,sizeof(char)*PACKET_SIZE);//Send Packet to 3d
+
+            if(writeRet < 0){
+                std::cerr << "Write Error. EXITING !!!" << std::endl;
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        //check 3D sim is quitted ?
+        if(std::strcmp(getBuffer,QUIT) == 0){
+            //pthread_join(id3DSim,NULL);
+            sim3DisOpen = false;
+        }
+        //Send To Grafic Thread
+        writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);
+        }//EndRead
+    }//End while*/
+}
+
+
+
 
 
 void MainWindow::setServoPlot(){
@@ -182,13 +272,29 @@ void MainWindow::on_btnConnPlate_clicked()
     QString portName = ui->inputPortName->text();
     QString baudRate = ui->inputBaudRate->text();
 
+    ArduinoMessageBean msg;
+    msg.portName = portName.toStdString();
+
+    int iBaudRate = baudRate.toInt();
+    // set baudrate
+    switch(iBaudRate) {
+        case 4800: msg.baudRate = SerialPort::BR_4800;
+        case 9600: msg.baudRate = SerialPort::BR_9600;
+        case 38400: msg.baudRate = SerialPort::BR_38400;
+        case 115200: msg.baudRate = SerialPort::BR_115200;
+    default: { iBaudRate=9600; msg.baudRate=SerialPort::BR_9600;} // burası ekrana basılabilir
+    }
+
+
     ui->textBMsg->append("Port name:"+portName);
-    ui->textBMsg->append("Baud rate:"+baudRate);
+    ui->textBMsg->append("Baud rate:"+QString::number(msg.baudRate));
 
-    threadMessageArdu msg;
-    strcpy(msg.portname,portName.toStdString().c_str());
+    /*int error = pthread_create(&thArd,NULL,CommunicateWithArduino,&msg);
+    ui->textBMsg->append("Thread Status:"+QString::number(error));
+    */
+    ardThread->msg=msg;
+    ardThread->start();
+    //CommunicateWithArduino(msg);
 
-    CommunicateWithArduino();
-
-    guiThread->start();
+    //guiThread->start();
 }

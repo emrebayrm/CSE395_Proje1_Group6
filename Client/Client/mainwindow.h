@@ -19,12 +19,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    GraphicThread *guiThread; // TODO: check this
+
 
 public slots:
     void updateServoPlotData();
     void updateXYPlotData();
 
+    void ardConnection();
 
 private slots:
     void on_btnConnPlate_clicked();
@@ -37,6 +38,9 @@ private:
     QTimer timerXYPlot;
     QTimer timerServoPlot;
 
+    GraphicThread *guiThread; // TODO: check this
+    ArduinoThread *ardThread;
+    pthread_t thArd;
 
 
 
