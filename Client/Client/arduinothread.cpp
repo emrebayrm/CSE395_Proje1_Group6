@@ -8,13 +8,12 @@ ArduinoThread::ArduinoThread(QObject *parent,bool b):QThread(parent),stop(b)
 
 void ArduinoThread::run(){
 
-    while(1)
         {
-            QMutex mutex;
+          //  QMutex mutex;
             // prevent other threads from changing the "Stop" value
-            mutex.lock();
-            if(this->stop) break;
-            mutex.unlock();
+          //  mutex.lock();
+            if(this->stop);
+            //mutex.unlock();
 
             // emit the signal for the count label
             emit startArdThread();

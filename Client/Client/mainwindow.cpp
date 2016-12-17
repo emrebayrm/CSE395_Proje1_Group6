@@ -140,23 +140,27 @@ void MainWindow::ardConnection()
         exit(EXIT_FAILURE);
     }
 */
-    Communication com(ardThread->msg.portName,ardThread->msg.baudRate);
-    if(!com.isCommunicationReady()){
+    if(!connectionCompleted)
+        com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate);
+    if(!com->isCommunicationReady()){
         ardThread->stop=true;
         ui->textBMsg->append("Connection Failed");
+        connectionCompleted = false;
     }else{
         guiThread->start();
         char sendBuffer[PACKET_SIZE];
         char getBuffer[6];
         bool sim3DisOpen = false;
         int writeRet;
-        while (1) {
-            if(com.readUntil()){
-                /*guiThread->msg.ballX = com.getBallXCoordinate();
-                guiThread->msg.ballY = com.getBallYCoordinate();
-                guiThread->msg.motorXangle = com.getXMotorAngle();
-                guiThread->msg.motorYangle = com.getBallYCoordinate();*/
-
+        connectionCompleted = true;
+    }
+    if(connectionCompleted){
+        if(com->readUntil()){
+            guiThread->msg.ballX = com->getBallXCoordinate();
+            guiThread->msg.ballY = com->getBallYCoordinate();
+            guiThread->msg.motorXangle = com->getXMotorAngle();
+            guiThread->msg.motorYangle = com->getBallYCoordinate();
+        }
 
             /*sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
                                              com.getYMotorAngle(),
@@ -196,13 +200,9 @@ void MainWindow::ardConnection()
             //Send To Grafic Thread
             writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);
             */
-            }//EndRead
-        }//End while*/
-
+       //     }//EndRead
+     //   }//End while*/
     }
-
-
-
 }
 
 
@@ -283,6 +283,11 @@ void MainWindow::updateServoPlotData(){
 
 void MainWindow::on_btnConnPlate_clicked()
 {
+    if(connectionCompleted){
+        ui->textBMsg-> append("Already Connected");
+        return;
+    }
+
     QString portName = ui->inputPortName->text();
     QString baudRate = ui->inputBaudRate->text();
 

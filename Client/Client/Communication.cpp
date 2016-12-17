@@ -91,7 +91,6 @@ bool Communication::makeHandShake() {
         write('S');
         port->wait(100);
         port->read(&ch);
-        cerr<<ch;
     }while(ch != 'R');
     cerr << "Handshake succesfull" << endl;
     communicationReady = true;
