@@ -3,9 +3,7 @@
 #pragma once
 
 #include "GameFramework/Pawn.h"
-#include "Networking.h"
 #include "BallAndPlatePawn.generated.h"
-
 
 UCLASS()
 class BALLANDPLATE_API ABallAndPlatePawn : public APawn
@@ -79,39 +77,5 @@ public:
 	FVector CurrentVelocity;
 	FVector rot;
 	bool bGrowing;
-
-
-
-
-	FSocket* ListenerSocket;
-	FSocket* ConnectionSocket;
-	FIPv4Endpoint RemoteAddressForConnection;
-	FTimerHandle timeHandler;
-
-	void Launcch();
-
-	bool StartTCPReceiver(
-		const FString& YourChosenSocketName,
-		const FString& TheIP,
-		const int32 ThePort
-		);
-
-	FSocket* CreateTCPConnectionListener(
-		const FString& YourChosenSocketName,
-		const FString& TheIP,
-		const int32 ThePort,
-		const int32 ReceiveBufferSize = 2 * 1024 * 1024
-		);
-
-	//Timer functions, could be threads
-	void TCPConnectionListener(); 	//can thread this eventually
-	void TCPSocketListener();		//can thread this eventually
-
-
-									//Format String IP4 to number array
-	bool FormatIP4ToNumber(const FString& TheIP, uint8(&Out)[4]);
-
-	//Rama's StringFromBinaryArray
-	FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
 	
 };
