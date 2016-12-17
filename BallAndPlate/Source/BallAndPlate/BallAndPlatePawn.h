@@ -26,6 +26,10 @@ public:
 	
 	void setUpLights();
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	//~ABallAndPlatePawn();
+
+
 	UPROPERTY(EditAnywhere)
 		USceneComponent* OurVisibleComponent1; // ball 
 	UPROPERTY(EditAnywhere)
