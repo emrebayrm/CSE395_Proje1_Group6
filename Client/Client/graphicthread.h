@@ -3,6 +3,7 @@
 
 #include <QtCore>
 #include <QThread>
+#include "arduinomessagebean.h"
 
 class GraphicThread : public QThread
 {
@@ -11,6 +12,7 @@ public:
     explicit GraphicThread(QObject* parent=0,bool b=false);
     void run();
     bool stop;
+    ArduinoMessageBean msg;
 
 signals:
     void startThread();

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qcustomplot.h"
-#include "requirements.h"
+
 
 using namespace std;
 
@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateXYPlotData()));
 
-    connect(ardThread,SIGNAL(startThread()),this, SLOT(ardConnection()));
+    connect(ardThread,SIGNAL(startArdThread()),this, SLOT(ardConnection()));
 
 }
 
@@ -77,7 +77,7 @@ void MainWindow::setXYPlot(){
 
 void MainWindow::updateXYPlotData(){
 
-    cout<<"test2";
+    cerr<<"test2"<<endl;
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
@@ -144,55 +144,65 @@ void MainWindow::ardConnection()
     if(!com.isCommunicationReady()){
         ardThread->stop=true;
         ui->textBMsg->append("Connection Failed");
-    }
+    }else{
+        guiThread->start();
+        char sendBuffer[PACKET_SIZE];
+        char getBuffer[6];
+        bool sim3DisOpen = false;
+        int writeRet;
+        while (1) {
+            if(com.readUntil()){
+                /*guiThread->msg.ballX = com.getBallXCoordinate();
+                guiThread->msg.ballY = com.getBallYCoordinate();
+                guiThread->msg.motorXangle = com.getXMotorAngle();
+                guiThread->msg.motorYangle = com.getBallYCoordinate();*/
 
-    guiThread->start();
 
-   /* char sendBuffer[PACKET_SIZE];
-    char getBuffer[THREADCOMSIZE];
-    bool sim3DisOpen = false;
-    int writeRet;
-    while (1) {
-        if(com.readUntil()){
+            /*sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
+                                             com.getYMotorAngle(),
+                                             com.getBallXCoordinate(),
+                                             com.getBallYCoordinate());
 
-        sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
-                                         com.getYMotorAngle(),
-                                         com.getBallXCoordinate(),
-                                         com.getBallYCoordinate());
-
-        std::cerr << com.getBallXCoordinate()  << std::endl;
-        writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);   //Send packet to grafik pipe.
-        if(writeRet < 0){
-            std::cerr << "Error Writing " << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        read(fd3DSim[0],getBuffer,THREADCOMSIZE);
-
-        //check button unreal button has pressed.
-        if(std::strcmp(getBuffer,PRESSED) == 0){
-            //TODO:Pressed Section
-            sim3DisOpen = true;
-        }
-
-        //check 3D is open if openned check if it is ready Message
-        if(sim3DisOpen && (std::strcmp(getBuffer,READY)) == 0){
-            writeRet = write(fd3DSim[1],sendBuffer,sizeof(char)*PACKET_SIZE);//Send Packet to 3d
-
+            std::cerr << com.getBallXCoordinate()  << std::endl;
+            writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);   //Send packet to grafik pipe.
             if(writeRet < 0){
-                std::cerr << "Write Error. EXITING !!!" << std::endl;
+                std::cerr << "Error Writing " << std::endl;
                 exit(EXIT_FAILURE);
             }
-        }
+            read(fd3DSim[0],getBuffer,THREADCOMSIZE);
 
-        //check 3D sim is quitted ?
-        if(std::strcmp(getBuffer,QUIT) == 0){
-            //pthread_join(id3DSim,NULL);
-            sim3DisOpen = false;
-        }
-        //Send To Grafic Thread
-        writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);
-        }//EndRead
-    }//End while*/
+            //check button unreal button has pressed.
+            if(std::strcmp(getBuffer,PRESSED) == 0){
+                //TODO:Pressed Section
+                sim3DisOpen = true;
+            }
+
+            //check 3D is open if openned check if it is ready Message
+            if(sim3DisOpen && (std::strcmp(getBuffer,READY)) == 0){
+                writeRet = write(fd3DSim[1],sendBuffer,sizeof(char)*PACKET_SIZE);//Send Packet to 3d
+
+                if(writeRet < 0){
+                    std::cerr << "Write Error. EXITING !!!" << std::endl;
+                    exit(EXIT_FAILURE);
+                }
+            }
+
+            //check 3D sim is quitted ?
+            if(std::strcmp(getBuffer,QUIT) == 0){
+                //pthread_join(id3DSim,NULL);
+                sim3DisOpen = false;
+            }
+
+            //Send To Grafic Thread
+            writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);
+            */
+            }//EndRead
+        }//End while*/
+
+    }
+
+
+
 }
 
 

@@ -17,7 +17,7 @@ void ArduinoThread::run(){
             mutex.unlock();
 
             // emit the signal for the count label
-            emit startThread();
+            emit startArdThread();
 
             // slowdown the count change, msec
             this->msleep(50);

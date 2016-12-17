@@ -17,7 +17,7 @@ public:
     bool stop;
     ArduinoMessageBean msg;
 signals:
-    void startThread();
+    void startArdThread();
 public slots:
 
 private:

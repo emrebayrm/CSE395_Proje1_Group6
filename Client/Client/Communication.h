@@ -41,7 +41,7 @@ private :
     int ballYCoordinate;
     SerialPort *port;
     bool makeHandShake();
-    void checkConnection();
+    bool checkConnection();
     inline void setXMotorAngle(double angle){ XMotorAngle = angle; }
     inline void setYMotorAngle(double angle){YMotorAngle = angle; }
     inline void setBallXCoordinate(int x){ballXCoordinate = x;}//map(x,XCOORDMIN,XCOORDMMAX,XOUTMIN,XOUTMAX);}
