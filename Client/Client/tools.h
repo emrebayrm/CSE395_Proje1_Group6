@@ -1,3 +1,6 @@
+
+//author : Emre BAYRAM
+
 #ifndef TOOL_H
 #define TOOL_H
 
@@ -7,8 +10,16 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <cstring>
-#include <sys/types.h>
 #include <sys/stat.h>
+
+#ifdef _WIN32
+#include <winsock.h>
+#else
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#endif
 
 #include "Communication.h"
 #include "requirements.h"
@@ -19,7 +30,7 @@
 #define PRESSED "pres"
 #define READY "ready"
 #define QUIT "quit"
-#define FIFONAME "fifo"
+#define DEFAULTPORT 53333
 #define EXEADDRESS "3dsim.exe"
 #define PACKETFORMAT "{ %3.2lf %3.2lf %3d %3d}"
 
@@ -33,8 +44,8 @@
               |
               |pipe
               |
-             \ /    fifo
-            Thread -----> Unreal Exe
+             \ /    Socket
+            Thread -------> Unreal Exe
                             */
 
 namespace Tool {
@@ -43,6 +54,7 @@ namespace Tool {
     /*Maybe Missing something*/
     struct threadMessageArdu{
         char portname[PORTNAMESIZE];
+        SerialPort::BaudRate baudrate;
     };
 
     //TODO:
