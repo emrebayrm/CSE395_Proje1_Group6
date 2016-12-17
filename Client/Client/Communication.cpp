@@ -8,9 +8,11 @@
 #include <zconf.h>
 #include "Communication.h"
 
+
 using namespace std;
 
-Communication::Communication(string str, SerialPort::BaudRate baud) {
+Communication::Communication(string str, SerialPort::BaudRate baud,QMutex *mtx) {
+
     port = new SerialPort(str,baud);
     communicationReady = false;
     if(checkConnection())
@@ -19,6 +21,7 @@ Communication::Communication(string str, SerialPort::BaudRate baud) {
     YMotorAngle = 999;
     ballXCoordinate = 999;
     ballYCoordinate = 999;
+    this->mtx = mtx;
 }
 //bool Communucation::read() {
 //    if(!communicationReady)
@@ -137,10 +140,14 @@ bool Communication::readUntil() {
     sscanf(input.c_str(),"%c%c%d%c%d%c%d%c%d%c",&dead,&dead,&xangle,&dead,&yangle,&dead,&x,&dead,&y,&dead);
     //if is not valid values false 
 
+    mtx->lock();
+    cerr<<"inmutexCoom"<<endl;
     setXMotorAngle(xangle);
     setYMotorAngle(yangle);
     setBallXCoordinate(x);
     setBallYCoordinate(y);
+    cerr<<"outmutexcomm"<<endl;
+    mtx->unlock();
 
     return true;
 }

@@ -13,7 +13,7 @@ SOURCES += main.cpp \
     arduinomessagebean.cpp \
     threedsimulationmessage.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += res.qrc
 
 greaterThan(QT_MAJOR_VERSION, 4): QT+= widgets printsupport
 
@@ -36,4 +36,6 @@ HEADERS += \
     arduinothread.h \
     arduinomessagebean.h \
     threedsimulationmessage.h
+
+DISTFILES +=
 

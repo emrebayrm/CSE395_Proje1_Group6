@@ -12,7 +12,7 @@ void ArduinoThread::run(){
             QMutex mutex;
             // prevent other threads from changing the "Stop" value
             mutex.lock();
-            if(this->stop);
+            if(this->stop) break;
             mutex.unlock();
 
             // emit the signal for the count label

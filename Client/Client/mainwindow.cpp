@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setServoPlot();
     setXYPlot();
 
+    QImage logo(":/images/gtuLogo500.png");
+    ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(400,200)));
+
     guiThread = new GraphicThread(this);
     ardThread = new ArduinoThread(this);
 
@@ -98,72 +101,42 @@ void MainWindow::updateXYPlotData(){
 
     ui->textBPlotXY->setText(
             QString("X: %1 \t  Y: %2")
-            .arg(coordX)
-            .arg(coordY));
+            .arg(coordX,4)
+            .arg(coordY,4));
 
 }
 
 void MainWindow::ardConnection()
 {
 
-    /*threadMessage3D message3D;
-    threadMessageGrafic messageGrafic;
-
-    int fdGrafic[2];
-    pthread_t idGrafic;
-    int fd3DSim[2];
-    pthread_t id3DSim;
-
-    pipe(fdGrafic); //create pipe between grafik draw.
-    //SetMessage
-    messageGrafic.pipefd[0] = fdGrafic[0];
-    messageGrafic.pipefd[1] = fdGrafic[1];
-
-    int error = pthread_create(&idGrafic,NULL,CommunicateWithGrafic,&messageGrafic);//create thread for Grafic Drawing.
-
-    if(error){
-        std::cerr << "Error Creating Grafic thread" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    pipe(fd3DSim);     //create pipe for 3Dsim
-    //Set Message
-    message3D.pipefd[0] = fd3DSim[0];
-    message3D.pipefd[1] = fd3DSim[1];
-
-    error = pthread_create(&id3DSim,NULL,CommunicateWith3DSim,&message3D);          //create thread for 3Dsim
-
-    if(error){
-        std::cerr << "Error Creating 3DSim thread" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-*/
     if(!connectionCompleted)
-        com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate);
+        com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate,&mtx);
     if(!com->isCommunicationReady()){
         ardThread->stop=true;
         ui->textBMsg->append("Connection Failed");
         connectionCompleted = false;
     }else{
         guiThread->start();
-
-        char sendBuffer[PACKET_SIZE];
-        char getBuffer[6];
-        bool sim3DisOpen = false;
-        int writeRet;
         connectionCompleted = true;
     }
     if(connectionCompleted){
         if(com->readUntil()){
-
+            mtx.lock();
+            //cerr<<"inmutexmain"<<endl;
             guiThread->msg.ballX = com->getBallXCoordinate();
             guiThread->msg.ballY = com->getBallYCoordinate();
             guiThread->msg.motorXangle = com->getXMotorAngle();
-            guiThread->msg.motorYangle = com->getBallYCoordinate();
-            std::cerr << com->getYMotorAngle() << std::endl;
-        }
+            guiThread->msg.motorYangle = com->getYMotorAngle();
 
-            /*sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
+            std::cerr<<"BallX:"<<guiThread->msg.ballX<<"BallY"<<guiThread->msg.ballY<<endl;
+            std::cerr<<"ServoX:"<<guiThread->msg.motorXangle<<"ServoY:"<<guiThread->msg.motorYangle<<endl;
+            //cerr<<"outmutexmain"<<endl;
+            mtx.unlock();
+        }
+    }
+    /*
+
+            sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
                                              com.getYMotorAngle(),
                                              com.getBallXCoordinate(),
                                              com.getBallYCoordinate());
@@ -203,7 +176,6 @@ void MainWindow::ardConnection()
             */
        //     }//EndRead
      //   }//End while*/
-    }
 }
 
 
@@ -277,8 +249,8 @@ void MainWindow::updateServoPlotData(){
 
     ui->textBPlotServo->setText(
           QString("Servo X: %1° \t  ServoY: %2°")
-          .arg(servoXAngle)
-          .arg(servoYAngle));
+          .arg(servoXAngle,4)
+          .arg(servoYAngle,4));
 
 }
 
@@ -306,16 +278,33 @@ void MainWindow::on_btnConnPlate_clicked()
     default: { iBaudRate=9600; msg.baudRate=SerialPort::BR_9600;} // burası ekrana basılabilir
     }
 
-
-    ui->textBMsg->append("Port name:"+portName);
-    ui->textBMsg->append("Baud rate:"+QString::number(msg.baudRate));
+    if(ardThread->isRunning()){
+        ui->textBMsg->append("Arduino thread already works");
+    }else{
+        ui->textBMsg->append("Port name:"+portName);
+        ui->textBMsg->append("Baud rate:"+QString::number(msg.baudRate));
+        ardThread->msg=msg;
+        ardThread->start();
+    }
 
     /*int error = pthread_create(&thArd,NULL,CommunicateWithArduino,&msg);
     ui->textBMsg->append("Thread Status:"+QString::number(error));
     */
-    ardThread->msg=msg;
-    ardThread->start();
-    //CommunicateWithArduino(msg);
 
-    //guiThread->start();
+}
+
+
+void MainWindow::closeEvent (QCloseEvent *event)
+{
+    QMessageBox::StandardButton resBtn = QMessageBox::question( this, "CSE395 Client",
+                                                                tr("Are you sure?\n"),QMessageBox::No | QMessageBox::Yes,
+                                                                QMessageBox::Yes);
+    if (resBtn != QMessageBox::Yes) {
+        event->ignore();
+    } else {
+        guiThread->stop=true;
+        ardThread->stop=true;
+        sleep(1);
+        event->accept();
+    }
 }
