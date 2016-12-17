@@ -35,7 +35,7 @@ void ABallAndPlatePawn::BeginPlay()
 	differenceX_Z = kolXReference->GetActorLocation().Z - kolX->GetActorLocation().Z;
 	differenceY_Z = kolYReference->GetActorLocation().Z - kolY->GetActorLocation().Z;
 	rotation = FRotator(RootComponent->GetRelativeTransform().GetRotation());
-
+	Launcch();
 	setUpLights();
 
 }
@@ -118,26 +118,35 @@ void ABallAndPlatePawn::setUpLights()
 	}
 }
 
+void ABallAndPlatePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	//~~~~~~~~~~~~~~~~
 
-
-
-
-
-
-
-
-
-
+	//Clear all sockets!
+	//        makes sure repeat plays in Editor doesn’t hold on to old sockets!
+	if (ListenerSocket)
+	{
+		ListenerSocket->Close();
+		ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ListenerSocket);
+	}
+	if (ConnectionSocket)
+	{
+		ConnectionSocket->Close();
+		ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectionSocket);
+	}
+}
 
 void ABallAndPlatePawn::Launcch()
 {
 	//IP = 127.0.0.1, Port = 8890 for my Python test case
-	if (!StartTCPReceiver("RamaSocketListener", "127.0.0.1", 8890))
+	if (!StartTCPReceiver("SocketListener", "127.0.0.1", 8888))
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("TCP Socket Listener Can't Created!")));
 		//UE_LOG  "TCP Socket Listener Created!"
 		return;
 	}
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("TCP Socket Listener Created!")));
 	//UE_LOG  "TCP Socket Listener Created! Yay!"
 }
 
@@ -149,7 +158,7 @@ bool ABallAndPlatePawn::StartTCPReceiver(
 	) {
 	//Rama's CreateTCPConnectionListener
 	ListenerSocket = CreateTCPConnectionListener(YourChosenSocketName, TheIP, ThePort);
-
+	
 	//Not created?
 	if (!ListenerSocket)
 	{
@@ -194,7 +203,7 @@ FSocket* ABallAndPlatePawn::CreateTCPConnectionListener(const FString& YourChose
 	uint8 IP4Nums[4];
 	if (!FormatIP4ToNumber(TheIP, IP4Nums))
 	{
-		//VShow("Invalid IP! Expecting 4 parts separated by .");
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Invalid IP!Expecting 4 parts separated by .")));
 		return false;
 	}
 
@@ -234,16 +243,18 @@ void ABallAndPlatePawn::TCPConnectionListener()
 		{
 			ConnectionSocket->Close();
 			ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectionSocket);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Removed old socket")));
 		}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 		//New Connection receive!
-		ConnectionSocket = ListenerSocket->Accept(*RemoteAddress, TEXT("RamaTCP Received Socket Connection"));
+		ConnectionSocket = ListenerSocket->Accept(*RemoteAddress, TEXT("Received Socket Connection"));
 
 		if (ConnectionSocket != NULL)
 		{
 			//Global cache of current Remote Address
 			RemoteAddressForConnection = FIPv4Endpoint(RemoteAddress);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("New Connection came.")));
 
 			//UE_LOG "Accepted Connection! WOOOHOOOO!!!";
 
@@ -252,7 +263,7 @@ void ABallAndPlatePawn::TCPConnectionListener()
 
 			//			MyDel.BindRaw(this, &ABallAndPlatePawn::TCPSocketListener);
 			GetWorldTimerManager().SetTimer(timeHandler, this,
-				&ABallAndPlatePawn::TCPConnectionListener, 0.01f, true);
+				&ABallAndPlatePawn::TCPSocketListener, 0.01f, true);
 			//SetTimer(MyDel, 0.01, true);
 		}
 	}
@@ -278,13 +289,12 @@ void ABallAndPlatePawn::TCPSocketListener()
 		int32 Read = 0;
 		ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
 
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Read! %d"), ReceivedData.Num()));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Read! %d"), ReceivedData.Num()));
 	}
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	if (ReceivedData.Num() <= 0)
 	{
-		//No Data Received
 		return;
 	}
 
