@@ -1,8 +1,8 @@
+
+//author : Emre BAYRAM
+
 #include"tools.h"
-/*
- * read 0
- * write 1
-            */
+
 using namespace std;
 
 namespace Tool{
@@ -102,38 +102,11 @@ namespace Tool{
 
         int fds[2] ; fds[0] = mes.pipefd[0];fds[1] = mes.pipefd[1];
         strcpy(buf,NONE);
-        while(1){
-            if (isButtonPressed) {
-                strcpy(buf,PRESSED);
-                write(fds[1],buf,THREADCOMSIZE); //Send Message PRESSED
+#ifdef _WIN32
+        WSADATA wsaData;
+        WSAStartup(0x0202, &wsaData);
+#endif
 
-                    mkfifo(FIFONAME,0666); //create fifo
-
-                    int fifofd = open(FIFONAME,O_RDWR);
-
-                    pid_t pid = fork(); // fork for 3d sim
-
-                    if(pid == 0){
-                        execl(EXEADDRESS," "); //start exe
-
-                    exit(EXIT_SUCCESS);
-                }
-
-                    sprintf(procname,"/proc/%d",(int)pid);
-
-                    write(fds[1],buf,THREADCOMSIZE * sizeof(char));   //then send Ready message to pipe
-
-                do{
-                    read(fds[0],buf,PACKET_SIZE* sizeof(char));   //then get packet from pipe
-                    write(fifofd,buf,PACKET_SIZE * sizeof(char)); //send Packet to fifo
-
-                }while(!(stat(procname, &sts) == -1 && errno == ENOENT));//until Exe died
-
-                strcpy(buf,QUIT);
-                write(fds[1],buf,5); //send Exe Died Message
-            }//end if
-            write(fds[1],buf,5);
-        }
     }
 
     void *CommunicateWithGrafic(void* message){
