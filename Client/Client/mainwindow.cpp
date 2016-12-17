@@ -14,6 +14,14 @@ MainWindow::MainWindow(QWidget *parent) :
     setServoPlot();
     setXYPlot();
 
+
+    QImage img;
+    img.loadFromData("/home/hasan/workspace/CSE395_Proje1_Group6/Client/Client/gtuLogo500.png");
+    img = img.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    ui->gtuLogo->setPixmap(QPixmap::fromImage(img));
+
+
     guiThread = new GraphicThread(this);
     ardThread = new ArduinoThread(this);
 
@@ -106,66 +114,34 @@ void MainWindow::updateXYPlotData(){
 void MainWindow::ardConnection()
 {
 
-    /*threadMessage3D message3D;
-    threadMessageGrafic messageGrafic;
-
-    int fdGrafic[2];
-    pthread_t idGrafic;
-    int fd3DSim[2];
-    pthread_t id3DSim;
-
-    pipe(fdGrafic); //create pipe between grafik draw.
-    //SetMessage
-    messageGrafic.pipefd[0] = fdGrafic[0];
-    messageGrafic.pipefd[1] = fdGrafic[1];
-
-    int error = pthread_create(&idGrafic,NULL,CommunicateWithGrafic,&messageGrafic);//create thread for Grafic Drawing.
-
-    if(error){
-        std::cerr << "Error Creating Grafic thread" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    pipe(fd3DSim);     //create pipe for 3Dsim
-    //Set Message
-    message3D.pipefd[0] = fd3DSim[0];
-    message3D.pipefd[1] = fd3DSim[1];
-
-    error = pthread_create(&id3DSim,NULL,CommunicateWith3DSim,&message3D);          //create thread for 3Dsim
-
-    if(error){
-        std::cerr << "Error Creating 3DSim thread" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-*/
     if(!connectionCompleted)
-        com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate);
+        com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate,&mtx);
     if(!com->isCommunicationReady()){
         ardThread->stop=true;
         ui->textBMsg->append("Connection Failed");
         connectionCompleted = false;
     }else{
         guiThread->start();
-
-        char sendBuffer[PACKET_SIZE];
-        char getBuffer[6];
-        bool sim3DisOpen = false;
-        int writeRet;
         connectionCompleted = true;
     }
     if(connectionCompleted){
         if(com->readUntil()){
-
+            mtx.lock();
+            //cerr<<"inmutexmain"<<endl;
             guiThread->msg.ballX = com->getBallXCoordinate();
             guiThread->msg.ballY = com->getBallYCoordinate();
             guiThread->msg.motorXangle = com->getXMotorAngle();
-            guiThread->msg.motorYangle = com->getBallYCoordinate();
-            std::cerr << com->getYMotorAngle() << std::endl;
-        }
-                std::cerr<<"BallX:"<<guiThread->msg.ballX<<"BallY"<<guiThread->msg.ballY<<endl;
-                std::cerr<<"ServoX:"<<guiThread->msg.motorXangle<<"ServoY:"<<guiThread->msg.motorYangle<<endl;
+            guiThread->msg.motorYangle = com->getYMotorAngle();
 
-            /*sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
+            std::cerr<<"BallX:"<<guiThread->msg.ballX<<"BallY"<<guiThread->msg.ballY<<endl;
+            std::cerr<<"ServoX:"<<guiThread->msg.motorXangle<<"ServoY:"<<guiThread->msg.motorYangle<<endl;
+            //cerr<<"outmutexmain"<<endl;
+            mtx.unlock();
+        }
+    }
+    /*
+
+            sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
                                              com.getYMotorAngle(),
                                              com.getBallXCoordinate(),
                                              com.getBallYCoordinate());
@@ -205,7 +181,6 @@ void MainWindow::ardConnection()
             */
        //     }//EndRead
      //   }//End while*/
-    }
 }
 
 
@@ -321,6 +296,20 @@ void MainWindow::on_btnConnPlate_clicked()
     ui->textBMsg->append("Thread Status:"+QString::number(error));
     */
 
+}
 
 
+void MainWindow::closeEvent (QCloseEvent *event)
+{
+    QMessageBox::StandardButton resBtn = QMessageBox::question( this, "CSE395 Client",
+                                                                tr("Are you sure?\n"),QMessageBox::No | QMessageBox::Yes,
+                                                                QMessageBox::Yes);
+    if (resBtn != QMessageBox::Yes) {
+        event->ignore();
+    } else {
+        guiThread->stop=true;
+        ardThread->stop=true;
+        sleep(1);
+        event->accept();
+    }
 }

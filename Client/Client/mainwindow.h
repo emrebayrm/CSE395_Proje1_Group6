@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <iostream>
+#include <QCloseEvent>
 #include "graphicthread.h"
 #include "requirements.h"
 
@@ -18,9 +19,7 @@ public:
     Ui::MainWindow* getUI(){return ui;}
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-
-
+    void closeEvent (QCloseEvent *event);
 public slots:
     void updateServoPlotData();
     void updateXYPlotData();
@@ -43,6 +42,8 @@ private:
     pthread_t thArd;
     Communication *com;
     bool connectionCompleted =false;
+
+    QMutex mtx;
 
 };
 

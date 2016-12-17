@@ -37,3 +37,6 @@ HEADERS += \
     arduinomessagebean.h \
     threedsimulationmessage.h
 
+DISTFILES += \
+    gtuLogo500.png
+
