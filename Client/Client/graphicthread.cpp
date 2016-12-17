@@ -20,7 +20,7 @@ void GraphicThread::run(){
             emit startThread();
 
             // slowdown the count change, msec
-            this->msleep(50);
+            this->msleep(80);
         }
 
 }

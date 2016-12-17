@@ -76,14 +76,12 @@ void MainWindow::setXYPlot(){
 
 
 void MainWindow::updateXYPlotData(){
-
-    cerr<<"test2"<<endl;
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
     static double lastPointKey = 0;
-    int coordX=150;
-    int coordY=200;
+    int coordX=guiThread->msg.ballX;
+    int coordY=guiThread->msg.ballY;
     if (key-lastPointKey > 0.002) // at most add point every 2 ms
     {
       // add data to lines:
@@ -148,6 +146,7 @@ void MainWindow::ardConnection()
         connectionCompleted = false;
     }else{
         guiThread->start();
+
         char sendBuffer[PACKET_SIZE];
         char getBuffer[6];
         bool sim3DisOpen = false;
@@ -156,10 +155,12 @@ void MainWindow::ardConnection()
     }
     if(connectionCompleted){
         if(com->readUntil()){
+
             guiThread->msg.ballX = com->getBallXCoordinate();
             guiThread->msg.ballY = com->getBallYCoordinate();
             guiThread->msg.motorXangle = com->getXMotorAngle();
             guiThread->msg.motorYangle = com->getBallYCoordinate();
+            std::cerr << com->getYMotorAngle() << std::endl;
         }
 
             /*sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
@@ -256,8 +257,9 @@ void MainWindow::updateServoPlotData(){
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
-    double servoXAngle=124;
-    double servoYAngle=42;
+    int servoXAngle=guiThread->msg.motorXangle;
+    int servoYAngle=guiThread->msg.motorYangle;
+  //  std::cerr << servoYAngle << std::endl;
     static double lastPointKey = 0;
     if (key-lastPointKey > 0.002) // at most add point every 2 ms
     {

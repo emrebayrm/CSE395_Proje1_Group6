@@ -15,8 +15,8 @@ public:
     SerialPort::BaudRate baudRate;
     int ballX;
     int ballY;
-    float motorXangle;
-    float motorYangle;
+    int motorXangle;
+    int motorYangle;
 
 };
 
