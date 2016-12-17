@@ -145,18 +145,21 @@ void MainWindow::ardConnection()
         ardThread->stop=true;
         ui->textBMsg->append("Connection Failed");
     }else{
-        guiThread->start();
+        //guiThread->start();
         char sendBuffer[PACKET_SIZE];
         char getBuffer[6];
         bool sim3DisOpen = false;
         int writeRet;
-        while (1) {
+
+        while(1)
             if(com.readUntil()){
-                /*guiThread->msg.ballX = com.getBallXCoordinate();
+                guiThread->msg.ballX = com.getBallXCoordinate();
                 guiThread->msg.ballY = com.getBallYCoordinate();
                 guiThread->msg.motorXangle = com.getXMotorAngle();
-                guiThread->msg.motorYangle = com.getBallYCoordinate();*/
+                guiThread->msg.motorYangle = com.getBallYCoordinate();
 
+                std::cerr<<"BallX:"<<guiThread->msg.ballX<<"BallY"<<guiThread->msg.ballY<<endl;
+                std::cerr<<"ServoX:"<<guiThread->msg.motorXangle<<"ServoY:"<<guiThread->msg.motorYangle<<endl;
 
             /*sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
                                              com.getYMotorAngle(),
@@ -198,9 +201,6 @@ void MainWindow::ardConnection()
             */
             }//EndRead
         }//End while*/
-
-    }
-
 
 
 }
@@ -283,6 +283,7 @@ void MainWindow::updateServoPlotData(){
 
 void MainWindow::on_btnConnPlate_clicked()
 {
+
     QString portName = ui->inputPortName->text();
     QString baudRate = ui->inputBaudRate->text();
 
@@ -299,16 +300,19 @@ void MainWindow::on_btnConnPlate_clicked()
     default: { iBaudRate=9600; msg.baudRate=SerialPort::BR_9600;} // burası ekrana basılabilir
     }
 
-
-    ui->textBMsg->append("Port name:"+portName);
-    ui->textBMsg->append("Baud rate:"+QString::number(msg.baudRate));
+    if(ardThread->isRunning()){
+        ui->textBMsg->append("Arduino thread already works");
+    }else{
+        ui->textBMsg->append("Port name:"+portName);
+        ui->textBMsg->append("Baud rate:"+QString::number(msg.baudRate));
+        ardThread->msg=msg;
+        ardThread->start();
+    }
 
     /*int error = pthread_create(&thArd,NULL,CommunicateWithArduino,&msg);
     ui->textBMsg->append("Thread Status:"+QString::number(error));
     */
-    ardThread->msg=msg;
-    ardThread->start();
-    //CommunicateWithArduino(msg);
 
-    //guiThread->start();
+
+
 }
