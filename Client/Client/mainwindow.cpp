@@ -76,14 +76,12 @@ void MainWindow::setXYPlot(){
 
 
 void MainWindow::updateXYPlotData(){
-
-    cerr<<"test2"<<endl;
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
     static double lastPointKey = 0;
-    int coordX=150;
-    int coordY=200;
+    int coordX=guiThread->msg.ballX;
+    int coordY=guiThread->msg.ballY;
     if (key-lastPointKey > 0.002) // at most add point every 2 ms
     {
       // add data to lines:
@@ -140,24 +138,30 @@ void MainWindow::ardConnection()
         exit(EXIT_FAILURE);
     }
 */
-    Communication com(ardThread->msg.portName,ardThread->msg.baudRate);
-    if(!com.isCommunicationReady()){
+    if(!connectionCompleted)
+        com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate);
+    if(!com->isCommunicationReady()){
         ardThread->stop=true;
         ui->textBMsg->append("Connection Failed");
+        connectionCompleted = false;
     }else{
-        //guiThread->start();
+        guiThread->start();
+
         char sendBuffer[PACKET_SIZE];
         char getBuffer[6];
         bool sim3DisOpen = false;
         int writeRet;
+        connectionCompleted = true;
+    }
+    if(connectionCompleted){
+        if(com->readUntil()){
 
-        while(1)
-            if(com.readUntil()){
-                guiThread->msg.ballX = com.getBallXCoordinate();
-                guiThread->msg.ballY = com.getBallYCoordinate();
-                guiThread->msg.motorXangle = com.getXMotorAngle();
-                guiThread->msg.motorYangle = com.getBallYCoordinate();
-
+            guiThread->msg.ballX = com->getBallXCoordinate();
+            guiThread->msg.ballY = com->getBallYCoordinate();
+            guiThread->msg.motorXangle = com->getXMotorAngle();
+            guiThread->msg.motorYangle = com->getBallYCoordinate();
+            std::cerr << com->getYMotorAngle() << std::endl;
+        }
                 std::cerr<<"BallX:"<<guiThread->msg.ballX<<"BallY"<<guiThread->msg.ballY<<endl;
                 std::cerr<<"ServoX:"<<guiThread->msg.motorXangle<<"ServoY:"<<guiThread->msg.motorYangle<<endl;
 
@@ -199,10 +203,9 @@ void MainWindow::ardConnection()
             //Send To Grafic Thread
             writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);
             */
-            }//EndRead
-        }//End while*/
-
-
+       //     }//EndRead
+     //   }//End while*/
+    }
 }
 
 
@@ -256,8 +259,9 @@ void MainWindow::updateServoPlotData(){
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
-    double servoXAngle=124;
-    double servoYAngle=42;
+    int servoXAngle=guiThread->msg.motorXangle;
+    int servoYAngle=guiThread->msg.motorYangle;
+  //  std::cerr << servoYAngle << std::endl;
     static double lastPointKey = 0;
     if (key-lastPointKey > 0.002) // at most add point every 2 ms
     {
@@ -283,6 +287,10 @@ void MainWindow::updateServoPlotData(){
 
 void MainWindow::on_btnConnPlate_clicked()
 {
+    if(connectionCompleted){
+        ui->textBMsg-> append("Already Connected");
+        return;
+    }
 
     QString portName = ui->inputPortName->text();
     QString baudRate = ui->inputBaudRate->text();

@@ -41,8 +41,8 @@ private:
     GraphicThread *guiThread; // TODO: check this
     ArduinoThread *ardThread;
     pthread_t thArd;
-
-
+    Communication *com;
+    bool connectionCompleted =false;
 
 };
 

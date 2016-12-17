@@ -22,10 +22,10 @@
 #define XCOORDMIN 140
 #define YCOORDMMAX 960
 #define YCOORDMIN 130
-#define XOUTMAX 40
-#define XOUTMIN -40
-#define YOUTMAX 30
-#define YOUTMIN -30
+#define XOUTMAX 400
+#define XOUTMIN 0
+#define YOUTMAX 400
+#define YOUTMIN 0
 
 using namespace std;
 
@@ -35,17 +35,17 @@ using namespace std;
 class Communication {
 private :
     bool communicationReady ;
-    double XMotorAngle ;
-    double YMotorAngle;
+    int XMotorAngle ;
+    int YMotorAngle;
     int ballXCoordinate;
     int ballYCoordinate;
     SerialPort *port;
     bool makeHandShake();
     bool checkConnection();
-    inline void setXMotorAngle(double angle){ XMotorAngle = angle; }
-    inline void setYMotorAngle(double angle){YMotorAngle = angle; }
-    inline void setBallXCoordinate(int x){ballXCoordinate = x;}//map(x,XCOORDMIN,XCOORDMMAX,XOUTMIN,XOUTMAX);}
-    inline void setBallYCoordinate(int y){ballYCoordinate = y;}// map(y,YCOORDMIN,YCOORDMMAX,YOUTMIN,YOUTMAX);}
+    inline void setXMotorAngle(int angle){ XMotorAngle = angle; }
+    inline void setYMotorAngle(int angle){YMotorAngle = angle; }
+    inline void setBallXCoordinate(int x){ballXCoordinate = map(x,XCOORDMIN,XCOORDMMAX,XOUTMIN,XOUTMAX);} //TODO : Map edilmiş olacak
+    inline void setBallYCoordinate(int y){ballYCoordinate = map(y,YCOORDMIN,YCOORDMMAX,YOUTMIN,YOUTMAX);} //Arduino dan alınacak
     inline float map(long x, long in_min, long in_max, long out_min, long out_max)
     {
         return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
@@ -69,12 +69,12 @@ public:
         return communicationReady;
     }
 
-    double getXMotorAngle() const {
+    int getXMotorAngle() const {
         return XMotorAngle;
     }
 
 
-    double getYMotorAngle() const {
+    int getYMotorAngle() const {
         return YMotorAngle;
     }
 

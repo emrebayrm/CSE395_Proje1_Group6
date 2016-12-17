@@ -91,7 +91,6 @@ bool Communication::makeHandShake() {
         write('S');
         port->wait(100);
         port->read(&ch);
-        cerr<<ch;
     }while(ch != 'R');
     cerr << "Handshake succesfull" << endl;
     communicationReady = true;
@@ -127,7 +126,7 @@ bool Communication::readUntil() {
     if(!communicationReady)
         return false;
     write('N');
-    double xangle,yangle;
+    int xangle,yangle;
     int x,y;
     string input;
 
@@ -135,7 +134,7 @@ bool Communication::readUntil() {
     //{XdoubleYdoublexintyint}
     char dead;
 
-    sscanf(input.c_str(),"%c%c%lf%c%lf%c%d%c%d%c",&dead,&dead,&xangle,&dead,&yangle,&dead,&x,&dead,&y,&dead);
+    sscanf(input.c_str(),"%c%c%d%c%d%c%d%c%d%c",&dead,&dead,&xangle,&dead,&yangle,&dead,&x,&dead,&y,&dead);
     //if is not valid values false 
 
     setXMotorAngle(xangle);
