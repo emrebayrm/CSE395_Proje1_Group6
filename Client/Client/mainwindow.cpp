@@ -14,13 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setServoPlot();
     setXYPlot();
 
-
-    QImage img;
-    img.loadFromData("/home/hasan/workspace/CSE395_Proje1_Group6/Client/Client/gtuLogo500.png");
-    img = img.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-    ui->gtuLogo->setPixmap(QPixmap::fromImage(img));
-
+    QImage logo(":/images/gtuLogo500.png");
+    ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(400,200)));
 
     guiThread = new GraphicThread(this);
     ardThread = new ArduinoThread(this);
@@ -106,8 +101,8 @@ void MainWindow::updateXYPlotData(){
 
     ui->textBPlotXY->setText(
             QString("X: %1 \t  Y: %2")
-            .arg(coordX)
-            .arg(coordY));
+            .arg(coordX,4)
+            .arg(coordY,4));
 
 }
 
@@ -254,8 +249,8 @@ void MainWindow::updateServoPlotData(){
 
     ui->textBPlotServo->setText(
           QString("Servo X: %1° \t  ServoY: %2°")
-          .arg(servoXAngle)
-          .arg(servoYAngle));
+          .arg(servoXAngle,4)
+          .arg(servoYAngle,4));
 
 }
 
