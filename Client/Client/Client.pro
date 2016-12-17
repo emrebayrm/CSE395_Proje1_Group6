@@ -10,7 +10,8 @@ SOURCES += main.cpp \
     Communication.cpp \
     graphicthread.cpp \
     arduinothread.cpp \
-    arduinomessagebean.cpp
+    arduinomessagebean.cpp \
+    threedsimulationmessage.cpp
 
 RESOURCES += qml.qrc
 
@@ -33,5 +34,6 @@ HEADERS += \
     Communication.h \
     graphicthread.h \
     arduinothread.h \
-    arduinomessagebean.h
+    arduinomessagebean.h \
+    threedsimulationmessage.h
 
