@@ -1,6 +1,7 @@
 #include "graphicthread.h"
 #include "mainwindow.h"
 #include <QtCore>
+
 GraphicThread::GraphicThread(QObject *parent,bool b):QThread(parent),stop(b)
 {
 
