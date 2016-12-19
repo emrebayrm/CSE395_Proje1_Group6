@@ -12,6 +12,7 @@ public:
     bool isEstablished(){return isEstablishedConnection;}
     bool SendData(char * Data);
     void listen();
+    std::string readData();
     QString getAddress(){return QString::number(server->serverAddress().toIPv4Address());}
 
     int getPortNumber(){return server->serverPort();}

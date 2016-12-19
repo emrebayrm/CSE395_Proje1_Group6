@@ -21,6 +21,16 @@ void myTcpServer::listen(){
         qDebug() << "Server started!";
     }
 }
+
+std::string myTcpServer::readData()
+{
+    QByteArray data = socket->readAll();
+
+    return data.toStdString()
+}
+
+
+
 bool myTcpServer::SendData(char * data)
 {
     return socket->write(data) > 0 ? true:false;
