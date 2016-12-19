@@ -305,12 +305,12 @@ void MainWindow::sim3DConnection(){
         if(server == nullptr){
             server = new myTcpServer(this);
             server->listen();
-            ui->textBMsg->append("address : " + server->getAddress());
-            ui->textBMsg->append("Port number : "+ QString::number(server->getPortNumber()));
         }
         if(server->isEstablished()){       //listen to connect
             isSim3DConnected = true ;
             std::cerr <<  "Connection completed";
+            ui->textBMsg->append("address : " + server->getAddress());
+            ui->textBMsg->append("Port number : "+ QString::number(server->getPortNumber()));
         }
 
     }

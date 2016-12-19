@@ -13,7 +13,7 @@ public:
     bool SendData(char * Data);
     void listen();
     std::string readData();
-    QString getAddress(){return QString::number(server->serverAddress().toIPv4Address());}
+    QString getAddress(){return server->serverAddress().toString();}
 
     int getPortNumber(){return server->serverPort();}
 
