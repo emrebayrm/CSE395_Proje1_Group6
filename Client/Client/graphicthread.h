@@ -9,14 +9,16 @@ class GraphicThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit GraphicThread(QObject* parent=0,bool b=false);
+    explicit GraphicThread(QObject* parent=0);
     void run();
-    bool stop;
+    bool isAlive();
     ArduinoMessageBean msg;
-
+    void terminate();
 signals:
     void startThread();
-public slots:
+private:
+    QMutex mutex;
+    bool alive;
 };
 
 #endif // GRAPHICTHREAD_H

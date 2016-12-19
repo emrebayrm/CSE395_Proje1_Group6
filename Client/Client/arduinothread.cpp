@@ -1,25 +1,40 @@
 #include "arduinothread.h"
 #include "mainwindow.h"
 #include <QtCore>
-ArduinoThread::ArduinoThread(QObject *parent,bool b):QThread(parent),stop(b)
+ArduinoThread::ArduinoThread(QObject *parent):QThread(parent)
 {
-
+    this->alive=false;
 }
 
 void ArduinoThread::run(){
 
-    stop=false;
-    QMutex mutex;
-    while(!stop){
-        mutex.lock();
-        // prevent other threads from changing the "Stop" value
-
+    alive=true;
+    while(isAlive()){
         // emit the signal for the count label
-        startArdThread();
 
+        std::cerr<<"Arduino::run in"<<endl;
+        emit startArdThread();
         // slowdown the count change, msec
         this->msleep(50);
-        mutex.unlock();
+        std::cerr<<"Arduino::run out"<<endl;
     }
+    std::cerr<<"ArduinoThread closed"<<endl;
+}
 
+bool ArduinoThread::isAlive(){
+    bool res=false;
+    mutex.lock();
+    std::cerr<<"Arduino::isAlive in"<<endl;
+    res=alive;
+    mutex.unlock();
+    std::cerr<<"Arduino::isAlive out"<<endl;
+    return res;
+}
+
+void ArduinoThread::terminate(){
+    mutex.lock();
+    std::cerr<<"Arduino::termiante in"<<endl;
+    alive=false;
+    mutex.unlock();
+    std::cerr<<"Arduino::termiante out"<<endl;
 }

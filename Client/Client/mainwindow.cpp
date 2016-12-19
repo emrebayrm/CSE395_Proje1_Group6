@@ -111,11 +111,15 @@ void MainWindow::ardConnection()
 {
     if(!connectionCompleted){
         com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate,&mtx);
-        guiThread->start();
+        if(com->isCommunicationReady()){
+            if(!guiThread->isAlive())
+                guiThread->start();
+        }
     }
     if(!com->isCommunicationReady()){
-        ardThread->stop=true;
-        ui->textBMsg->append("Connection Failed");
+        ardThread->terminate();
+        ui->textBMsg->append("Arduino Connection failed");
+        logger.warning("Arduino connection failed!");
         connectionCompleted = false;
     }else{
 
@@ -126,20 +130,26 @@ void MainWindow::ardConnection()
 
         if(com->readUntil()){
             mtx.lock();
-            cerr<<"inmutexmain"<<endl;
+
             guiThread->msg.ballX = com->getBallXCoordinate();
             guiThread->msg.ballY = com->getBallYCoordinate();
             guiThread->msg.motorXangle = com->getXMotorAngle();
             guiThread->msg.motorYangle = com->getYMotorAngle();
+
+            QString log;
+            log.append("Bx:").append(QString::number(guiThread->msg.ballX)).append("  ");
+            log.append("By:").append(QString::number(guiThread->msg.ballY)).append("  ");
+            log.append("Sx:").append(QString::number(guiThread->msg.motorXangle)).append("  ");
+            log.append("Sy:").append(QString::number(guiThread->msg.motorYangle)).append("  ");
+            logger.debug(log.toStdString().c_str());
+            logger.debug("Arduino <--> ardThread okeyy");
+            qDebug();
             if(isSim3DConnected){
                 simThread->msg.ballX = com->getBallXCoordinate();
                 simThread->msg.ballY = com->getBallYCoordinate();
                 simThread->msg.motorXangle = com->getXMotorAngle();
                 simThread->msg.motorYangle = com->getYMotorAngle();
             }
-            std::cerr<<"BallX:"<<guiThread->msg.ballX<<"BallY"<<guiThread->msg.ballY<<endl;
-            std::cerr<<"ServoX:"<<guiThread->msg.motorXangle<<"ServoY:"<<guiThread->msg.motorYangle<<endl;
-            cerr<<"outmutexmain"<<endl;
             mtx.unlock();
         }
     }
@@ -225,34 +235,21 @@ void MainWindow::updateServoPlotData(){
 void MainWindow::on_btnConnPlate_clicked()
 {
     if(connectionCompleted){
-        ui->textBMsg-> append("Already Connected");
+        ui->textBMsg-> append("Connection is already open.");
         return;
     }
 
     QString portName = ui->inputPortName->text();
-    QString baudRate = ui->inputBaudRate->text();
 
     ArduinoMessageBean msg;
     msg.portName = portName.toStdString();
+    msg.baudRate=SerialPort::BR_9600;
 
-    int iBaudRate = baudRate.toInt();
-    // set baudrate
-    switch(iBaudRate) {
-        case 4800: msg.baudRate = SerialPort::BR_4800;
-        case 9600: msg.baudRate = SerialPort::BR_9600;
-        case 38400: msg.baudRate = SerialPort::BR_38400;
-        case 115200: msg.baudRate = SerialPort::BR_115200;
-    default: { iBaudRate=9600; msg.baudRate=SerialPort::BR_9600;} // burası ekrana basılabilir
-    }
-
-    if(ardThread->isRunning()){
-        ui->textBMsg->append("Arduino thread already works");
-    }else{
-        ui->textBMsg->append("Port name:"+portName);
-        ui->textBMsg->append("Baud rate:"+QString::number(msg.baudRate));
-        ardThread->msg=msg;
-        ardThread->start();
-    }
+    ui->textBMsg->append("New connection:");
+    ui->textBMsg->append(" Port name:"+portName);
+    ui->textBMsg->append(" Baud rate:"+QString::number(msg.baudRate));
+    ardThread->msg=msg;
+    ardThread->start();
 }
 
 
@@ -264,21 +261,23 @@ void MainWindow::closeEvent (QCloseEvent *event)
     if (resBtn != QMessageBox::Yes) {
         event->ignore();
     } else {
-        if(isSim3DConnected){
-            simThread->stop = true;
-            if(server->isEstablished())
-                server->close();
+        while(simThread->isRunning()){
+            simThread->terminate();
         }
-        guiThread->stop=true;
-        ardThread->stop=true;
-        usleep(500); // wait for thread terminate
+
+        while(ardThread->isRunning()){
+            ardThread->terminate();
+        }
+
+        while(guiThread->isRunning()){
+            guiThread->terminate();
+        }
 
         if(com!=NULL){
             com->closeConnection();
             delete com;
             com=NULL;
         }
-        usleep(500);
         event->accept();
     }
 }
@@ -296,7 +295,6 @@ void MainWindow::on_btnOpen3D_clicked()
 void MainWindow::sim3DConnection(){
     //check connection already established
     if(!isSim3DConnected){
-        pid_t pid;
 //        pid = fork();
 //        if(pid == 0){
 //            execl(EXENAME," ");         //start exec of 3d sim
