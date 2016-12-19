@@ -84,14 +84,14 @@ public:
 	bool bGrowing;
 
 	//////////// Socket ////////////////
-	FSocket* ListenerSocket;
+
 	FSocket* ConnectionSocket;
 	FIPv4Endpoint RemoteAddressForConnection;
 	FTimerHandle timeHandler;
 
 	void ConnectToServer();
 
-	bool Connect(
+	void Connect(
 		const FString& YourChosenSocketName,
 		const FIPv4Address& ip,
 		int32 port
@@ -99,7 +99,7 @@ public:
 
 	void readValueFromSocket();
 	void sendValueToSocket();
-
+	bool didConnect;
 	//Rama's StringFromBinaryArray
 	FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
 	

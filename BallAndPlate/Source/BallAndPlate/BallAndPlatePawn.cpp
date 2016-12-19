@@ -44,7 +44,7 @@ void ABallAndPlatePawn::BeginPlay()
 void ABallAndPlatePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	readValueFromSocket();
 	if (!CurrentVelocity.IsZero())
 	{
 		FVector refXLocation = kolXReference->GetActorLocation();;
@@ -121,14 +121,19 @@ void ABallAndPlatePawn::setUpLights()
 void ABallAndPlatePawn::ConnectToServer()
 {
 	FString address = TEXT("127.0.0.1");
-	int32 port = 8881;
+	int32 port = 9999;
 	FIPv4Address ipAddress;
 	FIPv4Address::Parse(address, ipAddress);
-	while (!Connect("SocketListener", ipAddress, port));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("TCP Socket Listener Connected successfuly!")));
+	Connect("SocketListener", ipAddress, port);
+	if (!didConnect)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Can't connect to socket.Program closing!")));
+		//FPlatformProcess::Sleep(2);
+		//FGenericPlatformMisc::RequestExit(false);
+	}
 }
 
-bool ABallAndPlatePawn::Connect(
+void ABallAndPlatePawn::Connect(
 	const FString& YourChosenSocketName,
 	const FIPv4Address& ip,
 	int32 port
@@ -139,15 +144,45 @@ bool ABallAndPlatePawn::Connect(
 	addr->SetPort(port);
 
 	ConnectionSocket = FTcpSocketBuilder(YourChosenSocketName).AsBlocking().AsReusable().Build();
-	bool didConnect = ConnectionSocket->Connect(*addr);
+	didConnect = ConnectionSocket->Connect(*addr);
 	if (didConnect)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Successful")));
 	else
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Failed")));
-	return didConnect;
+
 }
 
-void readValueFromSocket() {
+void ABallAndPlatePawn::readValueFromSocket() {
+	FString serialized = TEXT("GET_COORDINATE");
+	TCHAR *serializedChar = serialized.GetCharArray().GetData();
+	int32 size = FCString::Strlen(serializedChar);
+	int32 sent = 0;
+	
+	bool succesfull = ConnectionSocket->Send((uint8*)TCHAR_TO_UTF8(serializedChar), size, sent);
+	if (succesfull)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Successfulllllllllll")));
+		
+		TArray<uint8> ReceivedData;
+		uint32 Size;
+		ReceivedData.Init(0, FMath::Min(Size, 65507u));
+		int32 Read = 0;
+		
+		succesfull  = ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
+		if (succesfull && ReceivedData.Num() != 0 ) {
+			const FString ReceivedUE4String = StringFromBinaryArray(ReceivedData);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("As String Data ~> %s"), *ReceivedUE4String));
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("No receive ")));
+
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Failedddd")));
+	}
+
 	// servera istek gonder
 	// mesaj gelmesini bekle
 	// mesaji al
