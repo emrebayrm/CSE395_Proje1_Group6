@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     com=NULL;
     server=NULL;
+    proc3D =NULL;
 
     // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
@@ -68,11 +69,11 @@ void MainWindow::setXYPlot(){
 
     // set y axis
     ui->plotXY->yAxis->setLabelColor("blue");
-    ui->plotXY->yAxis->setLabel("Koordinatlar");
+    ui->plotXY->yAxis->setLabel("Coordinates");
     ui->plotXY->yAxis->setRange(0,400); // y axis -> coordinates
 
     // set x axis
-    ui->plotXY->xAxis->setLabel("Zaman");
+    ui->plotXY->xAxis->setLabel("Time");
     ui->plotXY->xAxis->setLabelColor("blue");
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
@@ -191,11 +192,11 @@ void MainWindow::setServoPlot(){
 
     // set y axis
     ui->plotServo->yAxis->setLabelColor("blue");
-    ui->plotServo->yAxis->setLabel("Servo Açıları(°)");
+    ui->plotServo->yAxis->setLabel("Angles(°)");
     ui->plotServo->yAxis->setRange(0,180); // y axis -> coordinates
 
     // set x axis
-    ui->plotServo->xAxis->setLabel("Zaman");
+    ui->plotServo->xAxis->setLabel("Time");
     ui->plotServo->xAxis->setLabelColor("blue");
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
@@ -276,6 +277,13 @@ void MainWindow::closeEvent (QCloseEvent *event)
             guiThread->terminate();
         }
 
+        if(server!=NULL){
+            server->close();
+            usleep(500);
+            delete server;
+            server=NULL;
+        }
+
         if(com!=NULL){
             com->closeConnection();
             delete com;
@@ -297,12 +305,20 @@ void MainWindow::on_btnOpen3D_clicked()
 
 void MainWindow::sim3DConnection(){
     //check connection already established
+    if(proc3D==NULL){
+        QString file ="/home/hasan/workspace/CSE395_Proje1_Group6/Client/Client/test";
+        proc3D = new QProcess(this);
+        proc3D->start(file);
+        qDebug(file.toStdString().c_str());
+        qDebug("proc3D started");
+    }
     if(!isSim3DConnected){
-//        pid = fork();
-//        if(pid == 0){
-//            execl(EXENAME," ");         //start exec of 3d sim
-//            exit(EXIT_SUCCESS);
-//        }
+        if(proc3D==NULL){
+            QString file =QDir::homePath()+"test";
+            proc3D = new QProcess(this);
+            proc3D->start(file);
+            proc3D->isOpen();
+        }
         if(server == NULL){
             server = new myTcpServer(this);
             server->listen();
