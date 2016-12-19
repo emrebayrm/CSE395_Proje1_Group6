@@ -12,8 +12,9 @@
 using namespace std;
 
 Communication::Communication(string str, SerialPort::BaudRate baud,QMutex *mtx) {
-
+    cerr<<"new connection opened"<<endl;
     port = new SerialPort(str,baud);
+
     communicationReady = false;
     if(checkConnection())
         makeHandShake();
@@ -23,81 +24,19 @@ Communication::Communication(string str, SerialPort::BaudRate baud,QMutex *mtx) 
     ballYCoordinate = 999;
     this->mtx = mtx;
 }
-//bool Communucation::read() {
-//    if(!communicationReady)
-//        return false;
-//    write('N');
-//    char ch;
-//    int i=0;
-//    port->wait(50);
-//    do {
-//        port->read(&ch);
-//        if(ch == 'F')
-//            return false;
-//    }while(ch != 'X');
-//    char inp[8];
-//    // Get x motor angle
-//    do{
-//        port->read(&ch);
-//        if(ch == 'Y')
-//            break;
-//        else
-//            inp[i++] = ch;
-//    }while(i < 7);
-//    inp[i] = '\0';
-//
-//    XMotorAngle = atof(inp);
-//    // Get y motor angle
-//    i=0;
-//    do{
-//        port->read(&ch);
-//        if(ch == 'x')
-//            break;
-//        else
-//            inp[i++] = ch;
-//    }while(i < 7);
-//    inp[i] = '\0';
-//    YMotorAngle = atof(inp);
-//    // Get ball x coordinate
-//    i=0;
-//    do{
-//        port->read(&ch);
-//        if(ch == 'y')
-//            break;
-//        else
-//            inp[i++] = ch;
-//    }while(i < 7);
-//    inp[i] = '\0';
-//    ballXCoordinate = atoi(inp);
-//    ballXCoordinate = map(ballXCoordinate,125,965,-30,30);
-//    // Get ball y coordinate
-//    i=0;
-//    do{
-//        port->read(&ch);
-//        if(ch == '!')
-//            break;
-//        else
-//            inp[i++] = ch;
-//    }while(i < 7);
-//    inp[i] = '\0';
-//    ballYCoordinate = atoi(inp);
-//    ballYCoordinate = map(ballYCoordinate,130,910,-40,40);
-//    // Read Finished
-//    return true;
-//}
 
 bool Communication::makeHandShake() {
     char ch;
     cerr << "Handshake starting" << endl;
     do {
-
         write('S');
         port->wait(100);
         port->read(&ch);
+        cerr<<"CH:"<<ch<<endl;
     }while(ch != 'R');
     cerr << "Handshake succesfull" << endl;
     communicationReady = true;
-    return true;
+    return communicationReady;
 }
 
 bool Communication::write(char *msg) {
@@ -124,24 +63,39 @@ bool Communication::checkConnection() {
     return true;
 }
 
+void Communication::closeConnection()
+{
+    if(port!=NULL){
+        port->write('F');
+        port->close();
+        delete port;
+        port=NULL;
+    }
+    communicationReady=false;
+}
+
 bool Communication::readUntil() {
-   // std::cout<<"read until";
-    if(!communicationReady)
-        return false;
-    write('N');
     int xangle,yangle;
     int x,y;
     string input;
 
-    port->readUntil(input,END_CHAR);
-    //{XdoubleYdoublexintyint}
-    char dead;
+    if(!communicationReady)
+        return false;
 
-    sscanf(input.c_str(),"%c%c%d%c%d%c%d%c%d%c",&dead,&dead,&xangle,&dead,&yangle,&dead,&x,&dead,&y,&dead);
+    write('N'); // message to take coordinates
+
+    port->readUntil(input,END_CHAR);
+    cerr<<"SerialRead:"<<input<<endl;
+
+    char temp;
+
+    //{XintYintxintyint}
+    sscanf(input.c_str(),"%c%c%d%c%d%c%d%c%d%c",&temp,&temp,&xangle,&temp,&yangle,&temp,&x,&temp,&y,&temp);
     //if is not valid values false 
 
     mtx->lock();
     cerr<<"inmutexCoom"<<endl;
+    //cerr<<xangle<<" "<<yangle<<" "<<x<<" "<<y<<endl;
     setXMotorAngle(xangle);
     setYMotorAngle(yangle);
     setBallXCoordinate(x);
@@ -151,14 +105,3 @@ bool Communication::readUntil() {
 
     return true;
 }
-
-
-
-
-
-
-
-
-
-
-

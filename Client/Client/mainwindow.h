@@ -4,8 +4,12 @@
 #include <QMainWindow>
 #include <iostream>
 #include <QCloseEvent>
+#include <QDebug>
+#include <QMessageLogger>
 #include "graphicthread.h"
 #include "requirements.h"
+
+
 
 namespace Ui {
 class MainWindow;
@@ -14,7 +18,6 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     Ui::MainWindow* getUI(){return ui;}
     explicit MainWindow(QWidget *parent = 0);
@@ -25,9 +28,13 @@ public slots:
     void updateXYPlotData();
 
     void ardConnection();
+    void sim3DConnection();
 
 private slots:
     void on_btnConnPlate_clicked();
+
+    void on_btnDisconnect_clicked();
+    void on_btnOpen3D_clicked();
 
 private:
 
@@ -37,14 +44,21 @@ private:
     QTimer timerXYPlot;
     QTimer timerServoPlot;
 
+    Sim3DThread *simThread;
     GraphicThread *guiThread; // TODO: check this
     ArduinoThread *ardThread;
+
     pthread_t thArd;
+
     Communication *com;
+    myTcpServer *server;
+
+    bool isSim3DConnected = false;
     bool connectionCompleted =false;
 
     QMutex mtx;
 
+    QMessageLogger logger;
 };
 
 #endif // MAINWINDOW_H

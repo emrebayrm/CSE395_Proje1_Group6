@@ -11,9 +11,11 @@ SOURCES += main.cpp \
     graphicthread.cpp \
     arduinothread.cpp \
     arduinomessagebean.cpp \
-    threedsimulationmessage.cpp
+    threedsimulationmessage.cpp \
+    sim3dthread.cpp \
+    mytcpserver.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += res.qrc
 
 greaterThan(QT_MAJOR_VERSION, 4): QT+= widgets printsupport
 
@@ -35,8 +37,9 @@ HEADERS += \
     graphicthread.h \
     arduinothread.h \
     arduinomessagebean.h \
-    threedsimulationmessage.h
+    threedsimulationmessage.h \
+    sim3dthread.h \
+    mytcpserver.h
 
-DISTFILES += \
-    gtuLogo500.png
+DISTFILES +=
 
