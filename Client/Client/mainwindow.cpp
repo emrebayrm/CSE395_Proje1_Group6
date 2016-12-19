@@ -261,10 +261,8 @@ void MainWindow::closeEvent (QCloseEvent *event)
     if (resBtn != QMessageBox::Yes) {
         event->ignore();
     } else {
-        if(isSim3DConnected){
-            simThread->stop = true;
-            if(server->isEstablished())
-                server->close();
+        while(simThread->isRunning()){
+            simThread->terminate();
         }
 
         while(ardThread->isRunning()){

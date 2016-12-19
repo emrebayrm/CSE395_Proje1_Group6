@@ -7,14 +7,18 @@ class Sim3DThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit Sim3DThread(QObject* parent=0,bool b=false);
+    explicit Sim3DThread(QObject* parent=0);
     void run();
-    bool stop;
+    bool isAlive();
+    void terminate();
     ArduinoMessageBean msg;
 
 signals:
     void startThread();
 public slots:
+private:
+    QMutex mutex;
+    bool alive;
 };
 
 #endif // SIM3DTHREAD_H
