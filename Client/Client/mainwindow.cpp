@@ -305,9 +305,9 @@ void MainWindow::sim3DConnection(){
         if(server == nullptr){
             server = new myTcpServer(this);
             server->listen();
+            ui->textBMsg->append("address : " + server->getAddress());
+            ui->textBMsg->append("Port number : "+ QString::number(server->getPortNumber()));
         }
-        ui->textBMsg->append("address : " + server->getAddress());
-        ui->textBMsg->append("Port number : "+ QString::number(server->getPortNumber()));
         if(server->isEstablished()){       //listen to connect
             isSim3DConnected = true ;
             std::cerr <<  "Connection completed";
@@ -315,7 +315,7 @@ void MainWindow::sim3DConnection(){
 
     }
     if(isSim3DConnected){
-        std::cerr << "Time to write";
+        server->readData();
         char buffer[30] = "Hello ";
 /*        std::sprintf(buffer,"{%d %d %d %d}",simThread->msg.ballX,
                                             simThread->msg.ballY,
