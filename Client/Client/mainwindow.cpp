@@ -240,19 +240,10 @@ void MainWindow::on_btnConnPlate_clicked()
     }
 
     QString portName = ui->inputPortName->text();
-    QString baudRate = ui->inputBaudRate->text();
 
     ArduinoMessageBean msg;
     msg.portName = portName.toStdString();
-
-    int iBaudRate = baudRate.toInt();
-    // set baudrate
-    switch(iBaudRate) {
-        case 9600: msg.baudRate = SerialPort::BR_9600;
-        case 38400: msg.baudRate = SerialPort::BR_38400;
-        case 115200: msg.baudRate = SerialPort::BR_115200;
-    default: { iBaudRate=9600; msg.baudRate=SerialPort::BR_9600;} // burası ekrana basılabilir
-    }
+    msg.baudRate=SerialPort::BR_9600;
 
     ui->textBMsg->append("New connection:");
     ui->textBMsg->append(" Port name:"+portName);
