@@ -26,6 +26,10 @@ public:
 	
 	void setUpLights();
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	//~ABallAndPlatePawn();
+
+
 	UPROPERTY(EditAnywhere)
 		USceneComponent* OurVisibleComponent1; // ball 
 	UPROPERTY(EditAnywhere)
@@ -79,36 +83,23 @@ public:
 	FVector rot;
 	bool bGrowing;
 
+	//////////// Socket ////////////////
 
-	FSocket* ListenerSocket;
 	FSocket* ConnectionSocket;
 	FIPv4Endpoint RemoteAddressForConnection;
 	FTimerHandle timeHandler;
-	
 
-	void Launcch();
+	void ConnectToServer();
 
-	bool StartTCPReceiver(
+	void Connect(
 		const FString& YourChosenSocketName,
-		const FString& TheIP,
-		const int32 ThePort
+		const FIPv4Address& ip,
+		int32 port
 		);
 
-	FSocket* CreateTCPConnectionListener(
-		const FString& YourChosenSocketName,
-		const FString& TheIP,
-		const int32 ThePort,
-		const int32 ReceiveBufferSize = 2 * 1024 * 1024
-		);
-
-	//Timer functions, could be threads
-	void TCPConnectionListener(); 	//can thread this eventually
-	void TCPSocketListener();		//can thread this eventually
-
-
-									//Format String IP4 to number array
-	bool FormatIP4ToNumber(const FString& TheIP, uint8(&Out)[4]);
-
+	void readValueFromSocket();
+	void sendValueToSocket();
+	bool didConnect;
 	//Rama's StringFromBinaryArray
 	FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
 	

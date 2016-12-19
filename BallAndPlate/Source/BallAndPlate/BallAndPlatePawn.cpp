@@ -35,8 +35,8 @@ void ABallAndPlatePawn::BeginPlay()
 	differenceX_Z = kolXReference->GetActorLocation().Z - kolX->GetActorLocation().Z;
 	differenceY_Z = kolYReference->GetActorLocation().Z - kolY->GetActorLocation().Z;
 	rotation = FRotator(RootComponent->GetRelativeTransform().GetRotation());
-
 	setUpLights();
+	ConnectToServer();
 
 }
 
@@ -44,7 +44,7 @@ void ABallAndPlatePawn::BeginPlay()
 void ABallAndPlatePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	readValueFromSocket();
 	if (!CurrentVelocity.IsZero())
 	{
 		FVector refXLocation = kolXReference->GetActorLocation();;
@@ -118,146 +118,163 @@ void ABallAndPlatePawn::setUpLights()
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-void ABallAndPlatePawn::Launcch()
+void ABallAndPlatePawn::ConnectToServer()
 {
-	//IP = 127.0.0.1, Port = 8890 for my Python test case
-	if (!StartTCPReceiver("RamaSocketListener", "127.0.0.1", 8890))
+	FString address = TEXT("127.0.0.1");
+	int32 port = 9999;
+	FIPv4Address ipAddress;
+	FIPv4Address::Parse(address, ipAddress);
+	Connect("SocketListener", ipAddress, port);
+	if (!didConnect)
 	{
-		//UE_LOG  "TCP Socket Listener Created!"
-		return;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Can't connect to socket.Program closing!")));
+		//FPlatformProcess::Sleep(2);
+		//FGenericPlatformMisc::RequestExit(false);
 	}
-
-	//UE_LOG  "TCP Socket Listener Created! Yay!"
 }
 
-//Rama's Start TCP Receiver
-bool ABallAndPlatePawn::StartTCPReceiver(
+void ABallAndPlatePawn::Connect(
 	const FString& YourChosenSocketName,
-	const FString& TheIP,
-	const int32 ThePort
+	const FIPv4Address& ip,
+	int32 port
 	) {
-	//Rama's CreateTCPConnectionListener
-	ListenerSocket = CreateTCPConnectionListener(YourChosenSocketName, TheIP, ThePort);
 
-	//Not created?
-	if (!ListenerSocket)
+	TSharedRef<FInternetAddr> addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+	addr->SetIp(ip.Value);
+	addr->SetPort(port);
+
+	ConnectionSocket = FTcpSocketBuilder(YourChosenSocketName).AsBlocking().AsReusable().Build();
+	didConnect = ConnectionSocket->Connect(*addr);
+	if (didConnect)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Successful")));
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Failed")));
+
+}
+
+void ABallAndPlatePawn::readValueFromSocket() {
+	FString serialized = TEXT("GET_COORDINATE");
+	TCHAR *serializedChar = serialized.GetCharArray().GetData();
+	int32 size = FCString::Strlen(serializedChar);
+	int32 sent = 0;
+	
+	bool succesfull = ConnectionSocket->Send((uint8*)TCHAR_TO_UTF8(serializedChar), size, sent);
+	if (succesfull)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("StartTCPReceiver>> Listen socket could not be created! ~> %s %d"), *TheIP, ThePort));
-		return false;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Successfulllllllllll")));
+		
+		TArray<uint8> ReceivedData;
+		uint32 Size;
+		ReceivedData.Init(0, FMath::Min(Size, 65507u));
+		int32 Read = 0;
+		
+		succesfull  = ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
+		if (succesfull && ReceivedData.Num() != 0 ) {
+			const FString ReceivedUE4String = StringFromBinaryArray(ReceivedData);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("As String Data ~> %s"), *ReceivedUE4String));
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("No receive ")));
+
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Failedddd")));
 	}
 
-	//Start the Listener! //thread this eventually
-	GetWorldTimerManager().SetTimer(timeHandler, this,
-		&ABallAndPlatePawn::TCPConnectionListener, 0.01, true);
-
-	return true;
+	// servera istek gonder
+	// mesaj gelmesini bekle
+	// mesaji al
+	// gelen bilgiyi parse et
+	// degiskeneler assign et
 }
-//Format IP String as Number Parts
-bool ABallAndPlatePawn::FormatIP4ToNumber(const FString& TheIP, uint8(&Out)[4])
+
+void ABallAndPlatePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	//IP Formatting
-	TheIP.Replace(TEXT(" "), TEXT(""));
+	Super::EndPlay(EndPlayReason);
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//						   IP 4 Parts
-
-	//String Parts
-	TArray<FString> Parts;
-	//const wchar_t ar;
-
-	TheIP.ParseIntoArray(Parts, TEXT("."), true);
-	if (Parts.Num() != 4)
-		return false;
-
-	//String to Number Parts
-	for (int32 i = 0; i < 4; ++i)
+	if (ConnectionSocket)
 	{
-		Out[i] = FCString::Atoi(*Parts[i]);
+		ConnectionSocket->Close();
+		ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectionSocket);
 	}
-
-	return true;
 }
+
+///////////////////// RAMA'S FUNCTIONS ///////////////////
+/*
 //Rama's Create TCP Connection Listener
 FSocket* ABallAndPlatePawn::CreateTCPConnectionListener(const FString& YourChosenSocketName, const FString& TheIP, const int32 ThePort, const int32 ReceiveBufferSize)
 {
-	uint8 IP4Nums[4];
-	if (!FormatIP4ToNumber(TheIP, IP4Nums))
-	{
-		//VShow("Invalid IP! Expecting 4 parts separated by .");
-		return false;
-	}
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-	//Create Socket
-	FIPv4Endpoint Endpoint(FIPv4Address(IP4Nums[0], IP4Nums[1], IP4Nums[2], IP4Nums[3]), ThePort);
-	FSocket* ListenSocket = FTcpSocketBuilder(*YourChosenSocketName)
-		.AsReusable()
-		.BoundToEndpoint(Endpoint)
-		.Listening(8);
-
-	//Set Buffer Size
-	int32 NewSize = 0;
-	ListenSocket->SetReceiveBufferSize(ReceiveBufferSize, NewSize);
-
-	//Done!
-	return ListenSocket;
+uint8 IP4Nums[4];
+if (!FormatIP4ToNumber(TheIP, IP4Nums))
+{
+GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Invalid IP!Expecting 4 parts separated by .")));
+return false;
 }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+//Create Socket
+FIPv4Endpoint Endpoint(FIPv4Address(IP4Nums[0], IP4Nums[1], IP4Nums[2], IP4Nums[3]), ThePort);
+FSocket* ListenSocket = FTcpSocketBuilder(*YourChosenSocketName)
+.AsReusable()
+.BoundToEndpoint(Endpoint)
+.Listening(8);
+
+//Set Buffer Size
+int32 NewSize = 0;
+ListenSocket->SetReceiveBufferSize(ReceiveBufferSize, NewSize);
+
+//Done!
+return ListenSocket;
+}
+
 //Rama's TCP Connection Listener
 void ABallAndPlatePawn::TCPConnectionListener()
 {
-	//~~~~~~~~~~~~~
-	if (!ListenerSocket) return;
-	//~~~~~~~~~~~~~
+//~~~~~~~~~~~~~
+if (!ListenerSocket) return;
+//~~~~~~~~~~~~~
 
-	//Remote address
-	TSharedRef<FInternetAddr> RemoteAddress = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-	bool Pending;
+//Remote address
+TSharedRef<FInternetAddr> RemoteAddress = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+bool Pending;
 
-	// handle incoming connections
-	if (ListenerSocket->HasPendingConnection(Pending) && Pending)
-	{
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//Already have a Connection? destroy previous
-		if (ConnectionSocket)
-		{
-			ConnectionSocket->Close();
-			ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectionSocket);
-		}
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-		//New Connection receive!
-		ConnectionSocket = ListenerSocket->Accept(*RemoteAddress, TEXT("RamaTCP Received Socket Connection"));
-
-		if (ConnectionSocket != NULL)
-		{
-			//Global cache of current Remote Address
-			RemoteAddressForConnection = FIPv4Endpoint(RemoteAddress);
-
-			//UE_LOG "Accepted Connection! WOOOHOOOO!!!";
-
-			//can thread this too
-			//FTimerDelegate MyDel;
-
-			//			MyDel.BindRaw(this, &ABallAndPlatePawn::TCPSocketListener);
-			GetWorldTimerManager().SetTimer(timeHandler, this,
-				&ABallAndPlatePawn::TCPConnectionListener, 0.01f, true);
-			//SetTimer(MyDel, 0.01, true);
-		}
-	}
+// handle incoming connections
+if (ListenerSocket->HasPendingConnection(Pending) && Pending)
+{
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//Already have a Connection? destroy previous
+if (ConnectionSocket)
+{
+ConnectionSocket->Close();
+ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectionSocket);
+GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Removed old socket")));
 }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//New Connection receive!
+ConnectionSocket = ListenerSocket->Accept(*RemoteAddress, TEXT("Received Socket Connection"));
+
+if (ConnectionSocket != NULL)
+{
+//Global cache of current Remote Address
+RemoteAddressForConnection = FIPv4Endpoint(RemoteAddress);
+GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("New Connection came.")));
+
+//UE_LOG "Accepted Connection! WOOOHOOOO!!!";
+
+//can thread this too
+//FTimerDelegate MyDel;
+
+//			MyDel.BindRaw(this, &ABallAndPlatePawn::TCPSocketListener);
+GetWorldTimerManager().SetTimer(timeHandler, this,
+&ABallAndPlatePawn::TCPSocketListener, 0.01f, true);
+//SetTimer(MyDel, 0.01, true);
+}
+}
+}
 //Rama's TCP Socket Listener
 void ABallAndPlatePawn::TCPSocketListener()
 {
@@ -278,13 +295,12 @@ void ABallAndPlatePawn::TCPSocketListener()
 		int32 Read = 0;
 		ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
 
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Read! %d"), ReceivedData.Num()));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Read! %d"), ReceivedData.Num()));
 	}
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	if (ReceivedData.Num() <= 0)
 	{
-		//No Data Received
 		return;
 	}
 
@@ -301,7 +317,7 @@ void ABallAndPlatePawn::TCPSocketListener()
 	//VShow("As String!!!!! ~>", ReceivedUE4String);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("As String Data ~> %s"), *ReceivedUE4String));
 }
-
+*/
 FString ABallAndPlatePawn::StringFromBinaryArray(const TArray<uint8>& BinaryArray)
 {
 	//Create a string from a byte array!
