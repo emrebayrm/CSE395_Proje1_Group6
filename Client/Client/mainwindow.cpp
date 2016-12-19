@@ -306,7 +306,6 @@ void MainWindow::on_btnOpen3D_clicked()
 void MainWindow::sim3DConnection(){
     //check connection already established
     if(!isSim3DConnected){
-        pid_t pid;
 //        pid = fork();
 //        if(pid == 0){
 //            execl(EXENAME," ");         //start exec of 3d sim
