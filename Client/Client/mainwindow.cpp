@@ -110,8 +110,10 @@ void MainWindow::ardConnection()
 {
     if(!connectionCompleted){
         com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate,&mtx);
-        if(!guiThread->isAlive())
-            guiThread->start();
+        if(com->isCommunicationReady()){
+            if(!guiThread->isAlive())
+                guiThread->start();
+        }
     }
     if(!com->isCommunicationReady()){
         ardThread->terminate();
