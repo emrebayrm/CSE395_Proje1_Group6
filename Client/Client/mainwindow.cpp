@@ -19,13 +19,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     guiThread = new GraphicThread(this);
     ardThread = new ArduinoThread(this);
+    simThread = new Sim3DThread(this);
 
     // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateXYPlotData()));
 
     connect(ardThread,SIGNAL(startArdThread()),this, SLOT(ardConnection()));
-
+    connect(simThread,SIGNAL(startThread()),this,SLOT(sim3DConnection()));
 }
 
 MainWindow::~MainWindow()
@@ -108,74 +109,40 @@ void MainWindow::updateXYPlotData(){
 
 void MainWindow::ardConnection()
 {
-
-    if(!connectionCompleted)
+    if(!connectionCompleted){
         com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate,&mtx);
+        guiThread->start();
+    }
     if(!com->isCommunicationReady()){
         ardThread->stop=true;
         ui->textBMsg->append("Connection Failed");
         connectionCompleted = false;
     }else{
-        guiThread->start();
+
         connectionCompleted = true;
     }
+
     if(connectionCompleted){
+
         if(com->readUntil()){
             mtx.lock();
-            //cerr<<"inmutexmain"<<endl;
+            cerr<<"inmutexmain"<<endl;
             guiThread->msg.ballX = com->getBallXCoordinate();
             guiThread->msg.ballY = com->getBallYCoordinate();
             guiThread->msg.motorXangle = com->getXMotorAngle();
             guiThread->msg.motorYangle = com->getYMotorAngle();
-
+            if(isSim3DConnected){
+                simThread->msg.ballX = com->getBallXCoordinate();
+                simThread->msg.ballY = com->getBallYCoordinate();
+                simThread->msg.motorXangle = com->getXMotorAngle();
+                simThread->msg.motorYangle = com->getYMotorAngle();
+            }
             std::cerr<<"BallX:"<<guiThread->msg.ballX<<"BallY"<<guiThread->msg.ballY<<endl;
             std::cerr<<"ServoX:"<<guiThread->msg.motorXangle<<"ServoY:"<<guiThread->msg.motorYangle<<endl;
-            //cerr<<"outmutexmain"<<endl;
+            cerr<<"outmutexmain"<<endl;
             mtx.unlock();
         }
     }
-    /*
-
-            sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
-                                             com.getYMotorAngle(),
-                                             com.getBallXCoordinate(),
-                                             com.getBallYCoordinate());
-
-            std::cerr << com.getBallXCoordinate()  << std::endl;
-            writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);   //Send packet to grafik pipe.
-            if(writeRet < 0){
-                std::cerr << "Error Writing " << std::endl;
-                exit(EXIT_FAILURE);
-            }
-            read(fd3DSim[0],getBuffer,THREADCOMSIZE);
-
-            //check button unreal button has pressed.
-            if(std::strcmp(getBuffer,PRESSED) == 0){
-                //TODO:Pressed Section
-                sim3DisOpen = true;
-            }
-
-            //check 3D is open if openned check if it is ready Message
-            if(sim3DisOpen && (std::strcmp(getBuffer,READY)) == 0){
-                writeRet = write(fd3DSim[1],sendBuffer,sizeof(char)*PACKET_SIZE);//Send Packet to 3d
-
-                if(writeRet < 0){
-                    std::cerr << "Write Error. EXITING !!!" << std::endl;
-                    exit(EXIT_FAILURE);
-                }
-            }
-
-            //check 3D sim is quitted ?
-            if(std::strcmp(getBuffer,QUIT) == 0){
-                //pthread_join(id3DSim,NULL);
-                sim3DisOpen = false;
-            }
-
-            //Send To Grafic Thread
-            writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);
-            */
-       //     }//EndRead
-     //   }//End while*/
 }
 
 
@@ -286,11 +253,6 @@ void MainWindow::on_btnConnPlate_clicked()
         ardThread->msg=msg;
         ardThread->start();
     }
-
-    /*int error = pthread_create(&thArd,NULL,CommunicateWithArduino,&msg);
-    ui->textBMsg->append("Thread Status:"+QString::number(error));
-    */
-
 }
 
 
@@ -302,9 +264,90 @@ void MainWindow::closeEvent (QCloseEvent *event)
     if (resBtn != QMessageBox::Yes) {
         event->ignore();
     } else {
+        if(isSim3DConnected){
+            simThread->stop = true;
+            if(server->isEstablished())
+                server->close();
+        }
         guiThread->stop=true;
         ardThread->stop=true;
-        sleep(1);
+        usleep(500); // wait for thread terminate
+
+        if(com!=NULL){
+            com->closeConnection();
+            delete com;
+            com=NULL;
+        }
+        usleep(500);
         event->accept();
     }
+}
+
+void MainWindow::on_btnOpen3D_clicked()
+{
+    if(!isSim3DConnected){
+        ui->textBMsg->append("3D Simulation is opennig ... ");
+        simThread->start();
+    }else{
+        ui->textBMsg->append("Simulation already runnig");
+    }
+}
+
+void MainWindow::sim3DConnection(){
+    //check connection already established
+    if(!isSim3DConnected){
+        pid_t pid;
+//        pid = fork();
+//        if(pid == 0){
+//            execl(EXENAME," ");         //start exec of 3d sim
+//            exit(EXIT_SUCCESS);
+//        }
+        if(server == nullptr){
+            server = new myTcpServer(this);
+            server->listen();
+            ui->textBMsg->append("address : " + server->getAddress());
+            ui->textBMsg->append("Port number : "+ QString::number(server->getPortNumber()));
+        }
+        if(server->isEstablished()){       //listen to connect
+            isSim3DConnected = true ;
+            std::cerr <<  "Connection completed";
+        }
+
+    }
+    if(isSim3DConnected){
+        server->readData();
+        char buffer[30] = "Hello ";
+/*        std::sprintf(buffer,"{%d %d %d %d}",simThread->msg.ballX,
+                                            simThread->msg.ballY,
+                                            simThread->msg.motorXangle,
+                                            simThread->msg.motorYangle);*/
+        if(server->SendData(buffer))
+            std::cerr << "Succesfully sent" << std::endl;
+        else
+            std::cerr << "Error data sending " << std::endl;
+    }
+
+}
+
+void MainWindow::on_btnDisconnect_clicked()
+{
+    std::cerr<<"on_click_btn_disconnect"<<endl;
+    qDebug("test");
+
+    while(ardThread->isRunning()){
+        ardThread->terminate();
+    }
+
+    while(guiThread->isRunning()){
+        guiThread->terminate();
+    }
+
+    if(com!=NULL){
+        com->closeConnection();
+        delete com;
+        com=NULL;
+    }
+
+    connectionCompleted=false;
+    ui->textBMsg->setText("Connection closed!");
 }

@@ -25,9 +25,13 @@ public slots:
     void updateXYPlotData();
 
     void ardConnection();
+    void sim3DConnection();
 
 private slots:
     void on_btnConnPlate_clicked();
+
+    void on_btnDisconnect_clicked();
+    void on_btnOpen3D_clicked();
 
 private:
 
@@ -37,10 +41,16 @@ private:
     QTimer timerXYPlot;
     QTimer timerServoPlot;
 
+    Sim3DThread *simThread;
     GraphicThread *guiThread; // TODO: check this
     ArduinoThread *ardThread;
+
     pthread_t thArd;
+
     Communication *com;
+    myTcpServer *server;
+
+    bool isSim3DConnected = false;
     bool connectionCompleted =false;
 
     QMutex mtx;

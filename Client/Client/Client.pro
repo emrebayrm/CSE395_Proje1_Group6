@@ -11,7 +11,9 @@ SOURCES += main.cpp \
     graphicthread.cpp \
     arduinothread.cpp \
     arduinomessagebean.cpp \
-    threedsimulationmessage.cpp
+    threedsimulationmessage.cpp \
+    sim3dthread.cpp \
+    mytcpserver.cpp
 
 RESOURCES += res.qrc
 
@@ -35,7 +37,9 @@ HEADERS += \
     graphicthread.h \
     arduinothread.h \
     arduinomessagebean.h \
-    threedsimulationmessage.h
+    threedsimulationmessage.h \
+    sim3dthread.h \
+    mytcpserver.h
 
 DISTFILES +=
 
