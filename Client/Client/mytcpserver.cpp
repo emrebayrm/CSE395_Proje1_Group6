@@ -26,7 +26,7 @@ std::string myTcpServer::readData()
 {
     QByteArray data = socket->readAll();
 
-    return data.toStdString()
+    return data.toStdString();
 }
 
 
