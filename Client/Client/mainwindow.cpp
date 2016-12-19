@@ -108,21 +108,24 @@ void MainWindow::updateXYPlotData(){
 
 void MainWindow::ardConnection()
 {
-
-    if(!connectionCompleted)
+    if(!connectionCompleted){
         com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate,&mtx);
+        guiThread->start();
+    }
     if(!com->isCommunicationReady()){
         ardThread->stop=true;
         ui->textBMsg->append("Connection Failed");
         connectionCompleted = false;
     }else{
-        guiThread->start();
+
         connectionCompleted = true;
     }
+
     if(connectionCompleted){
+
         if(com->readUntil()){
             mtx.lock();
-            //cerr<<"inmutexmain"<<endl;
+            cerr<<"inmutexmain"<<endl;
             guiThread->msg.ballX = com->getBallXCoordinate();
             guiThread->msg.ballY = com->getBallYCoordinate();
             guiThread->msg.motorXangle = com->getXMotorAngle();
@@ -130,7 +133,7 @@ void MainWindow::ardConnection()
 
             std::cerr<<"BallX:"<<guiThread->msg.ballX<<"BallY"<<guiThread->msg.ballY<<endl;
             std::cerr<<"ServoX:"<<guiThread->msg.motorXangle<<"ServoY:"<<guiThread->msg.motorYangle<<endl;
-            //cerr<<"outmutexmain"<<endl;
+            cerr<<"outmutexmain"<<endl;
             mtx.unlock();
         }
     }
@@ -286,11 +289,6 @@ void MainWindow::on_btnConnPlate_clicked()
         ardThread->msg=msg;
         ardThread->start();
     }
-
-    /*int error = pthread_create(&thArd,NULL,CommunicateWithArduino,&msg);
-    ui->textBMsg->append("Thread Status:"+QString::number(error));
-    */
-
 }
 
 
@@ -304,7 +302,30 @@ void MainWindow::closeEvent (QCloseEvent *event)
     } else {
         guiThread->stop=true;
         ardThread->stop=true;
-        sleep(1);
+        usleep(500); // wait for thread terminate
+
+        if(com!=NULL){
+            com->closeConnection();
+            delete com;
+            com=NULL;
+        }
+        usleep(500);
         event->accept();
     }
+}
+
+void MainWindow::on_btnDisconnect_clicked()
+{
+    guiThread->stop=true;
+    ardThread->stop=true;
+    usleep(500); // wait for thread terminate
+
+    if(com!=NULL){
+        com->closeConnection();
+        delete com;
+        com=NULL;
+    }
+    usleep(500);
+    connectionCompleted=false;
+    ui->textBMsg->setText("Connection closed!");
 }

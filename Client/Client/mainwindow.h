@@ -29,6 +29,8 @@ public slots:
 private slots:
     void on_btnConnPlate_clicked();
 
+    void on_btnDisconnect_clicked();
+
 private:
 
     void setXYPlot();

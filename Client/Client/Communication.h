@@ -30,7 +30,6 @@
 
 using namespace std;
 
-
 /**
  * Serial Communication
  */
@@ -47,12 +46,13 @@ private :
     bool checkConnection();
     inline void setXMotorAngle(int angle){ XMotorAngle = angle; }
     inline void setYMotorAngle(int angle){YMotorAngle = angle; }
-    inline void setBallXCoordinate(int x){ballXCoordinate = map(x,XCOORDMIN,XCOORDMMAX,XOUTMIN,XOUTMAX);} //TODO : Map edilmiş olacak
-    inline void setBallYCoordinate(int y){ballYCoordinate = map(y,YCOORDMIN,YCOORDMMAX,YOUTMIN,YOUTMAX);} //Arduino dan alınacak
+    inline void setBallXCoordinate(int x){ballXCoordinate =x;}
+    inline void setBallYCoordinate(int y){ballYCoordinate=y;}
     inline float map(long x, long in_min, long in_max, long out_min, long out_max)
     {
         return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
     }
+
 public:
     /**
      * Constructor
@@ -64,7 +64,8 @@ public:
      * Attention: received data should be like ("X%3.2lfY%3.2lfx%dy%d!",double ,double,int,int)
      * Reads the serial port and assigns the motor angles
      */
-    //bool read();
+
+    void closeConnection();
 
     bool readUntil();
 
@@ -75,7 +76,6 @@ public:
     int getXMotorAngle() const {
         return XMotorAngle;
     }
-
 
     int getYMotorAngle() const {
         return YMotorAngle;
