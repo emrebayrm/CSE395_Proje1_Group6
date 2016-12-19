@@ -21,6 +21,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ardThread = new ArduinoThread(this);
     simThread = new Sim3DThread(this);
 
+    com=NULL;
+    server=NULL;
+
     // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateXYPlotData()));
@@ -300,7 +303,7 @@ void MainWindow::sim3DConnection(){
 //            execl(EXENAME," ");         //start exec of 3d sim
 //            exit(EXIT_SUCCESS);
 //        }
-        if(server == nullptr){
+        if(server == NULL){
             server = new myTcpServer(this);
             server->listen();
             ui->textBMsg->append("address : " + server->getAddress());
