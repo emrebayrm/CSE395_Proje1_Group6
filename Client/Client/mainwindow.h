@@ -4,8 +4,12 @@
 #include <QMainWindow>
 #include <iostream>
 #include <QCloseEvent>
+#include <QDebug>
+#include <QMessageLogger>
 #include "graphicthread.h"
 #include "requirements.h"
+
+
 
 namespace Ui {
 class MainWindow;
@@ -14,7 +18,6 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     Ui::MainWindow* getUI(){return ui;}
     explicit MainWindow(QWidget *parent = 0);
@@ -47,6 +50,7 @@ private:
 
     QMutex mtx;
 
+    QMessageLogger logger;
 };
 
 #endif // MAINWINDOW_H

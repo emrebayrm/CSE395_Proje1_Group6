@@ -110,11 +110,13 @@ void MainWindow::ardConnection()
 {
     if(!connectionCompleted){
         com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate,&mtx);
-        guiThread->start();
+        if(!guiThread->isAlive())
+            guiThread->start();
     }
     if(!com->isCommunicationReady()){
-        ardThread->stop=true;
-        ui->textBMsg->append("Connection Failed");
+        ardThread->terminate();
+        ui->textBMsg->append("Arduino Connection failed");
+        logger.warning("Arduino connection failed!");
         connectionCompleted = false;
     }else{
 
@@ -125,60 +127,23 @@ void MainWindow::ardConnection()
 
         if(com->readUntil()){
             mtx.lock();
-            cerr<<"inmutexmain"<<endl;
+
             guiThread->msg.ballX = com->getBallXCoordinate();
             guiThread->msg.ballY = com->getBallYCoordinate();
             guiThread->msg.motorXangle = com->getXMotorAngle();
             guiThread->msg.motorYangle = com->getYMotorAngle();
 
-            std::cerr<<"BallX:"<<guiThread->msg.ballX<<"BallY"<<guiThread->msg.ballY<<endl;
-            std::cerr<<"ServoX:"<<guiThread->msg.motorXangle<<"ServoY:"<<guiThread->msg.motorYangle<<endl;
-            cerr<<"outmutexmain"<<endl;
+            QString log;
+            log.append("Bx:").append(QString::number(guiThread->msg.ballX)).append("  ");
+            log.append("By:").append(QString::number(guiThread->msg.ballY)).append("  ");
+            log.append("Sx:").append(QString::number(guiThread->msg.motorXangle)).append("  ");
+            log.append("Sy:").append(QString::number(guiThread->msg.motorYangle)).append("  ");
+            logger.debug(log.toStdString().c_str());
+            logger.debug("Arduino <--> ardThread okeyy");
+            qDebug();
             mtx.unlock();
         }
     }
-    /*
-
-            sprintf(sendBuffer,PACKETFORMAT,com.getXMotorAngle(),
-                                             com.getYMotorAngle(),
-                                             com.getBallXCoordinate(),
-                                             com.getBallYCoordinate());
-
-            std::cerr << com.getBallXCoordinate()  << std::endl;
-            writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);   //Send packet to grafik pipe.
-            if(writeRet < 0){
-                std::cerr << "Error Writing " << std::endl;
-                exit(EXIT_FAILURE);
-            }
-            read(fd3DSim[0],getBuffer,THREADCOMSIZE);
-
-            //check button unreal button has pressed.
-            if(std::strcmp(getBuffer,PRESSED) == 0){
-                //TODO:Pressed Section
-                sim3DisOpen = true;
-            }
-
-            //check 3D is open if openned check if it is ready Message
-            if(sim3DisOpen && (std::strcmp(getBuffer,READY)) == 0){
-                writeRet = write(fd3DSim[1],sendBuffer,sizeof(char)*PACKET_SIZE);//Send Packet to 3d
-
-                if(writeRet < 0){
-                    std::cerr << "Write Error. EXITING !!!" << std::endl;
-                    exit(EXIT_FAILURE);
-                }
-            }
-
-            //check 3D sim is quitted ?
-            if(std::strcmp(getBuffer,QUIT) == 0){
-                //pthread_join(id3DSim,NULL);
-                sim3DisOpen = false;
-            }
-
-            //Send To Grafic Thread
-            writeRet = write(fdGrafic[1],sendBuffer,sizeof(char)*PACKET_SIZE);
-            */
-       //     }//EndRead
-     //   }//End while*/
 }
 
 
@@ -261,7 +226,7 @@ void MainWindow::updateServoPlotData(){
 void MainWindow::on_btnConnPlate_clicked()
 {
     if(connectionCompleted){
-        ui->textBMsg-> append("Already Connected");
+        ui->textBMsg-> append("Connection is already open.");
         return;
     }
 
@@ -274,21 +239,17 @@ void MainWindow::on_btnConnPlate_clicked()
     int iBaudRate = baudRate.toInt();
     // set baudrate
     switch(iBaudRate) {
-        case 4800: msg.baudRate = SerialPort::BR_4800;
         case 9600: msg.baudRate = SerialPort::BR_9600;
         case 38400: msg.baudRate = SerialPort::BR_38400;
         case 115200: msg.baudRate = SerialPort::BR_115200;
     default: { iBaudRate=9600; msg.baudRate=SerialPort::BR_9600;} // burası ekrana basılabilir
     }
 
-    if(ardThread->isRunning()){
-        ui->textBMsg->append("Arduino thread already works");
-    }else{
-        ui->textBMsg->append("Port name:"+portName);
-        ui->textBMsg->append("Baud rate:"+QString::number(msg.baudRate));
-        ardThread->msg=msg;
-        ardThread->start();
-    }
+    ui->textBMsg->append("New connection:");
+    ui->textBMsg->append(" Port name:"+portName);
+    ui->textBMsg->append(" Baud rate:"+QString::number(msg.baudRate));
+    ardThread->msg=msg;
+    ardThread->start();
 }
 
 
@@ -300,32 +261,43 @@ void MainWindow::closeEvent (QCloseEvent *event)
     if (resBtn != QMessageBox::Yes) {
         event->ignore();
     } else {
-        guiThread->stop=true;
-        ardThread->stop=true;
-        usleep(500); // wait for thread terminate
+
+        while(ardThread->isRunning()){
+            ardThread->terminate();
+        }
+
+        while(guiThread->isRunning()){
+            guiThread->terminate();
+        }
 
         if(com!=NULL){
             com->closeConnection();
             delete com;
             com=NULL;
         }
-        usleep(500);
         event->accept();
     }
 }
 
 void MainWindow::on_btnDisconnect_clicked()
 {
-    guiThread->stop=true;
-    ardThread->stop=true;
-    usleep(500); // wait for thread terminate
+    std::cerr<<"on_click_btn_disconnect"<<endl;
+    qDebug("test");
+
+    while(ardThread->isRunning()){
+        ardThread->terminate();
+    }
+
+    while(guiThread->isRunning()){
+        guiThread->terminate();
+    }
 
     if(com!=NULL){
         com->closeConnection();
         delete com;
         com=NULL;
     }
-    usleep(500);
+
     connectionCompleted=false;
     ui->textBMsg->setText("Connection closed!");
 }

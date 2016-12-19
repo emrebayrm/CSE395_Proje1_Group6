@@ -12,15 +12,18 @@ class ArduinoThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit ArduinoThread(QObject* parent=0,bool b=false);
+    explicit ArduinoThread(QObject* parent=0);
     void run();
-    bool stop;
+    bool isAlive();
+    void terminate();
     ArduinoMessageBean msg;
 signals:
     void startArdThread();
 public slots:
 
 private:
+    QMutex mutex;
+    bool alive;
 
 };
 #endif // ARDUINOTHREAD_H
