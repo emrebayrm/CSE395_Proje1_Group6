@@ -17,13 +17,13 @@ public:
 
     int getPortNumber(){return server->serverPort();}
 
-    void close(){socket->close();}
+    void close();
 public slots:
     void newConnection();
 
 private:
-    QTcpServer *server;
-    QTcpSocket *socket;
+    QTcpServer *server = NULL;
+    QTcpSocket *socket = NULL;
 
     bool isEstablishedConnection = false;
 };

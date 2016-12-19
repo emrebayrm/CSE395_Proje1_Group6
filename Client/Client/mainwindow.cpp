@@ -276,6 +276,12 @@ void MainWindow::closeEvent (QCloseEvent *event)
             guiThread->terminate();
         }
 
+        if(server != NULL ){
+            server->close();
+            delete server;
+            server = NULL;
+        }
+
         if(com!=NULL){
             com->closeConnection();
             delete com;

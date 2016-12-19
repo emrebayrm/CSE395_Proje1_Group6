@@ -29,6 +29,18 @@ std::string myTcpServer::readData()
     return data.toStdString();
 }
 
+void myTcpServer::close()
+{
+    if(server == NULL) {
+        server->close();
+        delete server;
+    }
+    if(socket == NULL){
+        socket->close();
+        delete socket;
+    }
+}
+
 
 
 bool myTcpServer::SendData(char * data)
