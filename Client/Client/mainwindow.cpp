@@ -19,13 +19,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     guiThread = new GraphicThread(this);
     ardThread = new ArduinoThread(this);
+    simThread = new Sim3DThread(this);
 
     // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateXYPlotData()));
 
     connect(ardThread,SIGNAL(startArdThread()),this, SLOT(ardConnection()));
-
+    connect(simThread,SIGNAL(startThread()),this,SLOT(sim3DConnection()));
 }
 
 MainWindow::~MainWindow()
@@ -143,6 +144,12 @@ void MainWindow::ardConnection()
             logger.debug(log.toStdString().c_str());
             logger.debug("Arduino <--> ardThread okeyy");
             qDebug();
+            if(isSim3DConnected){
+                simThread->msg.ballX = com->getBallXCoordinate();
+                simThread->msg.ballY = com->getBallYCoordinate();
+                simThread->msg.motorXangle = com->getXMotorAngle();
+                simThread->msg.motorYangle = com->getYMotorAngle();
+            }
             mtx.unlock();
         }
     }
@@ -263,6 +270,11 @@ void MainWindow::closeEvent (QCloseEvent *event)
     if (resBtn != QMessageBox::Yes) {
         event->ignore();
     } else {
+        if(isSim3DConnected){
+            simThread->stop = true;
+            if(server->isEstablished())
+                server->close();
+        }
 
         while(ardThread->isRunning()){
             ardThread->terminate();
@@ -279,6 +291,52 @@ void MainWindow::closeEvent (QCloseEvent *event)
         }
         event->accept();
     }
+}
+
+void MainWindow::on_btnOpen3D_clicked()
+{
+    if(!isSim3DConnected){
+        ui->textBMsg->append("3D Simulation is opennig ... ");
+        simThread->start();
+    }else{
+        ui->textBMsg->append("Simulation already runnig");
+    }
+}
+
+void MainWindow::sim3DConnection(){
+    //check connection already established
+    if(!isSim3DConnected){
+        pid_t pid;
+//        pid = fork();
+//        if(pid == 0){
+//            execl(EXENAME," ");         //start exec of 3d sim
+//            exit(EXIT_SUCCESS);
+//        }
+        if(server == nullptr){
+            server = new myTcpServer(this);
+            server->listen();
+        }
+        ui->textBMsg->append("address : " + server->getAddress());
+        ui->textBMsg->append("Port number : "+ QString::number(server->getPortNumber()));
+        if(server->isEstablished()){       //listen to connect
+            isSim3DConnected = true ;
+            std::cerr <<  "Connection completed";
+        }
+
+    }
+    if(isSim3DConnected){
+        std::cerr << "Time to write";
+        char buffer[30] = "Hello ";
+/*        std::sprintf(buffer,"{%d %d %d %d}",simThread->msg.ballX,
+                                            simThread->msg.ballY,
+                                            simThread->msg.motorXangle,
+                                            simThread->msg.motorYangle);*/
+        if(server->SendData(buffer))
+            std::cerr << "Succesfully sent" << std::endl;
+        else
+            std::cerr << "Error data sending " << std::endl;
+    }
+
 }
 
 void MainWindow::on_btnDisconnect_clicked()
