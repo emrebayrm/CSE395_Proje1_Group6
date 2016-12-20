@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QImage logo(":/images/gtuLogo500.png");
     ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(400,200)));
 
+    ui->rBCenter->setChecked(true);
+
     guiThread = new GraphicThread(this);
     ardThread = new ArduinoThread(this);
     simThread = new Sim3DThread(this);
@@ -336,10 +338,10 @@ void MainWindow::sim3DConnection(){
             return;
         if(str.at(0) == 'G'){
             char buffer[30];
-            std::sprintf(buffer,"{%d %d %d %d}",100,100,100,100);/*simThread->msg.ballX,
+            std::sprintf(buffer,"{%d %d %d %d}",simThread->msg.ballX,
                                                 simThread->msg.ballY,
                                                 simThread->msg.motorXangle,
-                                                simThread->msg.motorYangle);*/
+                                                simThread->msg.motorYangle);
             if(server->SendData(buffer))
                 std::cerr << "Succesfully sent" << std::endl;
             else{
@@ -373,8 +375,11 @@ void MainWindow::sim3DConnection(){
 
 void MainWindow::on_btnDisconnect_clicked()
 {
-    std::cerr<<"on_click_btn_disconnect"<<endl;
     qDebug("test");
+
+    while(simThread->isRunning()){
+        simThread->terminate();
+    }
 
     while(ardThread->isRunning()){
         ardThread->terminate();
@@ -384,6 +389,12 @@ void MainWindow::on_btnDisconnect_clicked()
         guiThread->terminate();
     }
 
+    if(server != NULL ){
+        server->close();
+        delete server;
+        server = NULL;
+    }
+
     if(com!=NULL){
         com->closeConnection();
         delete com;
@@ -391,5 +402,6 @@ void MainWindow::on_btnDisconnect_clicked()
     }
 
     connectionCompleted=false;
-    ui->textBMsg->setText("Connection closed!");
+    isSim3DConnected=false;
+    ui->textBMsg->append("Connection closed!");
 }
