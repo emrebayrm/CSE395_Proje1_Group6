@@ -36,7 +36,7 @@ void ABallAndPlatePawn::BeginPlay()
 	differenceY_Z = kolYReference->GetActorLocation().Z - kolY->GetActorLocation().Z;
 	rotation = FRotator(RootComponent->GetRelativeTransform().GetRotation());
 	setUpLights();
-	//ConnectToServer();
+	ConnectToServer();
 
 }
 
@@ -44,7 +44,8 @@ void ABallAndPlatePawn::BeginPlay()
 void ABallAndPlatePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	readValueFromSocket();
+	checkConnection();
 	if (!CurrentVelocity.IsZero())
 	{
 		FVector refXLocation = kolXReference->GetActorLocation();;
@@ -64,9 +65,6 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 		OurVisibleComponent1->SetRelativeLocation(ballRelativeLocation + CurrentVelocity * DeltaTime * 4);
 
 		UpdateLights();
-
-
-
 	
 	}
 
@@ -92,7 +90,6 @@ void ABallAndPlatePawn::SetupPlayerInputComponent(class UInputComponent* InputCo
 
 
 }
-
 
 void ABallAndPlatePawn::Move_XAxis(float AxisValue)
 {
@@ -142,8 +139,6 @@ void ABallAndPlatePawn::setUpLights()
 	}
 }
 
-
-
 void ABallAndPlatePawn::UpdateLights() {
 
 	FVector ballRelativeLocation = OurVisibleComponent1->GetRelativeTransform().GetLocation();
@@ -177,40 +172,75 @@ void ABallAndPlatePawn::UpdateLights() {
 void ABallAndPlatePawn::ConnectToServer()
 {
 	FString address = TEXT("127.0.0.1");
-	int32 port = 8881;
+	int32 port = PORT;
 	FIPv4Address ipAddress;
 	FIPv4Address::Parse(address, ipAddress);
-	while (!Connect("SocketListener", ipAddress, port));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("TCP Socket Listener Connected successfuly!")));
+	Connect("SocketListener", ipAddress, port);
 }
 
-bool ABallAndPlatePawn::Connect(
+void ABallAndPlatePawn::Connect(
 	const FString& YourChosenSocketName,
 	const FIPv4Address& ip,
 	int32 port
-	) {
+) {
 
 	TSharedRef<FInternetAddr> addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
 	addr->SetIp(ip.Value);
 	addr->SetPort(port);
 
 	ConnectionSocket = FTcpSocketBuilder(YourChosenSocketName).AsBlocking().AsReusable().Build();
-	bool didConnect = ConnectionSocket->Connect(*addr);
-	if (didConnect)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Successful")));
+	didConnect = ConnectionSocket->Connect(*addr);
+	if (didConnect) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Connect Successful")));
+		// close program
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connect Failed")));
+		// close program
+	}
+}
+
+void ABallAndPlatePawn::readValueFromSocket() {
+
+	FString serialized = TEXT("GET_COORDINATE");
+	TCHAR *serializedChar = serialized.GetCharArray().GetData();
+	int32 size = FCString::Strlen(serializedChar);
+	int32 sent = 0;
+
+	bool succesfull = ConnectionSocket->Send((uint8*)TCHAR_TO_UTF8(serializedChar), size, sent);
+	if (succesfull)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Send Successful")));
+
+		TArray<uint8> ReceivedData;
+		uint32 Size = PACKET_SIZE;
+		ReceivedData.Init(0, FMath::Min(Size, 65507u));
+		int32 Read = 0;
+		bool HasPendingConnection = false;
+		bool status = false;
+		while (ConnectionSocket->HasPendingConnection(HasPendingConnection) && HasPendingConnection == false && !ConnectionSocket->HasPendingData(Size));
+		succesfull = ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
+		if (succesfull) {
+			const FString ReceivedUE4String = StringFromBinaryArray(ReceivedData);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("As String Data ~> %s"), *ReceivedUE4String));
+		}
+		else 
+			didConnect = false;
+		
+	}
 	else
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Failed")));
-	return didConnect;
+		didConnect = false;
+	
+
 }
 
-void readValueFromSocket() {
-	// servera istek gonder
-	// mesaj gelmesini bekle
-	// mesaji al
-	// gelen bilgiyi parse et
-	// degiskeneler assign et
-}
+void ABallAndPlatePawn::checkConnection() {
+	if (!didConnect) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("close programm")));
+		// close program
+	}
 
+}
 void ABallAndPlatePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);

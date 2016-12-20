@@ -5,6 +5,9 @@
 #include "GameFramework/Pawn.h"
 #include "Networking.h"
 #include "BallAndPlatePawn.generated.h"
+ 
+#define PORT 9999
+#define PACKET_SIZE 20
 
 UCLASS()
 class BALLANDPLATE_API ABallAndPlatePawn : public APawn
@@ -89,6 +92,7 @@ public:
 	FVector CurrentVelocity;
 	FVector rot;
 	bool bGrowing;
+	void UpdateLights();
 
 	
 
@@ -98,20 +102,22 @@ public:
 	FIPv4Endpoint RemoteAddressForConnection;
 	FTimerHandle timeHandler;
 
-	void UpdateLights();
 
 	void ConnectToServer();
 
-	bool Connect(
+	void Connect(
 		const FString& YourChosenSocketName,
 		const FIPv4Address& ip,
 		int32 port
 		);
 
 	void readValueFromSocket();
+	void checkConnection();
 	void sendValueToSocket();
 
-	//Rama's StringFromBinaryArray
+
+
+	bool didConnect;
 	FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
 	
 };
