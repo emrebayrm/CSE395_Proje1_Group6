@@ -315,25 +315,51 @@ void MainWindow::sim3DConnection(){
         }
         if(server->isEstablished()){       //listen to connect
             isSim3DConnected = true ;
-            std::cerr <<  "Connection completed";
+            ui->textBMsg->append("Connection completed");
             ui->textBMsg->append("address : " + server->getAddress());
             ui->textBMsg->append("Port number : "+ QString::number(server->getPortNumber()));
         }
 
     }
     if(isSim3DConnected){
-        server->readData();
-        char buffer[30] = "Hello ";
-/*        std::sprintf(buffer,"{%d %d %d %d}",simThread->msg.ballX,
-                                            simThread->msg.ballY,
-                                            simThread->msg.motorXangle,
-                                            simThread->msg.motorYangle);*/
-        if(server->SendData(buffer))
-            std::cerr << "Succesfully sent" << std::endl;
-        else
-            std::cerr << "Error data sending " << std::endl;
-    }
+        std::string str = server->readData();
+        if(str.size() == 0)
+            return;
+        if(str.at(0) == 'G'){
+            char buffer[30];
+            std::sprintf(buffer,"{%d %d %d %d}",100,100,100,100);/*simThread->msg.ballX,
+                                                simThread->msg.ballY,
+                                                simThread->msg.motorXangle,
+                                                simThread->msg.motorYangle);*/
+            if(server->SendData(buffer))
+                std::cerr << "Succesfully sent" << std::endl;
+            else{
+                std::cerr << "Connection Lost  " << std::endl;
+                while(simThread->isRunning())
+                    simThread->terminate();
 
+                isSim3DConnected = false;
+                qDebug("Connection Lost");
+                server->close();
+                delete server;
+                server= NULL;
+                ui->textBMsg->append("Connection closed!");
+            }
+        }else if(str.at(0) == 'E'){
+            while(simThread->isRunning())
+                simThread->terminate();
+
+            isSim3DConnected = false;
+            qDebug("Connection Lost");
+            server->close();
+            delete server;
+            server= NULL;
+            ui->textBMsg->append("Connection closed!");
+        }
+        else{
+            qDebug("Wrong ");
+        }
+    }
 }
 
 void MainWindow::on_btnDisconnect_clicked()
