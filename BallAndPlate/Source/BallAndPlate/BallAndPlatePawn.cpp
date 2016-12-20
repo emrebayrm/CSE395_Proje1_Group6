@@ -132,7 +132,7 @@ void ABallAndPlatePawn::setUpLights()
 	for (i = 0; i < lights.Num(); ++i) {
 		for (j = 0; j < lights[i].Num(); ++j) {
 			if (lights[i][j] != nullptr) {
-				lights[i][j]->SetEnabled(false);
+				lights[i][j]->GetRootComponent()->SetVisibility(false);
 			}
 
 		}
@@ -153,12 +153,12 @@ void ABallAndPlatePawn::UpdateLights() {
 	UE_LOG(LogTemp, Warning, TEXT("MAP X : %d"), mapX);
 	UE_LOG(LogTemp, Warning, TEXT("MAP Y : %d"), mapY);
 
-	lights[mapX][mapY]->SetEnabled(true);
+	lights[mapX][mapY]->GetRootComponent()->SetVisibility(true);
 
 	for (int i = 0; i < lights.Num(); ++i) {
 		for (int j = 0; j < lights[i].Num(); ++j) {
 			if (lights[i][j] != nullptr && (i!=mapX ||j!=mapY)) {
-				lights[i][j]->SetEnabled(false);
+				lights[i][j]->GetRootComponent()->SetVisibility(false);
 			}
 
 		}
