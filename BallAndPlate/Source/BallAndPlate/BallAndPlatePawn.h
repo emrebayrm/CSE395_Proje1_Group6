@@ -3,7 +3,6 @@
 #pragma once
 
 #include "GameFramework/Pawn.h"
-#include "Networking.h"
 #include "BallAndPlatePawn.generated.h"
 
 UCLASS()
@@ -23,12 +22,6 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-	
-	void setUpLights();
-
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	//~ABallAndPlatePawn();
-
 
 	UPROPERTY(EditAnywhere)
 		USceneComponent* OurVisibleComponent1; // ball 
@@ -71,7 +64,6 @@ public:
 		TArray<APointLight*> UprightLights13;
 	
 
-	TArray<TArray<APointLight*>> lights;
 	
 	// Input functions
 	void Move_XAxis(float AxisValue);
@@ -82,25 +74,5 @@ public:
 	FVector CurrentVelocity;
 	FVector rot;
 	bool bGrowing;
-
-	//////////// Socket ////////////////
-
-	FSocket* ConnectionSocket;
-	FIPv4Endpoint RemoteAddressForConnection;
-	FTimerHandle timeHandler;
-
-	void ConnectToServer();
-
-	void Connect(
-		const FString& YourChosenSocketName,
-		const FIPv4Address& ip,
-		int32 port
-		);
-
-	void readValueFromSocket();
-	void sendValueToSocket();
-	bool didConnect;
-	//Rama's StringFromBinaryArray
-	FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
 	
 };

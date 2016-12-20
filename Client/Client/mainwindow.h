@@ -48,8 +48,6 @@ private:
     GraphicThread *guiThread; // TODO: check this
     ArduinoThread *ardThread;
 
-    pthread_t thArd;
-
     Communication *com;
     myTcpServer *server;
 
@@ -57,6 +55,7 @@ private:
     bool connectionCompleted =false;
 
     QMutex mtx;
+    QProcess *proc3D;
 
     QMessageLogger logger;
 };

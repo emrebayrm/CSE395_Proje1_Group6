@@ -17,12 +17,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QImage logo(":/images/gtuLogo500.png");
     ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(400,200)));
 
+    ui->rBCenter->setChecked(true);
+
     guiThread = new GraphicThread(this);
     ardThread = new ArduinoThread(this);
     simThread = new Sim3DThread(this);
 
     com=NULL;
     server=NULL;
+    proc3D =NULL;
 
     // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
@@ -68,11 +71,11 @@ void MainWindow::setXYPlot(){
 
     // set y axis
     ui->plotXY->yAxis->setLabelColor("blue");
-    ui->plotXY->yAxis->setLabel("Koordinatlar");
+    ui->plotXY->yAxis->setLabel("Coordinates");
     ui->plotXY->yAxis->setRange(0,400); // y axis -> coordinates
 
     // set x axis
-    ui->plotXY->xAxis->setLabel("Zaman");
+    ui->plotXY->xAxis->setLabel("Time");
     ui->plotXY->xAxis->setLabelColor("blue");
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
@@ -191,11 +194,11 @@ void MainWindow::setServoPlot(){
 
     // set y axis
     ui->plotServo->yAxis->setLabelColor("blue");
-    ui->plotServo->yAxis->setLabel("Servo Açıları(°)");
+    ui->plotServo->yAxis->setLabel("Angles(°)");
     ui->plotServo->yAxis->setRange(0,180); // y axis -> coordinates
 
     // set x axis
-    ui->plotServo->xAxis->setLabel("Zaman");
+    ui->plotServo->xAxis->setLabel("Time");
     ui->plotServo->xAxis->setLabelColor("blue");
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
@@ -303,12 +306,20 @@ void MainWindow::on_btnOpen3D_clicked()
 
 void MainWindow::sim3DConnection(){
     //check connection already established
+    if(proc3D==NULL){
+        QString file ="/home/hasan/workspace/CSE395_Proje1_Group6/Client/Client/test";
+        proc3D = new QProcess(this);
+        proc3D->start(file);
+        qDebug(file.toStdString().c_str());
+        qDebug("proc3D started");
+    }
     if(!isSim3DConnected){
-//        pid = fork();
-//        if(pid == 0){
-//            execl(EXENAME," ");         //start exec of 3d sim
-//            exit(EXIT_SUCCESS);
-//        }
+        if(proc3D==NULL){
+            QString file =QDir::homePath()+"test";
+            proc3D = new QProcess(this);
+            proc3D->start(file);
+            proc3D->isOpen();
+        }
         if(server == NULL){
             server = new myTcpServer(this);
             server->listen();
@@ -327,10 +338,10 @@ void MainWindow::sim3DConnection(){
             return;
         if(str.at(0) == 'G'){
             char buffer[30];
-            std::sprintf(buffer,"{%d %d %d %d}",100,100,100,100);/*simThread->msg.ballX,
+            std::sprintf(buffer,"{%d %d %d %d}",simThread->msg.ballX,
                                                 simThread->msg.ballY,
                                                 simThread->msg.motorXangle,
-                                                simThread->msg.motorYangle);*/
+                                                simThread->msg.motorYangle);
             if(server->SendData(buffer))
                 std::cerr << "Succesfully sent" << std::endl;
             else{
@@ -364,8 +375,11 @@ void MainWindow::sim3DConnection(){
 
 void MainWindow::on_btnDisconnect_clicked()
 {
-    std::cerr<<"on_click_btn_disconnect"<<endl;
     qDebug("test");
+
+    while(simThread->isRunning()){
+        simThread->terminate();
+    }
 
     while(ardThread->isRunning()){
         ardThread->terminate();
@@ -375,6 +389,12 @@ void MainWindow::on_btnDisconnect_clicked()
         guiThread->terminate();
     }
 
+    if(server != NULL ){
+        server->close();
+        delete server;
+        server = NULL;
+    }
+
     if(com!=NULL){
         com->closeConnection();
         delete com;
@@ -382,5 +402,6 @@ void MainWindow::on_btnDisconnect_clicked()
     }
 
     connectionCompleted=false;
-    ui->textBMsg->setText("Connection closed!");
+    isSim3DConnected=false;
+    ui->textBMsg->append("Connection closed!");
 }

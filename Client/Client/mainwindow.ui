@@ -10,6 +10,12 @@
     <height>759</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <weight>50</weight>
+    <bold>false</bold>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -19,7 +25,7 @@
      <rect>
       <x>600</x>
       <y>300</y>
-      <width>501</width>
+      <width>471</width>
       <height>411</height>
      </rect>
     </property>
@@ -80,7 +86,7 @@
      <rect>
       <x>50</x>
       <y>300</y>
-      <width>501</width>
+      <width>471</width>
       <height>411</height>
      </rect>
     </property>
@@ -179,7 +185,7 @@
      <rect>
       <x>50</x>
       <y>160</y>
-      <width>501</width>
+      <width>471</width>
       <height>111</height>
      </rect>
     </property>
@@ -343,7 +349,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="btnUpPID">
     <property name="geometry">
      <rect>
       <x>90</x>
@@ -360,6 +366,118 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>Update PID</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rBSquare">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>50</y>
+      <width>101</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="text">
+     <string>Square</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rBCircle">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>70</y>
+      <width>101</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="text">
+     <string>Circle</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rBLightGame">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>90</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="text">
+     <string>Light Game</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblGameTyoe">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>10</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Game Type</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rBCenter">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>30</y>
+      <width>101</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>50</weight>
+      <italic>true</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Center</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnPlayGame">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>120</y>
+      <width>80</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Play</string>
     </property>
    </widget>
   </widget>
