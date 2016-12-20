@@ -26,6 +26,11 @@ public:
 	
 	void setUpLights();
 
+	inline float map(long x, long in_min, long in_max, long out_min, long out_max)
+	{
+		return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
+	}
+
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	//~ABallAndPlatePawn();
 
@@ -69,6 +74,8 @@ public:
 		TArray<APointLight*> UprightLights12;
 	UPROPERTY(EditAnywhere)
 		TArray<APointLight*> UprightLights13;
+	UPROPERTY(EditAnywhere)
+		TArray<APointLight*> UprightLights14;
 	
 
 	TArray<TArray<APointLight*>> lights;
@@ -83,15 +90,19 @@ public:
 	FVector rot;
 	bool bGrowing;
 
-	//////////// Socket ////////////////
+	
 
+	//////////// Socket ////////////////
+	FSocket* ListenerSocket;
 	FSocket* ConnectionSocket;
 	FIPv4Endpoint RemoteAddressForConnection;
 	FTimerHandle timeHandler;
 
+	void UpdateLights();
+
 	void ConnectToServer();
 
-	void Connect(
+	bool Connect(
 		const FString& YourChosenSocketName,
 		const FIPv4Address& ip,
 		int32 port
@@ -99,7 +110,7 @@ public:
 
 	void readValueFromSocket();
 	void sendValueToSocket();
-	bool didConnect;
+
 	//Rama's StringFromBinaryArray
 	FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
 	

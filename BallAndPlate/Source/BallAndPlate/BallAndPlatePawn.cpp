@@ -36,7 +36,7 @@ void ABallAndPlatePawn::BeginPlay()
 	differenceY_Z = kolYReference->GetActorLocation().Z - kolY->GetActorLocation().Z;
 	rotation = FRotator(RootComponent->GetRelativeTransform().GetRotation());
 	setUpLights();
-	ConnectToServer();
+	//ConnectToServer();
 
 }
 
@@ -44,7 +44,7 @@ void ABallAndPlatePawn::BeginPlay()
 void ABallAndPlatePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	readValueFromSocket();
+
 	if (!CurrentVelocity.IsZero())
 	{
 		FVector refXLocation = kolXReference->GetActorLocation();;
@@ -58,7 +58,26 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 		kolY->SetActorLocation(armYLocation);
 
 		RootComponent->SetRelativeRotation(rotation);
+
+		FVector ballRelativeLocation = OurVisibleComponent1->GetRelativeTransform().GetLocation();
+
+		OurVisibleComponent1->SetRelativeLocation(ballRelativeLocation + CurrentVelocity * DeltaTime * 4);
+
+		UpdateLights();
+
+
+
+	
 	}
+
+	{
+		FVector ballRelativeLocation = OurVisibleComponent1->GetRelativeTransform().GetLocation();
+
+		OurVisibleComponent1->SetRelativeLocation(ballRelativeLocation + FVector(2.0f, 0.0f, 0.0f) * DeltaTime*25.0f);
+
+		UpdateLights();
+	}
+	
 }
 
 // Called to bind functionality to input
@@ -71,7 +90,9 @@ void ABallAndPlatePawn::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAxis("MoveX", this, &ABallAndPlatePawn::Move_XAxis);
 	InputComponent->BindAxis("MoveY", this, &ABallAndPlatePawn::Move_YAxis);
 
+
 }
+
 
 void ABallAndPlatePawn::Move_XAxis(float AxisValue)
 {
@@ -79,6 +100,7 @@ void ABallAndPlatePawn::Move_XAxis(float AxisValue)
 	CurrentVelocity.X = FMath::Clamp(AxisValue, -1.0f, 10.0f) * 100.0f;
 	rot.X = FMath::Clamp(AxisValue, -1.0f, 10.0f) * 5.0f;
 	rotation.Pitch += (a = AxisValue + 0.01f);
+
 }
 
 void ABallAndPlatePawn::Move_YAxis(float AxisValue)
@@ -87,6 +109,7 @@ void ABallAndPlatePawn::Move_YAxis(float AxisValue)
 	CurrentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * 100.0f;
 	rot.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f)* 5.0f;
 	rotation.Roll += (a = AxisValue + 0.01f);
+
 }
 
 void ABallAndPlatePawn::setUpLights()
@@ -106,6 +129,7 @@ void ABallAndPlatePawn::setUpLights()
 	lights.Add(UprightLights11);
 	lights.Add(UprightLights12);
 	lights.Add(UprightLights13);
+	lights.Add(UprightLights14);
 
 
 	for (i = 0; i < lights.Num(); ++i) {
@@ -118,22 +142,49 @@ void ABallAndPlatePawn::setUpLights()
 	}
 }
 
+
+
+void ABallAndPlatePawn::UpdateLights() {
+
+	FVector ballRelativeLocation = OurVisibleComponent1->GetRelativeTransform().GetLocation();
+
+	if (ballRelativeLocation.X > 800 || ballRelativeLocation.X < -800 || ballRelativeLocation.Y >600 || ballRelativeLocation.Y < -600) {
+		return;
+	}
+
+	int mapX = map(ballRelativeLocation.X, 800, -800, 0, 14);
+	int mapY = map(ballRelativeLocation.Y, 600, -600, 0, 10);
+
+	UE_LOG(LogTemp, Warning, TEXT("MAP X : %d"), mapX);
+	UE_LOG(LogTemp, Warning, TEXT("MAP Y : %d"), mapY);
+
+	lights[mapX][mapY]->SetEnabled(true);
+
+	for (int i = 0; i < lights.Num(); ++i) {
+		for (int j = 0; j < lights[i].Num(); ++j) {
+			if (lights[i][j] != nullptr && (i!=mapX ||j!=mapY)) {
+				lights[i][j]->SetEnabled(false);
+			}
+
+		}
+	}
+
+
+
+
+}
+
 void ABallAndPlatePawn::ConnectToServer()
 {
 	FString address = TEXT("127.0.0.1");
-	int32 port = 9999;
+	int32 port = 8881;
 	FIPv4Address ipAddress;
 	FIPv4Address::Parse(address, ipAddress);
-	Connect("SocketListener", ipAddress, port);
-	if (!didConnect)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Can't connect to socket.Program closing!")));
-		//FPlatformProcess::Sleep(2);
-		//FGenericPlatformMisc::RequestExit(false);
-	}
+	while (!Connect("SocketListener", ipAddress, port));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("TCP Socket Listener Connected successfuly!")));
 }
 
-void ABallAndPlatePawn::Connect(
+bool ABallAndPlatePawn::Connect(
 	const FString& YourChosenSocketName,
 	const FIPv4Address& ip,
 	int32 port
@@ -144,45 +195,15 @@ void ABallAndPlatePawn::Connect(
 	addr->SetPort(port);
 
 	ConnectionSocket = FTcpSocketBuilder(YourChosenSocketName).AsBlocking().AsReusable().Build();
-	didConnect = ConnectionSocket->Connect(*addr);
+	bool didConnect = ConnectionSocket->Connect(*addr);
 	if (didConnect)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Successful")));
 	else
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Failed")));
-
+	return didConnect;
 }
 
-void ABallAndPlatePawn::readValueFromSocket() {
-	FString serialized = TEXT("GET_COORDINATE");
-	TCHAR *serializedChar = serialized.GetCharArray().GetData();
-	int32 size = FCString::Strlen(serializedChar);
-	int32 sent = 0;
-	
-	bool succesfull = ConnectionSocket->Send((uint8*)TCHAR_TO_UTF8(serializedChar), size, sent);
-	if (succesfull)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Successfulllllllllll")));
-		
-		TArray<uint8> ReceivedData;
-		uint32 Size;
-		ReceivedData.Init(0, FMath::Min(Size, 65507u));
-		int32 Read = 0;
-		
-		succesfull  = ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
-		if (succesfull && ReceivedData.Num() != 0 ) {
-			const FString ReceivedUE4String = StringFromBinaryArray(ReceivedData);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("As String Data ~> %s"), *ReceivedUE4String));
-		}
-		else {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("No receive ")));
-
-		}
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Failedddd")));
-	}
-
+void readValueFromSocket() {
 	// servera istek gonder
 	// mesaj gelmesini bekle
 	// mesaji al
