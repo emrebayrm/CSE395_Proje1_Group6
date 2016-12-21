@@ -22,6 +22,14 @@ ABallAndPlatePawn::ABallAndPlatePawn()
 
 	OurVisibleComponent1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OurVisibleComponent1"));
 	OurVisibleComponent2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OurVisibleComponent2"));
+	
+	CollectibleComponent1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollectibleComponent1"));
+	CollectibleComponent2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollectibleComponent2"));
+	CollectibleComponent3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollectibleComponent3"));
+
+	CollectibleComponent1->SetupAttachment(RootComponent);
+	CollectibleComponent2->SetupAttachment(RootComponent);
+	CollectibleComponent3->SetupAttachment(RootComponent);
 
 	OurVisibleComponent1->SetupAttachment(RootComponent);// AttachTo(RootComponent);
 	OurVisibleComponent2->SetupAttachment(RootComponent); // AttachTo(RootComponent);
@@ -36,7 +44,14 @@ void ABallAndPlatePawn::BeginPlay()
 	differenceY_Z = kolYReference->GetActorLocation().Z - kolY->GetActorLocation().Z;
 	rotation = FRotator(RootComponent->GetRelativeTransform().GetRotation());
 	setUpLights();
+
+	/*CollectibleComponent1->SetVisibility(false);
+	CollectibleComponent2->SetVisibility(false);
+	CollectibleComponent3->SetVisibility(false);*/
+
 	ConnectToServer();
+
+	
 
 }
 
@@ -63,13 +78,33 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 		armYLocation.Z = refYLocation.Z - differenceY_Z;
 		kolY->SetActorLocation(armYLocation);
 
-		RootComponent->SetRelativeRotation(rotation);
+		//RootComponent->SetRelativeRotation(rotation);
 
 		FVector ballRelativeLocation = OurVisibleComponent1->GetRelativeTransform().GetLocation();
 
 		OurVisibleComponent1->SetRelativeLocation(ballRelativeLocation + CurrentVelocity * DeltaTime * 4);
 
 		UpdateLights();
+
+		if (IsGame) {
+
+			FVector CollectibleComponent1Loaction = CollectibleComponent1->GetRelativeTransform().GetLocation();
+			FVector CollectibleComponent2Loaction = CollectibleComponent2->GetRelativeTransform().GetLocation();
+			FVector CollectibleComponent3Loaction = CollectibleComponent3->GetRelativeTransform().GetLocation();
+
+			if (abs(ballRelativeLocation.X - CollectibleComponent1Loaction.X) < 50 && abs(ballRelativeLocation.Y - CollectibleComponent1Loaction.Y) < 20) {
+				CollectibleComponent1->SetVisibility(false);
+			}
+
+			if (abs(ballRelativeLocation.X - CollectibleComponent2Loaction.X) < 50 && abs(ballRelativeLocation.Y - CollectibleComponent2Loaction.Y) < 20) {
+				CollectibleComponent2->SetVisibility(false);
+			}
+
+			if (abs(ballRelativeLocation.X - CollectibleComponent3Loaction.X) < 50 && abs(ballRelativeLocation.Y - CollectibleComponent3Loaction.Y) < 20) {
+				CollectibleComponent3->SetVisibility(false);
+			}
+
+		}
 
 	}
 
@@ -80,6 +115,38 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 
 		UpdateLights();
 	}
+
+	
+
+}
+
+
+void ABallAndPlatePawn::GameMode(int CollectibleComponent1LoactionX, int CollectibleComponent1LoactionY,
+	int CollectibleComponent2LoactionX, int CollectibleComponent2LoactionY,
+	int CollectibleComponent3LoactionX, int CollectibleComponent3LoactionY)
+{
+	FVector CollectibleComponent1Loaction = CollectibleComponent1->GetRelativeTransform().GetLocation();
+	FVector CollectibleComponent2Loaction = CollectibleComponent2->GetRelativeTransform().GetLocation();
+	FVector CollectibleComponent3Loaction = CollectibleComponent3->GetRelativeTransform().GetLocation();
+
+	CollectibleComponent1Loaction.X = CollectibleComponent1LoactionX;
+	CollectibleComponent1Loaction.Y = CollectibleComponent1LoactionY;
+
+	CollectibleComponent2Loaction.X = CollectibleComponent2LoactionX;
+	CollectibleComponent2Loaction.Y = CollectibleComponent2LoactionY;
+
+	CollectibleComponent3Loaction.X = CollectibleComponent3LoactionX;
+	CollectibleComponent3Loaction.Y = CollectibleComponent3LoactionY;
+
+	CollectibleComponent1->SetRelativeLocation(CollectibleComponent1Loaction);
+	CollectibleComponent2->SetRelativeLocation(CollectibleComponent2Loaction);
+	CollectibleComponent3->SetRelativeLocation(CollectibleComponent3Loaction);
+
+	CollectibleComponent1->SetVisibility(true);
+	CollectibleComponent2->SetVisibility(true);
+	CollectibleComponent3->SetVisibility(true);
+
+
 
 }
 

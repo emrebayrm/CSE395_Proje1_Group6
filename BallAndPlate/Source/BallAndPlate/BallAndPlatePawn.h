@@ -37,6 +37,22 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	//~ABallAndPlatePawn();
 
+	UPROPERTY(EditAnywhere)
+		USceneComponent* CollectibleComponent1; // ring 
+	UPROPERTY(EditAnywhere)
+		USceneComponent* CollectibleComponent2; // ring 
+	UPROPERTY(EditAnywhere)
+		USceneComponent* CollectibleComponent3; // ring
+
+	/*FVector CollectibleComponent1Loaction;
+	FVector CollectibleComponent2Loaction;
+	FVector CollectibleComponent3Loaction;*/
+
+	bool IsGame = true;
+
+	void GameMode(int CollectibleComponent1LoactionX, int CollectibleComponent1LoactionY, 
+			      int CollectibleComponent2LoactionX, int CollectibleComponent2LoactionY, 
+		          int CollectibleComponent3LoactionX, int CollectibleComponent3LoactionY);
 
 	UPROPERTY(EditAnywhere)
 		USceneComponent* OurVisibleComponent1; // ball 
