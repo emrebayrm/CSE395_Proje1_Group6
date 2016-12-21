@@ -5,9 +5,9 @@
 #include "GameFramework/Pawn.h"
 #include "Networking.h"
 #include "BallAndPlatePawn.generated.h"
- 
+
 #define PORT 9999
-#define PACKET_SIZE 20
+#define PACKET_SIZE 1
 
 UCLASS()
 class BALLANDPLATE_API ABallAndPlatePawn : public APawn
@@ -20,13 +20,13 @@ public:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
 	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-	
+
 	void setUpLights();
 
 	inline float map(long x, long in_min, long in_max, long out_min, long out_max)
@@ -50,6 +50,11 @@ public:
 		AActor* kolXReference;
 	UPROPERTY(EditAnywhere)
 		AActor* kolYReference;
+	UPROPERTY(EditAnywhere)
+		AActor* wingX;
+	UPROPERTY(EditAnywhere)
+		AActor* wingY;
+
 
 	UPROPERTY(EditAnywhere)
 		TArray<APointLight*> UprightLights1;
@@ -79,10 +84,10 @@ public:
 		TArray<APointLight*> UprightLights13;
 	UPROPERTY(EditAnywhere)
 		TArray<APointLight*> UprightLights14;
-	
+
 
 	TArray<TArray<APointLight*>> lights;
-	
+
 	// Input functions
 	void Move_XAxis(float AxisValue);
 	void Move_YAxis(float AxisValue);
@@ -94,7 +99,7 @@ public:
 	bool bGrowing;
 	void UpdateLights();
 
-	
+
 
 	//////////// Socket ////////////////
 	FSocket* ListenerSocket;
@@ -109,15 +114,20 @@ public:
 		const FString& YourChosenSocketName,
 		const FIPv4Address& ip,
 		int32 port
-		);
+	);
 
 	void readValueFromSocket();
 	void checkConnection();
 	void sendValueToSocket();
 
-
-
 	bool didConnect;
 	FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
-	
+
+	// Input coming from QT
+	// Input[0] : ball x coordinate
+	// Input[1] : ball y coordinate
+	// Input[2] : x motor angle
+	// Input[3] : y motor angle
+	int32 inputs[4];
+
 };

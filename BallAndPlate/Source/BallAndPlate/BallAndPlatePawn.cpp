@@ -46,6 +46,11 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	readValueFromSocket();
 	checkConnection();
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball X Coordinate : %d "), inputs[0]));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball y Coordinate : %d "), inputs[1]));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("motot x Coordinate : %d "), inputs[2]));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("motor y Coordinate : %d "), inputs[3]));
+
 	if (!CurrentVelocity.IsZero())
 	{
 		FVector refXLocation = kolXReference->GetActorLocation();;
@@ -65,7 +70,7 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 		OurVisibleComponent1->SetRelativeLocation(ballRelativeLocation + CurrentVelocity * DeltaTime * 4);
 
 		UpdateLights();
-	
+
 	}
 
 	{
@@ -75,7 +80,7 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 
 		UpdateLights();
 	}
-	
+
 }
 
 // Called to bind functionality to input
@@ -157,7 +162,7 @@ void ABallAndPlatePawn::UpdateLights() {
 	int sAx = mapX - 1;
 	int sWy = mapY + 1;
 	int sXy = mapY - 1;
-	
+
 	int sQx = mapX - 1;
 	int sQy = mapY + 1;
 
@@ -170,9 +175,9 @@ void ABallAndPlatePawn::UpdateLights() {
 	int sCx = mapX + 1;
 	int sCy = mapY - 1;
 
-	if(sDx <= 13)
+	if (sDx <= 13)
 		lights[sDx][mapY]->GetRootComponent()->SetVisibility(true);
-	if(sAx >= 0)
+	if (sAx >= 0)
 		lights[sAx][mapY]->GetRootComponent()->SetVisibility(true);
 	if (sWy <= 9)
 		lights[mapX][sWy]->GetRootComponent()->SetVisibility(true);
@@ -191,11 +196,11 @@ void ABallAndPlatePawn::UpdateLights() {
 
 	for (int i = 0; i < lights.Num(); ++i) {
 		for (int j = 0; j < lights[i].Num(); ++j) {
-			if (lights[i][j] != nullptr && (i != mapX || j != mapY) && (i != sDx || j!= mapY)
-										&& (i != sAx || j != mapY) && (i != mapX || j != sWy)
-										&& (i != mapX || j != sXy) && (i != sQx || j != sQy)
-										&& (i != sEx || j != sEy) && (i != sZx || j != sZy)
-										&& (i != sCx || j != sCy)) {
+			if (lights[i][j] != nullptr && (i != mapX || j != mapY) && (i != sDx || j != mapY)
+				&& (i != sAx || j != mapY) && (i != mapX || j != sWy)
+				&& (i != mapX || j != sXy) && (i != sQx || j != sQy)
+				&& (i != sEx || j != sEy) && (i != sZx || j != sZy)
+				&& (i != sCx || j != sCy)) {
 				lights[i][j]->GetRootComponent()->SetVisibility(false);
 			}
 
@@ -239,36 +244,56 @@ void ABallAndPlatePawn::Connect(
 }
 
 void ABallAndPlatePawn::readValueFromSocket() {
-
-	FString serialized = TEXT("GET_COORDINATE");
-	TCHAR *serializedChar = serialized.GetCharArray().GetData();
+	FString handShakeSendMessage = TEXT("41 41 14 151 15}");
+	TCHAR *serializedChar = handShakeSendMessage.GetCharArray().GetData();
 	int32 size = FCString::Strlen(serializedChar);
 	int32 sent = 0;
 
 	bool succesfull = ConnectionSocket->Send((uint8*)TCHAR_TO_UTF8(serializedChar), size, sent);
 	if (succesfull)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Send Successful")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Send Successful")));
 
-		TArray<uint8> ReceivedData;
-		uint32 Size = PACKET_SIZE;
-		ReceivedData.Init(0, FMath::Min(Size, 65507u));
+		TArray<uint8> binaryReceivedData; // Socket reads binary values.
+		FString stringReceiveData;        // To convert binary to string.
+		FString tempString;				  // Helper to convert string to int.
+
+		uint32 Size = 1;
+		binaryReceivedData.Init(0, FMath::Min(Size, 65507u));
+
 		int32 Read = 0;
 		bool HasPendingConnection = false;
-		bool status = false;
+		// Wait for data.
 		while (ConnectionSocket->HasPendingConnection(HasPendingConnection) && HasPendingConnection == false && !ConnectionSocket->HasPendingData(Size));
-		succesfull = ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
-		if (succesfull) {
-			const FString ReceivedUE4String = StringFromBinaryArray(ReceivedData);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("As String Data ~> %s"), *ReceivedUE4String));
+
+		int counter = 0;
+		bool status = false;
+		while (!status) {
+			succesfull = ConnectionSocket->Recv(binaryReceivedData.GetData(), binaryReceivedData.Num(), Read);
+			if (succesfull) { // Receive succesfull.
+
+							  // Convert binary to string.
+				stringReceiveData = StringFromBinaryArray(binaryReceivedData);
+				if (stringReceiveData[0] == '}') // Receive end.
+				{
+					status = true;
+				}
+				else if (stringReceiveData[0] == ' ') { // Convert string to int.
+					inputs[counter++] = FCString::Atoi(*tempString);
+					tempString.Reset();
+				}
+				else {
+					tempString.Append(stringReceiveData);
+				}
+			}
+			else { // Receive failed.Socket failed.
+				didConnect = false;
+				status = true;
+			}
 		}
-		else 
-			didConnect = false;
-		
 	}
 	else
 		didConnect = false;
-	
 
 }
 
@@ -367,44 +392,44 @@ GetWorldTimerManager().SetTimer(timeHandler, this,
 //Rama's TCP Socket Listener
 void ABallAndPlatePawn::TCPSocketListener()
 {
-	//~~~~~~~~~~~~~
-	if (!ConnectionSocket) return;
-	//~~~~~~~~~~~~~
+//~~~~~~~~~~~~~
+if (!ConnectionSocket) return;
+//~~~~~~~~~~~~~
 
 
-	//Binary Array!
-	TArray<uint8> ReceivedData;
+//Binary Array!
+TArray<uint8> ReceivedData;
 
-	uint32 Size;
-	while (ConnectionSocket->HasPendingData(Size))
-	{
+uint32 Size;
+while (ConnectionSocket->HasPendingData(Size))
+{
 
-		ReceivedData.Init(0, FMath::Min(Size, 65507u));
+ReceivedData.Init(0, FMath::Min(Size, 65507u));
 
-		int32 Read = 0;
-		ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
+int32 Read = 0;
+ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Read! %d"), ReceivedData.Num()));
-	}
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Read! %d"), ReceivedData.Num()));
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	if (ReceivedData.Num() <= 0)
-	{
-		return;
-	}
+if (ReceivedData.Num() <= 0)
+{
+return;
+}
 
-	//VShow("Total Data read!", ReceivedData.Num());
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d"), ReceivedData.Num()));
-
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//						Rama's String From Binary Array
-	const FString ReceivedUE4String = StringFromBinaryArray(ReceivedData);
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//VShow("Total Data read!", ReceivedData.Num());
+GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d"), ReceivedData.Num()));
 
 
-	//VShow("As String!!!!! ~>", ReceivedUE4String);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("As String Data ~> %s"), *ReceivedUE4String));
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//						Rama's String From Binary Array
+const FString ReceivedUE4String = StringFromBinaryArray(ReceivedData);
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+//VShow("As String!!!!! ~>", ReceivedUE4String);
+GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("As String Data ~> %s"), *ReceivedUE4String));
 }
 */
 FString ABallAndPlatePawn::StringFromBinaryArray(const TArray<uint8>& BinaryArray)
