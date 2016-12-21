@@ -134,16 +134,21 @@ public:
 
 	void readValueFromSocket();
 	void checkConnection();
-	void sendValueToSocket();
+	void parseInput(FString& input);
+
+	// Debug functions.
+	void printCoordinates();
+	void printYem();
 
 	bool didConnect;
 	FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
 
-	// Input coming from QT
-	// Input[0] : ball x coordinate
-	// Input[1] : ball y coordinate
-	// Input[2] : x motor angle
-	// Input[3] : y motor angle
-	int32 inputs[4];
+	int ballXCoordinate = 0;
+	int ballYCoordinate = 0;
+	int motorXAngle = 0;
+	int motorYAngle = 0;
 
+	int yem1[2];
+	int yem2[2];
+	int yem3[2];
 };

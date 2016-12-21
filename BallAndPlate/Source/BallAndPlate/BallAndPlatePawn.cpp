@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BallAndPlate.h"
 #include "BallAndPlatePawn.h"
@@ -51,22 +51,37 @@ void ABallAndPlatePawn::BeginPlay()
 
 	ConnectToServer();
 
-	
+}
+void ABallAndPlatePawn::printCoordinates() {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball X Coordinate : %d "), ballXCoordinate));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball y Coordinate : %d "), ballYCoordinate));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("motot x Coordinate : %d "), motorXAngle));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("motor y Coordinate : %d "), motorYAngle));
 
 }
+void ABallAndPlatePawn::printYem() {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("yem1 X Coordinate : %d "), yem1[0]));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("yem1 y Coordinate : %d "), yem1[1]));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("yem2 X Coordinate : %d "), yem2[0]));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("yem2 y Coordinate : %d "), yem2[1]));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("yem3 x Coordinate : %d "), yem3[0]));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("yem y Coordinate : %d "), yem3[1]));
 
+}
 // Called every frame
 void ABallAndPlatePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	readValueFromSocket();
 	checkConnection();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball X Coordinate : %d "), inputs[0]));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball y Coordinate : %d "), inputs[1]));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("motot x Coordinate : %d "), inputs[2]));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("motor y Coordinate : %d "), inputs[3]));
+	//printCoordinates();
+	//printYem();
+	/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball X Coordinate : %d "), ballXCoordinate));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Ball y Coordinate : %d "), ballYCoordinate));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("motot x Coordinate : %d "), motorXAngle));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("motor y Coordinate : %d "), motorYAngle));*/
 
-	if (!CurrentVelocity.IsZero())
+	//if (!CurrentVelocity.IsZero())
 	{
 		FVector refXLocation = kolXReference->GetActorLocation();;
 		FVector armXLocation = kolX->GetActorLocation();
@@ -81,9 +96,10 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 		//RootComponent->SetRelativeRotation(rotation);
 
 		FVector ballRelativeLocation = OurVisibleComponent1->GetRelativeTransform().GetLocation();
-
-		OurVisibleComponent1->SetRelativeLocation(ballRelativeLocation + CurrentVelocity * DeltaTime * 4);
-
+		ballRelativeLocation.X = ballXCoordinate;
+		ballRelativeLocation.Y = ballYCoordinate;
+		//OurVisibleComponent1->SetRelativeLocation(ballRelativeLocation + CurrentVelocity * DeltaTime * 4);
+		OurVisibleComponent1->SetRelativeLocation(ballRelativeLocation	);
 		UpdateLights();
 
 		if (IsGame) {
@@ -108,13 +124,13 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 
 	}
 
-	{
+	/*{
 		FVector ballRelativeLocation = OurVisibleComponent1->GetRelativeTransform().GetLocation();
 
 		OurVisibleComponent1->SetRelativeLocation(ballRelativeLocation + FVector(2.0f, 0.0f, 0.0f) * DeltaTime*25.0f);
 
 		UpdateLights();
-	}
+	}*/
 
 	
 
@@ -274,9 +290,6 @@ void ABallAndPlatePawn::UpdateLights() {
 		}
 	}
 
-
-
-
 }
 
 void ABallAndPlatePawn::ConnectToServer()
@@ -315,47 +328,33 @@ void ABallAndPlatePawn::readValueFromSocket() {
 	TCHAR *serializedChar = handShakeSendMessage.GetCharArray().GetData();
 	int32 size = FCString::Strlen(serializedChar);
 	int32 sent = 0;
+	FString stringReceiveData;        // To convert binary to string.
 
-	bool succesfull = ConnectionSocket->Send((uint8*)TCHAR_TO_UTF8(serializedChar), size, sent);
+	bool succesfull = ConnectionSocket->Send((uint8*)TCHAR_TO_UTF8(serializedChar), size, sent); // Send handshake message.
 	if (succesfull)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Send Successful")));
 
 		TArray<uint8> binaryReceivedData; // Socket reads binary values.
-		FString stringReceiveData;        // To convert binary to string.
-		FString tempString;				  // Helper to convert string to int.
 
-		uint32 Size =1 ;
+		uint32 Size = 1;
 		binaryReceivedData.Init(0, FMath::Min(Size, 65507u));
-
 		int32 Read = 0;
 		bool HasPendingConnection = false;
+
 		// Wait for data.
 		while (ConnectionSocket->HasPendingConnection(HasPendingConnection) && HasPendingConnection == false && !ConnectionSocket->HasPendingData(Size));
 
-		//// Sample input packet : "{ 12 34 14 144 }"
+		//// Sample coordinate packet : "C{ 12 34 14 144 }"
+		//// Sample yem koordinatlar� : "Y{ 123 14 151 15 15 51}
 		int counter = 0;
 		bool status = false;
 		while (!status) {
 			succesfull = ConnectionSocket->Recv(binaryReceivedData.GetData(), binaryReceivedData.Num(), Read);
 			if (succesfull) { // Receive succesfull.
-
-				// Convert binary to string.
-				stringReceiveData = StringFromBinaryArray(binaryReceivedData);
-				
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Received message : %s "),*stringReceiveData));
-
-				if (stringReceiveData[0] == '}') // Receive end.
-				{
-					inputs[counter++] = FCString::Atoi(*tempString);
+				stringReceiveData.Append(StringFromBinaryArray(binaryReceivedData));
+				if (stringReceiveData[stringReceiveData.Len() - 1] == '}') { // Receive end.
 					status = true;
-				}
-				else if (stringReceiveData[0] == ' ' && tempString.Len() != 0) { // Convert string to int.
-					inputs[counter++] = FCString::Atoi(*tempString);
-					tempString.Reset();
-				}
-				else if (stringReceiveData[0] !=  '{') {
-					tempString.Append(stringReceiveData);
+					stringReceiveData[stringReceiveData.Len() - 1] = '\0';
 				}
 			}
 			else { // Receive failed.Socket failed.
@@ -364,9 +363,40 @@ void ABallAndPlatePawn::readValueFromSocket() {
 			}
 		}
 	}
-	else
+	else // Send failed
 		didConnect = false;
 
+	if (didConnect) {
+		parseInput(stringReceiveData);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" x Before map : %s "),*stringReceiveData));
+	}
+}
+void ABallAndPlatePawn::parseInput(FString& input) {
+
+	TArray<FString> Parsed;
+	input.ParseIntoArray(Parsed, TEXT(" "));
+	if (input[0] == 'C' || input[0] == 'c')
+	{
+		ballXCoordinate = map(FCString::Atoi(*Parsed[1]), 0, 400, 800, -800);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" x Before map : %d "), FCString::Atoi(*Parsed[1])));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("x After map : %d "), ballXCoordinate));
+
+		ballYCoordinate = map(FCString::Atoi(*Parsed[2]), 0, 300, -600, 600);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("y Before map : %d "), FCString::Atoi(*Parsed[2])));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT(" y After map : %d "), ballYCoordinate));
+		motorXAngle = FCString::Atoi(*Parsed[3]);
+		motorYAngle = FCString::Atoi(*Parsed[4]);
+
+	}
+	else if (input[0] == 'Y' || input[0] == 'y')
+	{
+		yem1[0] = map(FCString::Atoi(*Parsed[1]) , 0 , 400 , 800 ,-800) ;
+		yem1[1] = map(FCString::Atoi(*Parsed[1]), 0, 300, -600, 600);
+		yem2[0] = map(FCString::Atoi(*Parsed[1]), 0, 400, 800, -800);
+		yem2[1] = map(FCString::Atoi(*Parsed[1]), 0, 300, -600, 600);
+		yem3[0] = map(FCString::Atoi(*Parsed[1]), 0, 400, 800, -800);
+		yem3[1] = map(FCString::Atoi(*Parsed[1]), 0, 300, -600, 600);
+	}
 }
 
 void ABallAndPlatePawn::checkConnection() {
@@ -374,12 +404,10 @@ void ABallAndPlatePawn::checkConnection() {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("close programm")));
 		// close program
 	}
-
 }
 void ABallAndPlatePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-
 	if (ConnectionSocket)
 	{
 		ConnectionSocket->Close();
@@ -387,123 +415,7 @@ void ABallAndPlatePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 }
 
-///////////////////// RAMA'S FUNCTIONS ///////////////////
-/*
-//Rama's Create TCP Connection Listener
-FSocket* ABallAndPlatePawn::CreateTCPConnectionListener(const FString& YourChosenSocketName, const FString& TheIP, const int32 ThePort, const int32 ReceiveBufferSize)
-{
-uint8 IP4Nums[4];
-if (!FormatIP4ToNumber(TheIP, IP4Nums))
-{
-GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Invalid IP!Expecting 4 parts separated by .")));
-return false;
-}
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-//Create Socket
-FIPv4Endpoint Endpoint(FIPv4Address(IP4Nums[0], IP4Nums[1], IP4Nums[2], IP4Nums[3]), ThePort);
-FSocket* ListenSocket = FTcpSocketBuilder(*YourChosenSocketName)
-.AsReusable()
-.BoundToEndpoint(Endpoint)
-.Listening(8);
-
-//Set Buffer Size
-int32 NewSize = 0;
-ListenSocket->SetReceiveBufferSize(ReceiveBufferSize, NewSize);
-
-//Done!
-return ListenSocket;
-}
-
-//Rama's TCP Connection Listener
-void ABallAndPlatePawn::TCPConnectionListener()
-{
-//~~~~~~~~~~~~~
-if (!ListenerSocket) return;
-//~~~~~~~~~~~~~
-
-//Remote address
-TSharedRef<FInternetAddr> RemoteAddress = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-bool Pending;
-
-// handle incoming connections
-if (ListenerSocket->HasPendingConnection(Pending) && Pending)
-{
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//Already have a Connection? destroy previous
-if (ConnectionSocket)
-{
-ConnectionSocket->Close();
-ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectionSocket);
-GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Removed old socket")));
-}
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-//New Connection receive!
-ConnectionSocket = ListenerSocket->Accept(*RemoteAddress, TEXT("Received Socket Connection"));
-
-if (ConnectionSocket != NULL)
-{
-//Global cache of current Remote Address
-RemoteAddressForConnection = FIPv4Endpoint(RemoteAddress);
-GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("New Connection came.")));
-
-//UE_LOG "Accepted Connection! WOOOHOOOO!!!";
-
-//can thread this too
-//FTimerDelegate MyDel;
-
-//			MyDel.BindRaw(this, &ABallAndPlatePawn::TCPSocketListener);
-GetWorldTimerManager().SetTimer(timeHandler, this,
-&ABallAndPlatePawn::TCPSocketListener, 0.01f, true);
-//SetTimer(MyDel, 0.01, true);
-}
-}
-}
-//Rama's TCP Socket Listener
-void ABallAndPlatePawn::TCPSocketListener()
-{
-//~~~~~~~~~~~~~
-if (!ConnectionSocket) return;
-//~~~~~~~~~~~~~
-
-
-//Binary Array!
-TArray<uint8> ReceivedData;
-
-uint32 Size;
-while (ConnectionSocket->HasPendingData(Size))
-{
-
-ReceivedData.Init(0, FMath::Min(Size, 65507u));
-
-int32 Read = 0;
-ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
-
-GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Read! %d"), ReceivedData.Num()));
-}
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-if (ReceivedData.Num() <= 0)
-{
-return;
-}
-
-//VShow("Total Data read!", ReceivedData.Num());
-GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d"), ReceivedData.Num()));
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//						Rama's String From Binary Array
-const FString ReceivedUE4String = StringFromBinaryArray(ReceivedData);
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-//VShow("As String!!!!! ~>", ReceivedUE4String);
-GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("As String Data ~> %s"), *ReceivedUE4String));
-}
-*/
 FString ABallAndPlatePawn::StringFromBinaryArray(const TArray<uint8>& BinaryArray)
 {
 	//Create a string from a byte array!
