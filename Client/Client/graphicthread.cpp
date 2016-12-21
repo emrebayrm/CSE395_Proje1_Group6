@@ -12,22 +12,22 @@ void GraphicThread::run(){
     alive=true;
     while(isAlive()){
         // emit the signal for the count label
-        std::cerr<<"Graphic:run in"<<endl;
+       // std::cerr<<"Graphic:run in"<<endl;
         emit startThread();
         // slowdown the count change, msec
-        this->msleep(80);
-        std::cerr<<"Graphic:run out"<<endl;
+        this->msleep(20);
+       // std::cerr<<"Graphic:run out"<<endl;
     }
-    std::cerr<<"GraphicThread closed"<<endl;
+   // std::cerr<<"GraphicThread closed"<<endl;
 }
 
 bool GraphicThread::isAlive(){
     bool res=false;
     mutex.lock();
-    std::cerr<<"Graphic:isAlive in"<<endl;
+   // std::cerr<<"Graphic:isAlive in"<<endl;
     res=alive;
     mutex.unlock();
-    std::cerr<<"Graphic:isAlive out"<<endl;
+   // std::cerr<<"Graphic:isAlive out"<<endl;
     return res;
 }
 

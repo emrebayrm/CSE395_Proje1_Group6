@@ -36,9 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     scene = new QGraphicsScene(0,0,400,300);
     ui->graphicsView->setScene(scene);
-    scene->addEllipse(0,0,20,20,QPen(Qt::red),QBrush(Qt::blue));
-
-    std::cerr<<scene->height();
+    //scene->addEllipse(0,0,20,20,QPen(Qt::red),QBrush(Qt::blue));
 
 }
 
@@ -101,9 +99,6 @@ void MainWindow::updateXYPlotData(){
     ui->graphicsView->setScene(scene);*/
     scene->addEllipse(id,0,20,20,QPen(Qt::red),QBrush(Qt::blue));
     id+=1;
-
-
-
 
     static QTime time(QTime::currentTime());
     // calculate two new data points:

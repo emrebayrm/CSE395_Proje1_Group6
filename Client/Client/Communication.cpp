@@ -15,9 +15,9 @@ Communication::Communication(string str, SerialPort::BaudRate baud,QMutex *mtx) 
     cerr<<"new connection opened"<<endl;
     port = new SerialPort(str,baud);
 
-    communicationReady = false;
-    if(checkConnection())
-        makeHandShake();
+    communicationReady = true;
+    if(checkConnection());
+//        makeHandShake();
     XMotorAngle = 999;
     YMotorAngle = 999;
     ballXCoordinate = 999;
