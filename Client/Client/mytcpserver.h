@@ -13,17 +13,17 @@ public:
     bool SendData(char * Data);
     void listen();
     std::string readData();
-    QString getAddress(){return QString::number(server->serverAddress().toIPv4Address());}
+    QString getAddress(){return server->serverAddress().toString();}
 
     int getPortNumber(){return server->serverPort();}
 
-    void close(){socket->close();}
+    void close();
 public slots:
     void newConnection();
 
 private:
-    QTcpServer *server;
-    QTcpSocket *socket;
+    QTcpServer *server = NULL;
+    QTcpSocket *socket = NULL;
 
     bool isEstablishedConnection = false;
 };

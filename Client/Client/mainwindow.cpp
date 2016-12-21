@@ -15,7 +15,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setXYPlot();
 
     QImage logo(":/images/gtuLogo500.png");
-    ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(400,200)));
+    ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(201,111)));
+
+    ui->rBCenter->setChecked(true);
 
     guiThread = new GraphicThread(this);
     ardThread = new ArduinoThread(this);
@@ -23,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     com=NULL;
     server=NULL;
+    proc3D =NULL;
 
     // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
@@ -30,6 +33,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ardThread,SIGNAL(startArdThread()),this, SLOT(ardConnection()));
     connect(simThread,SIGNAL(startThread()),this,SLOT(sim3DConnection()));
+
+    scene = new QGraphicsScene(0,0,400,300);
+    ui->graphicsView->setScene(scene);
+    scene->addEllipse(0,0,20,20,QPen(Qt::red),QBrush(Qt::blue));
+
+    std::cerr<<scene->height();
+
 }
 
 MainWindow::~MainWindow()
@@ -68,11 +78,11 @@ void MainWindow::setXYPlot(){
 
     // set y axis
     ui->plotXY->yAxis->setLabelColor("blue");
-    ui->plotXY->yAxis->setLabel("Koordinatlar");
+    ui->plotXY->yAxis->setLabel("Coordinates");
     ui->plotXY->yAxis->setRange(0,400); // y axis -> coordinates
 
     // set x axis
-    ui->plotXY->xAxis->setLabel("Zaman");
+    ui->plotXY->xAxis->setLabel("Time");
     ui->plotXY->xAxis->setLabelColor("blue");
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
@@ -83,6 +93,18 @@ void MainWindow::setXYPlot(){
 
 
 void MainWindow::updateXYPlotData(){
+
+
+    scene->clear();
+    /*delete scene;
+    scene = new QGraphicsScene(this);
+    ui->graphicsView->setScene(scene);*/
+    scene->addEllipse(id,0,20,20,QPen(Qt::red),QBrush(Qt::blue));
+    id+=1;
+
+
+
+
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
@@ -95,8 +117,8 @@ void MainWindow::updateXYPlotData(){
       ui->plotXY->graph(0)->addData(key, coordX);
       ui->plotXY->graph(1)->addData(key, coordY);
       // rescale value (vertical) axis to fit the current data:
-      //ui->customPlot->graph(0)->rescaleValueAxis();
-      //ui->customPlot->graph(1)->rescaleValueAxis(true);
+      ui->plotXY->graph(0)->rescaleValueAxis();
+      ui->plotXY->graph(1)->rescaleValueAxis(true);
       lastPointKey = key;
     }
     // make key axis range scroll with the data (at a constant range size of 8):
@@ -191,11 +213,11 @@ void MainWindow::setServoPlot(){
 
     // set y axis
     ui->plotServo->yAxis->setLabelColor("blue");
-    ui->plotServo->yAxis->setLabel("Servo Açıları(°)");
+    ui->plotServo->yAxis->setLabel("Angles(°)");
     ui->plotServo->yAxis->setRange(0,180); // y axis -> coordinates
 
     // set x axis
-    ui->plotServo->xAxis->setLabel("Zaman");
+    ui->plotServo->xAxis->setLabel("Time");
     ui->plotServo->xAxis->setLabelColor("blue");
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
@@ -205,6 +227,7 @@ void MainWindow::setServoPlot(){
 
 
 void MainWindow::updateServoPlotData(){
+
 
     static QTime time(QTime::currentTime());
     // calculate two new data points:
@@ -276,6 +299,12 @@ void MainWindow::closeEvent (QCloseEvent *event)
             guiThread->terminate();
         }
 
+        if(server != NULL ){
+            server->close();
+            delete server;
+            server = NULL;
+        }
+
         if(com!=NULL){
             com->closeConnection();
             delete com;
@@ -297,43 +326,80 @@ void MainWindow::on_btnOpen3D_clicked()
 
 void MainWindow::sim3DConnection(){
     //check connection already established
+    if(proc3D==NULL){
+        QString file ="/home/hasan/workspace/CSE395_Proje1_Group6/Client/Client/test";
+        proc3D = new QProcess(this);
+        proc3D->start(file);
+        qDebug(file.toStdString().c_str());
+        qDebug("proc3D started");
+    }
     if(!isSim3DConnected){
-//        pid = fork();
-//        if(pid == 0){
-//            execl(EXENAME," ");         //start exec of 3d sim
-//            exit(EXIT_SUCCESS);
-//        }
+        if(proc3D==NULL){
+            QString file =QDir::homePath()+"test";
+            proc3D = new QProcess(this);
+            proc3D->start(file);
+            proc3D->isOpen();
+        }
         if(server == NULL){
             server = new myTcpServer(this);
             server->listen();
-            ui->textBMsg->append("address : " + server->getAddress());
-            ui->textBMsg->append("Port number : "+ QString::number(server->getPortNumber()));
         }
         if(server->isEstablished()){       //listen to connect
             isSim3DConnected = true ;
-            std::cerr <<  "Connection completed";
+            ui->textBMsg->append("Connection completed");
+            ui->textBMsg->append("address : " + server->getAddress());
+            ui->textBMsg->append("Port number : "+ QString::number(server->getPortNumber()));
         }
 
     }
     if(isSim3DConnected){
-        server->readData();
-        char buffer[30] = "Hello ";
-/*        std::sprintf(buffer,"{%d %d %d %d}",simThread->msg.ballX,
-                                            simThread->msg.ballY,
-                                            simThread->msg.motorXangle,
-                                            simThread->msg.motorYangle);*/
-        if(server->SendData(buffer))
-            std::cerr << "Succesfully sent" << std::endl;
-        else
-            std::cerr << "Error data sending " << std::endl;
-    }
+        std::string str = server->readData();
+        if(str.size() == 0)
+            return;
+        if(str.at(0) == 'G'){
+            char buffer[30];
+            std::sprintf(buffer,"{%d %d %d %d}",simThread->msg.ballX,
+                                                simThread->msg.ballY,
+                                                simThread->msg.motorXangle,
+                                                simThread->msg.motorYangle);
+            if(server->SendData(buffer))
+                std::cerr << "Succesfully sent" << std::endl;
+            else{
+                std::cerr << "Connection Lost  " << std::endl;
+                while(simThread->isRunning())
+                    simThread->terminate();
 
+                isSim3DConnected = false;
+                qDebug("Connection Lost");
+                server->close();
+                delete server;
+                server= NULL;
+                ui->textBMsg->append("Connection closed!");
+            }
+        }else if(str.at(0) == 'E'){
+            while(simThread->isRunning())
+                simThread->terminate();
+
+            isSim3DConnected = false;
+            qDebug("Connection Lost");
+            server->close();
+            delete server;
+            server= NULL;
+            ui->textBMsg->append("Connection closed!");
+        }
+        else{
+            qDebug("Wrong ");
+        }
+    }
 }
 
 void MainWindow::on_btnDisconnect_clicked()
 {
-    std::cerr<<"on_click_btn_disconnect"<<endl;
     qDebug("test");
+
+    while(simThread->isRunning()){
+        simThread->terminate();
+    }
 
     while(ardThread->isRunning()){
         ardThread->terminate();
@@ -343,6 +409,12 @@ void MainWindow::on_btnDisconnect_clicked()
         guiThread->terminate();
     }
 
+    if(server != NULL ){
+        server->close();
+        delete server;
+        server = NULL;
+    }
+
     if(com!=NULL){
         com->closeConnection();
         delete com;
@@ -350,5 +422,6 @@ void MainWindow::on_btnDisconnect_clicked()
     }
 
     connectionCompleted=false;
-    ui->textBMsg->setText("Connection closed!");
+    isSim3DConnected=false;
+    ui->textBMsg->append("Connection closed!");
 }

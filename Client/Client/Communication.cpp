@@ -32,7 +32,6 @@ bool Communication::makeHandShake() {
         write('S');
         port->wait(100);
         port->read(&ch);
-        cerr<<"CH:"<<ch<<endl;
     }while(ch != 'R');
     cerr << "Handshake succesfull" << endl;
     communicationReady = true;
@@ -81,8 +80,6 @@ bool Communication::readUntil() {
 
     if(!communicationReady)
         return false;
-
-    write('N'); // message to take coordinates
 
     port->readUntil(input,END_CHAR);
     cerr<<"SerialRead:"<<input<<endl;

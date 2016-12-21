@@ -4,7 +4,6 @@
 #include <QtCore>
 #include <QThread>
 #include "requirements.h"
-//#include "tools.h"
 #include "arduinomessagebean.h"
 
 
