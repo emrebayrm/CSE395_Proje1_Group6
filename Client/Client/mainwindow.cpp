@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setXYPlot();
 
     QImage logo(":/images/gtuLogo500.png");
-    ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(400,200)));
+    ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(201,111)));
 
     ui->rBCenter->setChecked(true);
 
@@ -33,6 +33,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ardThread,SIGNAL(startArdThread()),this, SLOT(ardConnection()));
     connect(simThread,SIGNAL(startThread()),this,SLOT(sim3DConnection()));
+
+    scene = new QGraphicsScene(0,0,400,300);
+    ui->graphicsView->setScene(scene);
+    scene->addEllipse(0,0,20,20,QPen(Qt::red),QBrush(Qt::blue));
+
+    std::cerr<<scene->height();
+
 }
 
 MainWindow::~MainWindow()
@@ -86,6 +93,18 @@ void MainWindow::setXYPlot(){
 
 
 void MainWindow::updateXYPlotData(){
+
+
+    scene->clear();
+    /*delete scene;
+    scene = new QGraphicsScene(this);
+    ui->graphicsView->setScene(scene);*/
+    scene->addEllipse(id,0,20,20,QPen(Qt::red),QBrush(Qt::blue));
+    id+=1;
+
+
+
+
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
@@ -98,8 +117,8 @@ void MainWindow::updateXYPlotData(){
       ui->plotXY->graph(0)->addData(key, coordX);
       ui->plotXY->graph(1)->addData(key, coordY);
       // rescale value (vertical) axis to fit the current data:
-      //ui->customPlot->graph(0)->rescaleValueAxis();
-      //ui->customPlot->graph(1)->rescaleValueAxis(true);
+      ui->plotXY->graph(0)->rescaleValueAxis();
+      ui->plotXY->graph(1)->rescaleValueAxis(true);
       lastPointKey = key;
     }
     // make key axis range scroll with the data (at a constant range size of 8):
@@ -208,6 +227,7 @@ void MainWindow::setServoPlot(){
 
 
 void MainWindow::updateServoPlotData(){
+
 
     static QTime time(QTime::currentTime());
     // calculate two new data points:

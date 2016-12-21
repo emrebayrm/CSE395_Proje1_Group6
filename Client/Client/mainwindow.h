@@ -58,6 +58,10 @@ private:
     QProcess *proc3D;
 
     QMessageLogger logger;
+
+    QGraphicsScene *scene; // 2D Scene
+    double id=0;
+
 };
 
 #endif // MAINWINDOW_H
