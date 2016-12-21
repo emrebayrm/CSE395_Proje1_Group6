@@ -244,7 +244,7 @@ void ABallAndPlatePawn::Connect(
 }
 
 void ABallAndPlatePawn::readValueFromSocket() {
-	FString handShakeSendMessage = TEXT("41 41 14 151 15}");
+	FString handShakeSendMessage = TEXT("G");
 	TCHAR *serializedChar = handShakeSendMessage.GetCharArray().GetData();
 	int32 size = FCString::Strlen(serializedChar);
 	int32 sent = 0;
@@ -258,7 +258,7 @@ void ABallAndPlatePawn::readValueFromSocket() {
 		FString stringReceiveData;        // To convert binary to string.
 		FString tempString;				  // Helper to convert string to int.
 
-		uint32 Size = 1;
+		uint32 Size =1 ;
 		binaryReceivedData.Init(0, FMath::Min(Size, 65507u));
 
 		int32 Read = 0;
@@ -266,23 +266,28 @@ void ABallAndPlatePawn::readValueFromSocket() {
 		// Wait for data.
 		while (ConnectionSocket->HasPendingConnection(HasPendingConnection) && HasPendingConnection == false && !ConnectionSocket->HasPendingData(Size));
 
+		//// Sample input packet : "{ 12 34 14 144 }"
 		int counter = 0;
 		bool status = false;
 		while (!status) {
 			succesfull = ConnectionSocket->Recv(binaryReceivedData.GetData(), binaryReceivedData.Num(), Read);
 			if (succesfull) { // Receive succesfull.
 
-							  // Convert binary to string.
+				// Convert binary to string.
 				stringReceiveData = StringFromBinaryArray(binaryReceivedData);
+				
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Received message : %s "),*stringReceiveData));
+
 				if (stringReceiveData[0] == '}') // Receive end.
 				{
+					inputs[counter++] = FCString::Atoi(*tempString);
 					status = true;
 				}
-				else if (stringReceiveData[0] == ' ') { // Convert string to int.
+				else if (stringReceiveData[0] == ' ' && tempString.Len() != 0) { // Convert string to int.
 					inputs[counter++] = FCString::Atoi(*tempString);
 					tempString.Reset();
 				}
-				else {
+				else if (stringReceiveData[0] !=  '{') {
 					tempString.Append(stringReceiveData);
 				}
 			}
