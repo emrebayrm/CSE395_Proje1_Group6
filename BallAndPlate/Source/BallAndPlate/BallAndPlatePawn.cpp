@@ -153,11 +153,49 @@ void ABallAndPlatePawn::UpdateLights() {
 	UE_LOG(LogTemp, Warning, TEXT("MAP X : %d"), mapX);
 	UE_LOG(LogTemp, Warning, TEXT("MAP Y : %d"), mapY);
 
+	int sDx = mapX + 1;
+	int sAx = mapX - 1;
+	int sWy = mapY + 1;
+	int sXy = mapY - 1;
+	
+	int sQx = mapX - 1;
+	int sQy = mapY + 1;
+
+	int sEx = mapX + 1;
+	int sEy = mapY + 1;
+
+	int sZx = mapX - 1;
+	int sZy = mapY - 1;
+
+	int sCx = mapX + 1;
+	int sCy = mapY - 1;
+
+	if(sDx <= 13)
+		lights[sDx][mapY]->GetRootComponent()->SetVisibility(true);
+	if(sAx >= 0)
+		lights[sAx][mapY]->GetRootComponent()->SetVisibility(true);
+	if (sWy <= 9)
+		lights[mapX][sWy]->GetRootComponent()->SetVisibility(true);
+	if (sXy >= 0)
+		lights[mapX][sXy]->GetRootComponent()->SetVisibility(true);
+	if (sQx >= 0 && sQy <= 9)
+		lights[sQx][sQy]->GetRootComponent()->SetVisibility(true);
+	if (sEx <= 13 && sEy <= 9)
+		lights[sEx][sEy]->GetRootComponent()->SetVisibility(true);
+	if (sZx >= 0 && sZy >= 0)
+		lights[sZx][sZy]->GetRootComponent()->SetVisibility(true);
+	if (sCx <= 13 && sCy >= 0)
+		lights[sCx][sCy]->GetRootComponent()->SetVisibility(true);
+
 	lights[mapX][mapY]->GetRootComponent()->SetVisibility(true);
 
 	for (int i = 0; i < lights.Num(); ++i) {
 		for (int j = 0; j < lights[i].Num(); ++j) {
-			if (lights[i][j] != nullptr && (i!=mapX ||j!=mapY)) {
+			if (lights[i][j] != nullptr && (i != mapX || j != mapY) && (i != sDx || j!= mapY)
+										&& (i != sAx || j != mapY) && (i != mapX || j != sWy)
+										&& (i != mapX || j != sXy) && (i != sQx || j != sQy)
+										&& (i != sEx || j != sEy) && (i != sZx || j != sZy)
+										&& (i != sCx || j != sCy)) {
 				lights[i][j]->GetRootComponent()->SetVisibility(false);
 			}
 
