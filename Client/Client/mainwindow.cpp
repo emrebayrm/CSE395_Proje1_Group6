@@ -29,11 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     proc3D =NULL;
 
     scene = new QGraphicsScene(0,0,400,300);
-        ui->graphicsView->setScene(scene);
-    // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
-/*    connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
-    connect(guiThread,SIGNAL(startThread()),this,SLOT(updateXYPlotData()));
-*/
+    ui->graphicsView->setScene(scene);
+
     connect(ardThread,SIGNAL(updateXYPlotDataArd(int,int)),this,SLOT(updateXYPlotData(int,int)));
     connect(ardThread,SIGNAL(updateServoPlotDataArd(int,int)),this,SLOT(updateServoPlotData(int,int)));
     connect(simThread,SIGNAL(Request(int)),ardThread,SLOT(HandleRequest(int)));
@@ -85,17 +82,13 @@ void MainWindow::setXYPlot(){
     ui->plotXY->xAxis->setLabel("Time");
     ui->plotXY->xAxis->setLabelColor("blue");
 
-    // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
-    //connect(&timerXYPlot,SIGNAL(timeout()),this,SLOT(updateXYPlotData()));
-    //timerXYPlot.start(0);
-
 }
 
 void MainWindow::updateXYPlotData(int bx,int by){
-
-
     scene->clear();
-    scene->addEllipse(bx,by,20,20,QPen(Qt::red),QBrush(Qt::blue));
+    scene->addLine(200,0,200,300);
+    scene->addLine(0,150,400,150);
+    scene->addEllipse(bx-10,by-10,20,20,QPen(Qt::red),QBrush(Qt::blue));
 
     static QTime time(QTime::currentTime());
     // calculate two new data points:
@@ -108,9 +101,6 @@ void MainWindow::updateXYPlotData(int bx,int by){
       // add data to lines:
       ui->plotXY->graph(0)->addData(key, coordX);
       ui->plotXY->graph(1)->addData(key, coordY);
-      // rescale value (vertical) axis to fit the current data:
-      ui->plotXY->graph(0)->rescaleValueAxis();
-      ui->plotXY->graph(1)->rescaleValueAxis(true);
       lastPointKey = key;
     }
     // make key axis range scroll with the data (at a constant range size of 8):
@@ -118,13 +108,9 @@ void MainWindow::updateXYPlotData(int bx,int by){
     ui->plotXY->replot();
 
     ui->textBPlotXY->setText(
-            QString("X: %1 \t  Y: %2")
-            .arg(coordX,4)
-            .arg(coordY,4));
-
+                QString("X: %1 \t  Y: %2").arg(coordX,4)
+                .arg(coordY,4));
 }
-
-
 
 
 void MainWindow::setServoPlot(){
@@ -163,9 +149,6 @@ void MainWindow::setServoPlot(){
     ui->plotServo->xAxis->setLabel("Time");
     ui->plotServo->xAxis->setLabelColor("blue");
 
-    // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
-   // connect(&timerServoPlot,SIGNAL(timeout()),this,SLOT(updateServoPlotData()));
-   // timerServoPlot.start(0);
 }
 
 
@@ -185,8 +168,6 @@ void MainWindow::updateServoPlotData(int sx,int sy){
       ui->plotServo->graph(0)->addData(key, servoXAngle);
       ui->plotServo->graph(1)->addData(key, servoYAngle);
       // rescale value (vertical) axis to fit the current data:
-      //ui->customPlot->graph(0)->rescaleValueAxis();
-      //ui->customPlot->graph(1)->rescaleValueAxis(true);
       lastPointKey = key;
     }
     // make key axis range scroll with the data (at a constant range size of 8):
