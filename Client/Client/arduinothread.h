@@ -26,6 +26,7 @@ signals:
     void updateServoPlotDataArd(int mx,int my);
     void updateXYPlotDataArd(int bx,int by);
 public slots:
+    void updatePID(int,int,int);
     void Started();
     void HandleRequest(int mode);
 private:

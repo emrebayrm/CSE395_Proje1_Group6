@@ -8,6 +8,7 @@
 
 ArduinoThread::ArduinoThread(QObject *parent):QThread(parent)
 {
+
     this->alive=false;
     connectionCompleted = false;
 
@@ -24,6 +25,7 @@ void ArduinoThread::run(){
     while(!com->isCommunicationReady());
 
     while(isAlive()){
+        mtx->lock();
         if(com->readUntil()){
             bx = com->getBallXCoordinate();
             by = com->getBallYCoordinate();
@@ -49,6 +51,7 @@ void ArduinoThread::run(){
             emit updateServoPlotDataArd(mx,my);
             emit updateXYPlotDataArd(bx,by);
         }
+        mtx->unlock();
     }
     std::cerr<<"ArduinoThread closed"<<endl;
 }
@@ -69,6 +72,17 @@ void ArduinoThread::terminate(){
     alive=false;
     mtx->unlock();
     std::cerr<<"Arduino::termiante out"<<endl;
+}
+
+void ArduinoThread::updatePID(int kp, int ki, int kd)
+{
+    mtx->lock();
+    char Buffer[15];
+    sprintf(Buffer,"U %d %d %d",kp,ki,kd);
+    std::cout << "Buffer Writing : " << Buffer << std::endl;
+    com->write(Buffer);
+    std::cout << "Succefuly Updated" << std::endl;
+    mtx->unlock();
 }
 
 void ArduinoThread::Started()
