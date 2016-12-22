@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setXYPlot();
 
     QImage logo(":/images/gtuLogo500.png");
-    ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(400,200)));
+    ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(201,111)));
 
     ui->rBCenter->setChecked(true);
     //guiThread = new GraphicThread(this);
@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     server=NULL;
     proc3D =NULL;
 
+    scene = new QGraphicsScene(0,0,400,300);
+        ui->graphicsView->setScene(scene);
     // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
 /*    connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateXYPlotData()));
@@ -37,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(simThread,SIGNAL(Request(int)),ardThread,SLOT(HandleRequest(int)));
     connect(this,SIGNAL(sim3DReq()),ardThread,SLOT(Started()));
     connect(ardThread,SIGNAL(readySend(int,int,int,int)),simThread,SLOT(SendData(int,int,int,int)));
+    connect(this,SIGNAL(UpdatePidSignal(int,int,int)),ardThread,SLOT(updatePID(int,int,int)));
 }
 
 MainWindow::~MainWindow()
@@ -89,6 +92,11 @@ void MainWindow::setXYPlot(){
 }
 
 void MainWindow::updateXYPlotData(int bx,int by){
+
+
+    scene->clear();
+    scene->addEllipse(bx,by,20,20,QPen(Qt::red),QBrush(Qt::blue));
+
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
@@ -294,4 +302,12 @@ void MainWindow::on_btnDisconnect_clicked()
     connectionCompleted=false;
     isSim3DConnected=false;
     ui->textBMsg->append("Connection closed!");
+}
+
+void MainWindow::on_btnUpPID_clicked()
+{
+    std::cerr << "Signal Emitted" << std::endl;
+    emit UpdatePidSignal((ui->kpLineEdit->text()).toInt(),
+                         (ui->kiLineEdit->text()).toInt(),
+                         (ui->kdLineEdit->text()).toInt());
 }

@@ -30,6 +30,7 @@ public:
 
 signals:
     void sim3DReq();
+    void UpdatePidSignal(int,int,int);
 private slots:
     void on_btnConnPlate_clicked();
 
@@ -39,6 +40,8 @@ private slots:
     void on_btnDisconnect_clicked();
     void on_btnOpen3D_clicked();
 
+
+    void on_btnUpPID_clicked();
 
 private:
 
@@ -62,6 +65,7 @@ private:
     QProcess *proc3D;
 
     QMessageLogger logger;
+    QGraphicsScene *scene;
 };
 
 #endif // MAINWINDOW_H
