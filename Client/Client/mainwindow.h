@@ -6,9 +6,13 @@
 #include <QCloseEvent>
 #include <QDebug>
 #include <QMessageLogger>
+#include "qcustomplot.h"
+#include "SerialPort.h"
+#include "Communication.h"
+#include "mytcpserver.h"
 #include "graphicthread.h"
-#include "requirements.h"
-
+#include "sim3dthread.h"
+#include "arduinothread.h"
 
 
 namespace Ui {
@@ -23,18 +27,18 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void closeEvent (QCloseEvent *event);
-public slots:
-    void updateServoPlotData();
-    void updateXYPlotData();
 
-    void ardConnection();
-    void sim3DConnection();
-
+signals:
+    void sim3DReq();
 private slots:
     void on_btnConnPlate_clicked();
 
+    void updateServoPlotData(int,int);
+    void updateXYPlotData(int,int);
+
     void on_btnDisconnect_clicked();
     void on_btnOpen3D_clicked();
+
 
 private:
 
@@ -45,11 +49,11 @@ private:
     QTimer timerServoPlot;
 
     Sim3DThread *simThread;
-    GraphicThread *guiThread; // TODO: check this
+   // GraphicThread *guiThread; // TODO: check this
     ArduinoThread *ardThread;
 
-    Communication *com;
-    myTcpServer *server;
+    Communication *com = NULL;
+    myTcpServer *server = NULL;
 
     bool isSim3DConnected = false;
     bool connectionCompleted =false;

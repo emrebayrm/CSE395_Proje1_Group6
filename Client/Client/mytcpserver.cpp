@@ -1,5 +1,5 @@
 #include "mytcpserver.h"
-
+#include <iostream>
 
 myTcpServer::myTcpServer(QObject *parent) :
     QObject(parent)
@@ -51,6 +51,7 @@ bool myTcpServer::SendData(char * data)
 void myTcpServer::newConnection()
 {
     // need to grab the socket
+    std::cerr << "new conn " << std::endl;
     socket = server->nextPendingConnection();
     isEstablishedConnection = true;
 }

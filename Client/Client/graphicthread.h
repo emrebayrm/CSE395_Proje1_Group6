@@ -15,6 +15,7 @@ public:
     ArduinoMessageBean msg;
     void terminate();
 signals:
+
     void startThread();
 private:
     QMutex mutex;

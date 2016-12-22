@@ -3,8 +3,9 @@
 
 #include <QtCore>
 #include <QThread>
-#include "requirements.h"
 #include "arduinomessagebean.h"
+#include "Communication.h"
+#include "sim3dthread.h"
 
 
 class ArduinoThread : public QThread
@@ -15,14 +16,21 @@ public:
     void run();
     bool isAlive();
     void terminate();
+    bool sim3dStarted = false;
     ArduinoMessageBean msg;
+    QMutex *mtx;
+    Sim3DThread *simThread;
 signals:
+    void readySend(int,int,int,int);
     void startArdThread();
+    void updateServoPlotDataArd(int mx,int my);
+    void updateXYPlotDataArd(int bx,int by);
 public slots:
-
+    void Started();
+    void HandleRequest(int mode);
 private:
-    QMutex mutex;
+    Communication *com = NULL;
     bool alive;
-
+    bool connectionCompleted;
 };
 #endif // ARDUINOTHREAD_H

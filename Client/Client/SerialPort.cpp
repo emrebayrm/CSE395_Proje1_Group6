@@ -315,6 +315,7 @@ bool SerialPort::readUntil(std::string& str, char until) {
 #else
 	char b;
 	do {
+
 		int n = readData(port, &b, 1);  // readAngles a char at a time
         if(n == -1) {
         	continue;

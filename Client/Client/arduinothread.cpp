@@ -1,40 +1,88 @@
+#include <QtCore>
+#include <ctime>
+#include <iostream>
+#include <cstdio>
+
 #include "arduinothread.h"
 #include "mainwindow.h"
-#include <QtCore>
+
 ArduinoThread::ArduinoThread(QObject *parent):QThread(parent)
 {
     this->alive=false;
+    connectionCompleted = false;
+
 }
 
 void ArduinoThread::run(){
-
+    std::clock_t start;
+    double duration=0;
+    start = std::clock();
+    int bx,by,mx,my;
     alive=true;
-    while(isAlive()){
-        // emit the signal for the count label
 
-        //std::cerr<<"Arduino::run in"<<endl;
-        emit startArdThread();
-        // slowdown the count change, msec
-        this->msleep(20);
-        //std::cerr<<"Arduino::run out"<<endl;
+    com = new Communication(msg.portName,msg.baudRate);
+    while(!com->isCommunicationReady());
+
+    while(isAlive()){
+        if(com->readUntil()){
+            bx = com->getBallXCoordinate();
+            by = com->getBallYCoordinate();
+            mx = com->getXMotorAngle();
+            my = com->getYMotorAngle();
+            msg.ballX = bx;
+            msg.ballY = by;
+            msg.motorXangle = mx;
+            msg.motorYangle = my;
+/*
+            QString log;
+            log.append("Bx:").append(QString::number(guiThread->msg.ballX)).append("  ");
+            log.append("By:").append(QString::number(guiThread->msg.ballY)).append("  ");
+            log.append("Sx:").append(QString::number(guiThread->msg.motorXangle)).append("  ");
+            log.append("Sy:").append(QString::number(guiThread->msg.motorYangle)).append("  ");
+            logger.debug(log.toStdString().c_str());
+            logger.debug("Arduino <--> ardThread okeyy");*/
+        }
+        duration = (std::clock() - start) /(double) CLOCKS_PER_SEC;
+//        std::cerr << duration << std::endl;
+        if(duration > 0.75){
+            start = 0;
+            emit updateServoPlotDataArd(mx,my);
+            emit updateXYPlotDataArd(bx,by);
+        }
     }
     std::cerr<<"ArduinoThread closed"<<endl;
 }
 
 bool ArduinoThread::isAlive(){
     bool res=false;
-    mutex.lock();
- //   std::cerr<<"Arduino::isAlive in"<<endl;
+    mtx->lock();
+//    std::cerr<<"Arduino::isAlive in"<<endl;
     res=alive;
-    mutex.unlock();
-  //  std::cerr<<"Arduino::isAlive out"<<endl;
+    mtx->unlock();
+//    std::cerr<<"Arduino::isAlive out"<<endl;
     return res;
 }
 
 void ArduinoThread::terminate(){
-    mutex.lock();
+    mtx->lock();
     std::cerr<<"Arduino::termiante in"<<endl;
     alive=false;
-    mutex.unlock();
+    mtx->unlock();
     std::cerr<<"Arduino::termiante out"<<endl;
+}
+
+void ArduinoThread::Started()
+{
+    sim3dStarted = true;
+}
+
+void ArduinoThread::HandleRequest(int mode){
+    if(mode == 0){
+        simThread->terminate();
+    }
+    else if(mode == 1)
+    {
+        emit readySend(msg.ballX,msg.ballY,msg.motorXangle,msg.motorYangle);
+    }
+
 }

@@ -32,7 +32,6 @@ HEADERS += \
     mainwindow.h \
     qcustomplot.h \
     SerialPort.h \
-    requirements.h \
     Communication.h \
     graphicthread.h \
     arduinothread.h \

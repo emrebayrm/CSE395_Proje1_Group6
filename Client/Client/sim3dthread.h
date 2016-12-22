@@ -1,8 +1,9 @@
 #ifndef SIM3DTHREAD_H
 #define SIM3DTHREAD_H
 #include <QThread>
-#include"requirements.h"
-
+#include <QMutex>
+#include "mytcpserver.h"
+#include "threedsimulationmessage.h"
 class Sim3DThread : public QThread
 {
     Q_OBJECT
@@ -11,14 +12,18 @@ public:
     void run();
     bool isAlive();
     void terminate();
-    ArduinoMessageBean msg;
-
+    ThreeDSimulationMessage msg;
+    myTcpServer *server;
+    QMutex *mtx;
+    int connfd;
 signals:
     void startThread();
+    void Request(int);
 public slots:
+    void SendData(int,int,int,int);
 private:
-    QMutex mutex;
     bool alive;
+    bool connectionCompleted;
 };
 
 #endif // SIM3DTHREAD_H
