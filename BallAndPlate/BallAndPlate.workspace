@@ -3640,6 +3640,16 @@
     <Include Path="/opt/UnrealEngine/Engine/Source/Editor/Kismet/Public/WorkflowOrientedApp" />
     <Include Path="/opt/UnrealEngine/Engine/Intermediate/Build/Linux/B4D820EA/UE4Editor/Inc/Kismet" />
     <Include Path="/opt/UnrealEngine/Engine/Source/Editor/Kismet" />
+    <Include Path="/opt/UnrealEngine/Engine/Source/Runtime/Sockets/Public" />
+    <Include Path="/opt/UnrealEngine/Engine/Intermediate/Build/Linux/B4D820EA/UE4Editor/Inc/Sockets" />
+    <Include Path="/opt/UnrealEngine/Engine/Source/Runtime/Sockets" />
+    <Include Path="/opt/UnrealEngine/Engine/Source/Runtime/Networking/Public" />
+    <Include Path="/opt/UnrealEngine/Engine/Source/Runtime/Networking/Public/Common" />
+    <Include Path="/opt/UnrealEngine/Engine/Source/Runtime/Networking/Public/Interfaces" />
+    <Include Path="/opt/UnrealEngine/Engine/Source/Runtime/Networking/Public/Interfaces/IPv4" />
+    <Include Path="/opt/UnrealEngine/Engine/Source/Runtime/Networking/Public/Interfaces/Steam" />
+    <Include Path="/opt/UnrealEngine/Engine/Intermediate/Build/Linux/B4D820EA/UE4Editor/Inc/Networking" />
+    <Include Path="/opt/UnrealEngine/Engine/Source/Runtime/Networking" />
   </WorkspaceParserPaths>
   <Project Name="UE4Client" Path="Intermediate/ProjectFiles/UE4Client.project" Active="No" />
   <Project Name="UE4Editor" Path="Intermediate/ProjectFiles/UE4Editor.project" Active="No" />

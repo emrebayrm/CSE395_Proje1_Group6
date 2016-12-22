@@ -8365,7 +8365,6 @@ HEADERS += \
 	"$$BallAndPlateRootPath/Source/BallAndPlate/BallAndPlate.h" \
 	"$$BallAndPlateRootPath/Source/BallAndPlate/BallAndPlateGameModeBase.h" \
 	"$$BallAndPlateRootPath/Source/BallAndPlate/BallAndPlatePawn.h" \
-	"$$BallAndPlateRootPath/Source/BallAndPlate/PlateAndBallActor.h" \
-	"$$BallAndPlateRootPath/Source/BallAndPlate/PlateAndBallPawn.h" \
+	"$$BallAndPlateRootPath/Source/BallAndPlate/PawnWithCamera.h" \
  
 

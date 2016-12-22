@@ -3637,3 +3637,13 @@
 /opt/UnrealEngine/Engine/Source/Editor/Kismet/Public/WorkflowOrientedApp
 /opt/UnrealEngine/Engine/Intermediate/Build/Linux/B4D820EA/UE4Editor/Inc/Kismet
 /opt/UnrealEngine/Engine/Source/Editor/Kismet
+/opt/UnrealEngine/Engine/Source/Runtime/Sockets/Public
+/opt/UnrealEngine/Engine/Intermediate/Build/Linux/B4D820EA/UE4Editor/Inc/Sockets
+/opt/UnrealEngine/Engine/Source/Runtime/Sockets
+/opt/UnrealEngine/Engine/Source/Runtime/Networking/Public
+/opt/UnrealEngine/Engine/Source/Runtime/Networking/Public/Common
+/opt/UnrealEngine/Engine/Source/Runtime/Networking/Public/Interfaces
+/opt/UnrealEngine/Engine/Source/Runtime/Networking/Public/Interfaces/IPv4
+/opt/UnrealEngine/Engine/Source/Runtime/Networking/Public/Interfaces/Steam
+/opt/UnrealEngine/Engine/Intermediate/Build/Linux/B4D820EA/UE4Editor/Inc/Networking
+/opt/UnrealEngine/Engine/Source/Runtime/Networking

@@ -6219,7 +6219,6 @@ SOURCES += \
 	"$$BallAndPlateRootPath/Source/BallAndPlate/BallAndPlate.cpp" \
 	"$$BallAndPlateRootPath/Source/BallAndPlate/BallAndPlateGameModeBase.cpp" \
 	"$$BallAndPlateRootPath/Source/BallAndPlate/BallAndPlatePawn.cpp" \
-	"$$BallAndPlateRootPath/Source/BallAndPlate/PlateAndBallActor.cpp" \
-	"$$BallAndPlateRootPath/Source/BallAndPlate/PlateAndBallPawn.cpp" \
+	"$$BallAndPlateRootPath/Source/BallAndPlate/PawnWithCamera.cpp" \
  
 

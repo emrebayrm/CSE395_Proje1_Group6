@@ -6230,8 +6230,7 @@ set(SOURCE_FILES
 	"${GAME_ROOT_PATH}/Source/BallAndPlate/BallAndPlate.cpp"
 	"${GAME_ROOT_PATH}/Source/BallAndPlate/BallAndPlateGameModeBase.cpp"
 	"${GAME_ROOT_PATH}/Source/BallAndPlate/BallAndPlatePawn.cpp"
-	"${GAME_ROOT_PATH}/Source/BallAndPlate/PlateAndBallActor.cpp"
-	"${GAME_ROOT_PATH}/Source/BallAndPlate/PlateAndBallPawn.cpp"
+	"${GAME_ROOT_PATH}/Source/BallAndPlate/PawnWithCamera.cpp"
  )
 
 set(HEADER_FILES 
@@ -14601,8 +14600,7 @@ set(HEADER_FILES
 	"${GAME_ROOT_PATH}/Source/BallAndPlate/BallAndPlate.h"
 	"${GAME_ROOT_PATH}/Source/BallAndPlate/BallAndPlateGameModeBase.h"
 	"${GAME_ROOT_PATH}/Source/BallAndPlate/BallAndPlatePawn.h"
-	"${GAME_ROOT_PATH}/Source/BallAndPlate/PlateAndBallActor.h"
-	"${GAME_ROOT_PATH}/Source/BallAndPlate/PlateAndBallPawn.h"
+	"${GAME_ROOT_PATH}/Source/BallAndPlate/PawnWithCamera.h"
  )
 
 set(CONFIG_FILES 
@@ -18740,6 +18738,16 @@ include_directories(
 	"${UE4_ROOT_PATH}/Engine/Source/Editor/Kismet/Public/WorkflowOrientedApp"
 	"${UE4_ROOT_PATH}/Engine/Intermediate/Build/Linux/B4D820EA/UE4Editor/Inc/Kismet"
 	"${UE4_ROOT_PATH}/Engine/Source/Editor/Kismet"
+	"${UE4_ROOT_PATH}/Engine/Source/Runtime/Sockets/Public"
+	"${UE4_ROOT_PATH}/Engine/Intermediate/Build/Linux/B4D820EA/UE4Editor/Inc/Sockets"
+	"${UE4_ROOT_PATH}/Engine/Source/Runtime/Sockets"
+	"${UE4_ROOT_PATH}/Engine/Source/Runtime/Networking/Public"
+	"${UE4_ROOT_PATH}/Engine/Source/Runtime/Networking/Public/Common"
+	"${UE4_ROOT_PATH}/Engine/Source/Runtime/Networking/Public/Interfaces"
+	"${UE4_ROOT_PATH}/Engine/Source/Runtime/Networking/Public/Interfaces/IPv4"
+	"${UE4_ROOT_PATH}/Engine/Source/Runtime/Networking/Public/Interfaces/Steam"
+	"${UE4_ROOT_PATH}/Engine/Intermediate/Build/Linux/B4D820EA/UE4Editor/Inc/Networking"
+	"${UE4_ROOT_PATH}/Engine/Source/Runtime/Networking"
  )
 
 add_definitions( 
