@@ -2,11 +2,15 @@
 #define MYTCPSERVER_H
 #define DEFAULTPORT 9999
 #include <QObject>
-#include "requirements.h"
+#include <QTcpServer>
+#include <QTcpSocket>
+
 class myTcpServer : public QObject
 {
     Q_OBJECT
 public:
+    QTcpServer *server = NULL;
+    QTcpSocket *socket = NULL;
 
     explicit myTcpServer(QObject *parent = 0);
     bool isEstablished(){return isEstablishedConnection;}
@@ -20,11 +24,7 @@ public:
     void close();
 public slots:
     void newConnection();
-
 private:
-    QTcpServer *server = NULL;
-    QTcpSocket *socket = NULL;
-
     bool isEstablishedConnection = false;
 };
 

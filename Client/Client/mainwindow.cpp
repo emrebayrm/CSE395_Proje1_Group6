@@ -18,21 +18,25 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(400,200)));
 
     ui->rBCenter->setChecked(true);
-
-    guiThread = new GraphicThread(this);
+    //guiThread = new GraphicThread(this);
     ardThread = new ArduinoThread(this);
+    ardThread->mtx = &mtx;
+    simThread->mtx = &mtx;
     simThread = new Sim3DThread(this);
-
+    ardThread->simThread = simThread;
     com=NULL;
     server=NULL;
     proc3D =NULL;
 
     // guiTHreadi icinde startThread calistirilinca, bu clasın verilen metodunu calistir
-    connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
+/*    connect(guiThread,SIGNAL(startThread()),this,SLOT(updateServoPlotData()));
     connect(guiThread,SIGNAL(startThread()),this,SLOT(updateXYPlotData()));
-
-    connect(ardThread,SIGNAL(startArdThread()),this, SLOT(ardConnection()));
-    connect(simThread,SIGNAL(startThread()),this,SLOT(sim3DConnection()));
+*/
+    connect(ardThread,SIGNAL(updateXYPlotDataArd(int,int)),this,SLOT(updateXYPlotData(int,int)));
+    connect(ardThread,SIGNAL(updateServoPlotDataArd(int,int)),this,SLOT(updateServoPlotData(int,int)));
+    connect(simThread,SIGNAL(Request(int)),ardThread,SLOT(HandleRequest(int)));
+    connect(this,SIGNAL(sim3DReq()),ardThread,SLOT(Started()));
+    connect(ardThread,SIGNAL(readySend(int,int,int,int)),simThread,SLOT(SendData(int,int,int,int)));
 }
 
 MainWindow::~MainWindow()
@@ -84,14 +88,13 @@ void MainWindow::setXYPlot(){
 
 }
 
-
-void MainWindow::updateXYPlotData(){
+void MainWindow::updateXYPlotData(int bx,int by){
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
     static double lastPointKey = 0;
-    int coordX=guiThread->msg.ballX;
-    int coordY=guiThread->msg.ballY;
+    int coordX=bx;
+    int coordY=by;
     if (key-lastPointKey > 0.002) // at most add point every 2 ms
     {
       // add data to lines:
@@ -112,55 +115,6 @@ void MainWindow::updateXYPlotData(){
             .arg(coordY,4));
 
 }
-
-void MainWindow::ardConnection()
-{
-    if(!connectionCompleted){
-        com = new Communication(ardThread->msg.portName,ardThread->msg.baudRate,&mtx);
-        if(com->isCommunicationReady()){
-            if(!guiThread->isAlive())
-                guiThread->start();
-        }
-    }
-    if(!com->isCommunicationReady()){
-        ardThread->terminate();
-        ui->textBMsg->append("Arduino Connection failed");
-        logger.warning("Arduino connection failed!");
-        connectionCompleted = false;
-    }else{
-
-        connectionCompleted = true;
-    }
-
-    if(connectionCompleted){
-
-        if(com->readUntil()){
-            mtx.lock();
-
-            guiThread->msg.ballX = com->getBallXCoordinate();
-            guiThread->msg.ballY = com->getBallYCoordinate();
-            guiThread->msg.motorXangle = com->getXMotorAngle();
-            guiThread->msg.motorYangle = com->getYMotorAngle();
-
-            QString log;
-            log.append("Bx:").append(QString::number(guiThread->msg.ballX)).append("  ");
-            log.append("By:").append(QString::number(guiThread->msg.ballY)).append("  ");
-            log.append("Sx:").append(QString::number(guiThread->msg.motorXangle)).append("  ");
-            log.append("Sy:").append(QString::number(guiThread->msg.motorYangle)).append("  ");
-            logger.debug(log.toStdString().c_str());
-            logger.debug("Arduino <--> ardThread okeyy");
-            qDebug();
-            if(isSim3DConnected){
-                simThread->msg.ballX = com->getBallXCoordinate();
-                simThread->msg.ballY = com->getBallYCoordinate();
-                simThread->msg.motorXangle = com->getXMotorAngle();
-                simThread->msg.motorYangle = com->getYMotorAngle();
-            }
-            mtx.unlock();
-        }
-    }
-}
-
 
 
 
@@ -207,13 +161,13 @@ void MainWindow::setServoPlot(){
 }
 
 
-void MainWindow::updateServoPlotData(){
+void MainWindow::updateServoPlotData(int sx,int sy){
 
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
-    int servoXAngle=guiThread->msg.motorXangle;
-    int servoYAngle=guiThread->msg.motorYangle;
+    int servoXAngle=sx;
+    int servoYAngle=sy;
   //  std::cerr << servoYAngle << std::endl;
     static double lastPointKey = 0;
     if (key-lastPointKey > 0.002) // at most add point every 2 ms
@@ -240,22 +194,21 @@ void MainWindow::updateServoPlotData(){
 
 void MainWindow::on_btnConnPlate_clicked()
 {
-    if(connectionCompleted){
-        ui->textBMsg-> append("Connection is already open.");
-        return;
+    if(!ardThread->isAlive()){
+        QString portName = ui->inputPortName->text();
+
+        ArduinoMessageBean msg;
+        msg.portName = portName.toStdString();
+        msg.baudRate=SerialPort::BR_9600;
+
+        ui->textBMsg->append("New connection:");
+        ui->textBMsg->append(" Port name:"+portName);
+        ui->textBMsg->append(" Baud rate:"+QString::number(msg.baudRate));
+        ardThread->msg=msg;
+        ardThread->start();
     }
-
-    QString portName = ui->inputPortName->text();
-
-    ArduinoMessageBean msg;
-    msg.portName = portName.toStdString();
-    msg.baudRate=SerialPort::BR_9600;
-
-    ui->textBMsg->append("New connection:");
-    ui->textBMsg->append(" Port name:"+portName);
-    ui->textBMsg->append(" Baud rate:"+QString::number(msg.baudRate));
-    ardThread->msg=msg;
-    ardThread->start();
+    else
+        ui->textBMsg-> append("Connection is already open.");
 }
 
 
@@ -275,9 +228,9 @@ void MainWindow::closeEvent (QCloseEvent *event)
             ardThread->terminate();
         }
 
-        while(guiThread->isRunning()){
-            guiThread->terminate();
-        }
+//        while(guiThread->isRunning()){
+//            guiThread->terminate();
+//        }
 
         if(server != NULL ){
             server->close();
@@ -298,78 +251,15 @@ void MainWindow::on_btnOpen3D_clicked()
 {
     if(!isSim3DConnected){
         ui->textBMsg->append("3D Simulation is opennig ... ");
+    /*    server = new myTcpServer(this);
+        server->listen();
+*/
+  //      simThread->server = this->server;
+        ardThread->simThread = this->simThread;
         simThread->start();
+        emit sim3DReq();
     }else{
         ui->textBMsg->append("Simulation already runnig");
-    }
-}
-
-void MainWindow::sim3DConnection(){
-    //check connection already established
-    if(proc3D==NULL){
-        QString file ="/home/hasan/workspace/CSE395_Proje1_Group6/Client/Client/test";
-        proc3D = new QProcess(this);
-        proc3D->start(file);
-        qDebug(file.toStdString().c_str());
-        qDebug("proc3D started");
-    }
-    if(!isSim3DConnected){
-        if(proc3D==NULL){
-            QString file =QDir::homePath()+"test";
-            proc3D = new QProcess(this);
-            proc3D->start(file);
-            proc3D->isOpen();
-        }
-        if(server == NULL){
-            server = new myTcpServer(this);
-            server->listen();
-        }
-        if(server->isEstablished()){       //listen to connect
-            isSim3DConnected = true ;
-            ui->textBMsg->append("Connection completed");
-            ui->textBMsg->append("address : " + server->getAddress());
-            ui->textBMsg->append("Port number : "+ QString::number(server->getPortNumber()));
-        }
-
-    }
-    if(isSim3DConnected){
-        std::string str = server->readData();
-        if(str.size() == 0)
-            return;
-        if(str.at(0) == 'G'){
-            char buffer[30];
-            std::sprintf(buffer,"{%d %d %d %d}",simThread->msg.ballX,
-                                                simThread->msg.ballY,
-                                                simThread->msg.motorXangle,
-                                                simThread->msg.motorYangle);
-            if(server->SendData(buffer))
-                std::cerr << "Succesfully sent" << std::endl;
-            else{
-                std::cerr << "Connection Lost  " << std::endl;
-                while(simThread->isRunning())
-                    simThread->terminate();
-
-                isSim3DConnected = false;
-                qDebug("Connection Lost");
-                server->close();
-                delete server;
-                server= NULL;
-                ui->textBMsg->append("Connection closed!");
-            }
-        }else if(str.at(0) == 'E'){
-            while(simThread->isRunning())
-                simThread->terminate();
-
-            isSim3DConnected = false;
-            qDebug("Connection Lost");
-            server->close();
-            delete server;
-            server= NULL;
-            ui->textBMsg->append("Connection closed!");
-        }
-        else{
-            qDebug("Wrong ");
-        }
     }
 }
 
@@ -385,9 +275,9 @@ void MainWindow::on_btnDisconnect_clicked()
         ardThread->terminate();
     }
 
-    while(guiThread->isRunning()){
-        guiThread->terminate();
-    }
+//    while(guiThread->isRunning()){
+//        guiThread->terminate();
+//    }
 
     if(server != NULL ){
         server->close();

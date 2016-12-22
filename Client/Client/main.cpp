@@ -1,11 +1,10 @@
-#include "mainwindow.h"
 #include <QApplication>
-#include "Communication.h"
 #include <csignal>
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
-#include "requirements.h"
+#include "Communication.h"
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {

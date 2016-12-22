@@ -35,7 +35,6 @@ using namespace std;
  */
 class Communication {
 private :
-    QMutex *mtx;
     bool communicationReady ;
     int XMotorAngle ;
     int YMotorAngle;
@@ -59,7 +58,7 @@ public:
      * str : Serail port name
      * baud : baud rate
      */
-    Communication(string str,SerialPort::BaudRate baud,QMutex *mtx);
+    Communication(string str,SerialPort::BaudRate baud);
     /**
      * Attention: received data should be like ("X%3.2lfY%3.2lfx%dy%d!",double ,double,int,int)
      * Reads the serial port and assigns the motor angles

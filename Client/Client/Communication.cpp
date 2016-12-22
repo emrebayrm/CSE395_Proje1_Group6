@@ -11,18 +11,18 @@
 
 using namespace std;
 
-Communication::Communication(string str, SerialPort::BaudRate baud,QMutex *mtx) {
+Communication::Communication(string str, SerialPort::BaudRate baud) {
     cerr<<"new connection opened"<<endl;
     port = new SerialPort(str,baud);
 
-    communicationReady = false;
-    if(checkConnection())
-        makeHandShake();
+    communicationReady = true;
+    checkConnection();
+//    if(checkConnection())
+//        makeHandShake();
     XMotorAngle = 999;
     YMotorAngle = 999;
     ballXCoordinate = 999;
     ballYCoordinate = 999;
-    this->mtx = mtx;
 }
 
 bool Communication::makeHandShake() {
@@ -78,27 +78,21 @@ bool Communication::readUntil() {
     int x,y;
     string input;
 
-    if(!communicationReady)
-        return false;
-
+//    if(!communicationReady)
+//        return false;
     port->readUntil(input,END_CHAR);
-    cerr<<"SerialRead:"<<input<<endl;
 
     char temp;
 
     //{XintYintxintyint}
     sscanf(input.c_str(),"%c%c%d%c%d%c%d%c%d%c",&temp,&temp,&xangle,&temp,&yangle,&temp,&x,&temp,&y,&temp);
     //if is not valid values false 
-
-    mtx->lock();
-    cerr<<"inmutexCoom"<<endl;
     //cerr<<xangle<<" "<<yangle<<" "<<x<<" "<<y<<endl;
     setXMotorAngle(xangle);
     setYMotorAngle(yangle);
     setBallXCoordinate(x);
     setBallYCoordinate(y);
-    cerr<<"outmutexcomm"<<endl;
-    mtx->unlock();
+
 
     return true;
 }
