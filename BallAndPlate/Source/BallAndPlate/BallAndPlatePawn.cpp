@@ -22,7 +22,7 @@ ABallAndPlatePawn::ABallAndPlatePawn()
 
 	OurVisibleComponent1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OurVisibleComponent1"));
 	OurVisibleComponent2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OurVisibleComponent2"));
-	
+
 	CollectibleComponent1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollectibleComponent1"));
 	CollectibleComponent2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollectibleComponent2"));
 	CollectibleComponent3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollectibleComponent3"));
@@ -44,7 +44,7 @@ void ABallAndPlatePawn::BeginPlay()
 	differenceY_Z = kolYReference->GetActorLocation().Z - kolY->GetActorLocation().Z;
 	rotation = FRotator(RootComponent->GetRelativeTransform().GetRotation());
 	setUpLights();
-	
+
 	/*CollectibleComponent1->SetVisibility(false);
 	CollectibleComponent2->SetVisibility(false);
 	CollectibleComponent3->SetVisibility(false);*/
@@ -142,7 +142,7 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 		UpdateLights();
 	}*/
 
-	
+
 
 }
 
@@ -334,17 +334,13 @@ void ABallAndPlatePawn::Connect(
 }
 
 void ABallAndPlatePawn::readValueFromSocket() {
-	FString handShakeSendMessage = TEXT("G");
 	TCHAR *serializedChar = handShakeSendMessage.GetCharArray().GetData();
 	int32 size = FCString::Strlen(serializedChar);
 	int32 sent = 0;
-	FString stringReceiveData;        // To convert binary to string.
 
 	bool succesfull = ConnectionSocket->Send((uint8*)TCHAR_TO_UTF8(serializedChar), size, sent); // Send handshake message.
 	if (succesfull)
 	{
-
-		TArray<uint8> binaryReceivedData; // Socket reads binary values.
 
 		uint32 Size = 1;
 		binaryReceivedData.Init(0, FMath::Min(Size, 65507u));
@@ -353,16 +349,15 @@ void ABallAndPlatePawn::readValueFromSocket() {
 
 		// Wait for data.
 		while (ConnectionSocket->HasPendingConnection(HasPendingConnection) && HasPendingConnection == false && !ConnectionSocket->HasPendingData(Size));
-
+		stringReceiveData.Reset();
 		//// Sample coordinate packet : "C{ 12 34 14 144 }"
 		//// Sample yem koordinatlar� : "Y{ 123 14 151 15 15 51}
-		int counter = 0;
 		bool status = false;
 		while (!status) {
 			succesfull = ConnectionSocket->Recv(binaryReceivedData.GetData(), binaryReceivedData.Num(), Read);
 			if (succesfull) { // Receive succesfull.
 				stringReceiveData.Append(StringFromBinaryArray(binaryReceivedData));
-				if (stringReceiveData[stringReceiveData.Len() - 1] == '}') // Receive end.
+				if (stringReceiveData.EndsWith("}")) // Receive end.
 					status = true;
 			}
 			else { // Receive failed.Socket failed.
@@ -397,7 +392,7 @@ void ABallAndPlatePawn::parseInput(FString& input) {
 		///GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" y len : %s "), *Parsed[2]));
 		///GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" xm len : %s "), *Parsed[3]));
 		///GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" ym len : %s "), *Parsed[4]));
-		
+
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("x After map : %s "), *Parsed[1]));
 
 		ballYCoordinate = map(FCString::Atof(*(Parsed[2])), 0, 300, -600, 600);

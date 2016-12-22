@@ -38,9 +38,9 @@ public:
 	//~ABallAndPlatePawn();
 
 	UPROPERTY(EditAnywhere)
-		USceneComponent* CollectibleComponent1; // ring 
+		USceneComponent* CollectibleComponent1; // ring
 	UPROPERTY(EditAnywhere)
-		USceneComponent* CollectibleComponent2; // ring 
+		USceneComponent* CollectibleComponent2; // ring
 	UPROPERTY(EditAnywhere)
 		USceneComponent* CollectibleComponent3; // ring
 
@@ -50,14 +50,14 @@ public:
 
 	bool IsGame = true;
 
-	void GameMode(int CollectibleComponent1LoactionX, int CollectibleComponent1LoactionY, 
-			      int CollectibleComponent2LoactionX, int CollectibleComponent2LoactionY, 
+	void GameMode(int CollectibleComponent1LoactionX, int CollectibleComponent1LoactionY,
+			      int CollectibleComponent2LoactionX, int CollectibleComponent2LoactionY,
 		          int CollectibleComponent3LoactionX, int CollectibleComponent3LoactionY);
 
 	UPROPERTY(EditAnywhere)
-		USceneComponent* OurVisibleComponent1; // ball 
+		USceneComponent* OurVisibleComponent1; // ball
 	UPROPERTY(EditAnywhere)
-		USceneComponent* OurVisibleComponent2; // plate 
+		USceneComponent* OurVisibleComponent2; // plate
 	UPROPERTY(EditAnywhere)
 		AActor* kolX;
 	UPROPERTY(EditAnywhere)
@@ -122,6 +122,9 @@ public:
 	FSocket* ConnectionSocket;
 	FIPv4Endpoint RemoteAddressForConnection;
 	FTimerHandle timeHandler;
+	FString handShakeSendMessage = TEXT("G");
+	FString stringReceiveData;        // To convert binary to string.
+	TArray<uint8> binaryReceivedData; // Socket reads binary values.
 
 
 	void ConnectToServer();
