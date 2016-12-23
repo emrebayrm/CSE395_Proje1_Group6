@@ -34,8 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(simThread,SIGNAL(Request(int)),ardThread,SLOT(HandleRequest(int)));
     connect(this,SIGNAL(sim3DReq()),ardThread,SLOT(Started()));
     connect(ardThread,SIGNAL(readySend(int,int,int,int)),simThread,SLOT(SendData(int,int,int,int)));
-    connect(this,SIGNAL(UpdatePidXSignal(float,float,float)),ardThread,SLOT(updateXPID(float,float,float)));
-    connect(this,SIGNAL(UpdatePidYSignal(float,float,float)),ardThread,SLOT(updateYPID(float,float,float)));
+    connect(this,SIGNAL(UpdateXPidSignal(float,float,float)),ardThread,SLOT(updateXPID(float,float,float)));
+    connect(this,SIGNAL(UpdateYPidSignal(float,float,float)),ardThread,SLOT(updateYPID(float,float,float)));
     connect(this,SIGNAL(ModeSent(int)),ardThread,SLOT(ChangeMode(int)));
 }
 

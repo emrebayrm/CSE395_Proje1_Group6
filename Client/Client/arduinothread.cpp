@@ -111,7 +111,7 @@ void ArduinoThread::HandleRequest(int mode){
     }
 
 }
-void ChangeMode(int mode){
+void ArduinoThread::ChangeMode(int mode){
     char buffer[5];
     switch (mode) {
     case 1:
