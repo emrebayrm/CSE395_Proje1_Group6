@@ -31,6 +31,10 @@ void ArduinoThread::run(){
             by = com->getBallYCoordinate();
             mx = com->getXMotorAngle();
             my = com->getYMotorAngle();
+            /*if(mode == 4){
+                std::cerr << "Yem1x :" << bx << " Yem1y : " << by << std::endl;
+                std::cerr << "Yem2x :" << mx << " Yem2y : " << my << std::endl;
+            }*/
             msg.ballX = bx;
             msg.ballY = by;
             msg.motorXangle = mx;
@@ -116,17 +120,23 @@ void ArduinoThread::ChangeMode(int mode){
     switch (mode) {
     case 1:
         sprintf(buffer,"M C");
+        mode = 1;
         break;
     case 2:
         sprintf(buffer,"M O");
+        mode = 2;
         break;
     case 3:
         sprintf(buffer,"M S");
+        mode = 3;
         break;
     case 4:
         sprintf(buffer,"M L");
+        mode = 4;
         break;
     default:
         break;
     }
+    std::cerr << "Mode : " << buffer << std::endl;
+    com->write(buffer);
 }

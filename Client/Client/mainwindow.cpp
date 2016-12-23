@@ -92,7 +92,7 @@ void MainWindow::updateXYPlotData(int bx,int by){
     scene->clear();
     scene->addLine(200,0,200,300);
     scene->addLine(0,150,400,150);
-    scene->addEllipse(bx-10,by-10,20,20,QPen(Qt::red),QBrush(Qt::blue));
+    scene->addEllipse(bx-10,300-by-10,20,20,QPen(Qt::red),QBrush(Qt::blue));
 
     static QTime time(QTime::currentTime());
     // calculate two new data points:
@@ -248,6 +248,11 @@ void MainWindow::on_btnOpen3D_clicked()
 void MainWindow::on_btnDisconnect_clicked()
 {
     qDebug("test");
+    if(com!=NULL){
+        com->closeConnection();
+        delete com;
+        com=NULL;
+    }
 
     while(simThread->isRunning()){
         simThread->terminate();
@@ -255,12 +260,6 @@ void MainWindow::on_btnDisconnect_clicked()
 
     while(ardThread->isRunning()){
         ardThread->terminate();
-    }
-
-    if(com!=NULL){
-        com->closeConnection();
-        delete com;
-        com=NULL;
     }
 
     connectionCompleted=false;
@@ -298,7 +297,9 @@ void MainWindow::on_btnPlayGame_clicked()
         ui->textBMsg->append("Be Patient !");
         emit ModeSent(3);
     }else if(ui->rBLightGame->isChecked()){
-        //TODO: Game Part
+        ui->textBMsg->append("");
+        ui->textBMsg->append("Take The Ball ");
+        ui->textBMsg->append("Now Put your finger to three 3 points ");
         emit ModeSent(4);
     }
     else{

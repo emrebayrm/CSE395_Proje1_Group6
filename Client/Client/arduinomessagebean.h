@@ -18,7 +18,6 @@ public:
     int ballY;
     int motorXangle;
     int motorYangle;
-
 };
 
 #endif // ARDUINOMESSAGEBEAN_H

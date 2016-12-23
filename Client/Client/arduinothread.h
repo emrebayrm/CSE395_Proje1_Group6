@@ -20,6 +20,7 @@ public:
     ArduinoMessageBean msg;
     QMutex *mtx;
     Sim3DThread *simThread;
+    int mode = 1;
 signals:
     void readySend(int,int,int,int);
     void startArdThread();
