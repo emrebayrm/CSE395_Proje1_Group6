@@ -56,7 +56,6 @@ private:
     ArduinoThread *ardThread;
 
     Communication *com = NULL;
-    myTcpServer *server = NULL;
 
     bool isSim3DConnected = false;
     bool connectionCompleted =false;

@@ -18,14 +18,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->gtuLogo->setPixmap(QPixmap::fromImage(logo.scaled(201,111)));
 
     ui->rBCenter->setChecked(true);
-    //guiThread = new GraphicThread(this);
     ardThread = new ArduinoThread(this);
     ardThread->mtx = &mtx;
     simThread->mtx = &mtx;
     simThread = new Sim3DThread(this);
     ardThread->simThread = simThread;
     com=NULL;
-    server=NULL;
     proc3D =NULL;
 
     scene = new QGraphicsScene(0,0,400,300);
@@ -41,7 +39,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete scene;
+    scene=NULL;
     delete ui;
+    ui=NULL;
+    qDebug("MainWindow destructed!");
 }
 
 
@@ -51,12 +53,12 @@ void MainWindow::setXYPlot(){
     // add X Coordinat Graph
     ui->plotXY->addGraph();
     ui->plotXY->graph(0)->setPen(QPen(Qt::blue));
-    ui->plotXY->graph(0)->setName("X Koordinatı");
+    ui->plotXY->graph(0)->setName("X Coordinate");
 
     // add Y Coordinat graph
     ui->plotXY->addGraph();
     ui->plotXY->graph(1)->setPen(QPen(Qt::red));
-    ui->plotXY->graph(1)->setName("Y Koordinatı");
+    ui->plotXY->graph(1)->setName("Y Coordinate");
 
     // add legend to show graph names
     ui->plotXY->legend->setVisible(true);
@@ -154,7 +156,6 @@ void MainWindow::setServoPlot(){
 
 void MainWindow::updateServoPlotData(int sx,int sy){
 
-
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
@@ -191,9 +192,8 @@ void MainWindow::on_btnConnPlate_clicked()
         msg.portName = portName.toStdString();
         msg.baudRate=SerialPort::BR_9600;
 
-        ui->textBMsg->append("New connection:");
+        ui->textBMsg->append("Connection:");
         ui->textBMsg->append(" Port name:"+portName);
-        ui->textBMsg->append(" Baud rate:"+QString::number(msg.baudRate));
         ardThread->msg=msg;
         ardThread->start();
     }
@@ -218,21 +218,14 @@ void MainWindow::closeEvent (QCloseEvent *event)
             ardThread->terminate();
         }
 
-//        while(guiThread->isRunning()){
-//            guiThread->terminate();
-//        }
-
-        if(server != NULL ){
-            server->close();
-            delete server;
-            server = NULL;
-        }
-
         if(com!=NULL){
             com->closeConnection();
             delete com;
             com=NULL;
         }
+        connectionCompleted=false;
+        isSim3DConnected=false;
+        ui->textBMsg->append("Connection closed!");
         event->accept();
     }
 }
@@ -241,10 +234,7 @@ void MainWindow::on_btnOpen3D_clicked()
 {
     if(!isSim3DConnected){
         ui->textBMsg->append("3D Simulation is opennig ... ");
-    /*    server = new myTcpServer(this);
-        server->listen();
-*/
-  //      simThread->server = this->server;
+
         ardThread->simThread = this->simThread;
         simThread->start();
         emit sim3DReq();
@@ -263,16 +253,6 @@ void MainWindow::on_btnDisconnect_clicked()
 
     while(ardThread->isRunning()){
         ardThread->terminate();
-    }
-
-//    while(guiThread->isRunning()){
-//        guiThread->terminate();
-//    }
-
-    if(server != NULL ){
-        server->close();
-        delete server;
-        server = NULL;
     }
 
     if(com!=NULL){

@@ -141,7 +141,7 @@
       <x>440</x>
       <y>20</y>
       <width>161</width>
-      <height>61</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -159,7 +159,7 @@
      <rect>
       <x>50</x>
       <y>230</y>
-      <width>321</width>
+      <width>331</width>
       <height>91</height>
      </rect>
     </property>
@@ -268,10 +268,10 @@ p, li { white-space: pre-wrap; }
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>130</y>
+      <x>350</x>
+      <y>70</y>
       <width>281</width>
-      <height>81</height>
+      <height>111</height>
      </rect>
     </property>
     <property name="font">
@@ -281,7 +281,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="title">
-     <string>Step</string>
+     <string>Mode</string>
     </property>
     <widget class="QRadioButton" name="rBCenter">
      <property name="geometry">
@@ -387,9 +387,9 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>60</y>
-      <width>231</width>
-      <height>71</height>
+      <y>70</y>
+      <width>291</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="font">
@@ -401,10 +401,10 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>PID</string>
     </property>
-    <widget class="QLineEdit" name="kpLineEdit">
+    <widget class="QLineEdit" name="xKpEdit">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>30</x>
        <y>40</y>
        <width>41</width>
        <height>21</height>
@@ -414,7 +414,7 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="kpLabel">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>40</x>
        <y>20</y>
        <width>21</width>
        <height>21</height>
@@ -433,9 +433,9 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="kiLabel">
      <property name="geometry">
       <rect>
-       <x>70</x>
+       <x>90</x>
        <y>20</y>
-       <width>21</width>
+       <width>20</width>
        <height>21</height>
       </rect>
      </property>
@@ -449,10 +449,10 @@ p, li { white-space: pre-wrap; }
       <string>Ki</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="kiLineEdit">
+    <widget class="QLineEdit" name="xKiEdit">
      <property name="geometry">
       <rect>
-       <x>60</x>
+       <x>80</x>
        <y>40</y>
        <width>41</width>
        <height>21</height>
@@ -462,7 +462,7 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="kdLabel">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>20</y>
        <width>21</width>
        <height>21</height>
@@ -478,22 +478,22 @@ p, li { white-space: pre-wrap; }
       <string>Kd</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="kdLineEdit">
+    <widget class="QLineEdit" name="xKdEdit">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>130</x>
        <y>40</y>
        <width>41</width>
        <height>21</height>
       </rect>
      </property>
     </widget>
-    <widget class="QPushButton" name="btnUpPID">
+    <widget class="QPushButton" name="xPIDUp">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>190</x>
        <y>40</y>
-       <width>61</width>
+       <width>71</width>
        <height>22</height>
       </rect>
      </property>
@@ -504,7 +504,76 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="text">
-      <string>Update</string>
+      <string>Update X</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="xPIDLbl">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>21</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>X</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="yPIDLbl">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Y</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="yKpEdit">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>80</y>
+       <width>41</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="yKiEdit">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>80</y>
+       <width>41</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="yKdEdit">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>80</y>
+       <width>41</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="yPIDUp">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>80</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Update Y</string>
      </property>
     </widget>
    </widget>
