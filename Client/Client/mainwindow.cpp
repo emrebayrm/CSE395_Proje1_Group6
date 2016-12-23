@@ -34,7 +34,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(simThread,SIGNAL(Request(int)),ardThread,SLOT(HandleRequest(int)));
     connect(this,SIGNAL(sim3DReq()),ardThread,SLOT(Started()));
     connect(ardThread,SIGNAL(readySend(int,int,int,int)),simThread,SLOT(SendData(int,int,int,int)));
-    connect(this,SIGNAL(UpdatePidSignal(int,int,int)),ardThread,SLOT(updatePID(int,int,int)));
+    connect(this,SIGNAL(UpdatePidXSignal(float,float,float)),ardThread,SLOT(updateXPID(float,float,float)));
+    connect(this,SIGNAL(UpdatePidYSignal(float,float,float)),ardThread,SLOT(updateYPID(float,float,float)));
+    connect(this,SIGNAL(ModeSent(int)),ardThread,SLOT(ChangeMode(int)));
 }
 
 MainWindow::~MainWindow()
@@ -266,10 +268,40 @@ void MainWindow::on_btnDisconnect_clicked()
     ui->textBMsg->append("Connection closed!");
 }
 
-void MainWindow::on_btnUpPID_clicked()
+void MainWindow::on_xPIDUp_clicked()
 {
-    std::cerr << "Signal Emitted" << std::endl;
-    emit UpdatePidSignal((ui->kpLineEdit->text()).toInt(),
-                         (ui->kiLineEdit->text()).toInt(),
-                         (ui->kdLineEdit->text()).toInt());
+    emit UpdateXPidSignal(ui->xKpEdit->text().toFloat(),
+                          ui->xKiEdit->text().toFloat(),
+                          ui->xKpEdit->text().toFloat());
+}
+
+void MainWindow::on_yPIDUp_clicked()
+{
+    emit UpdateYPidSignal(ui->yKpEdit->text().toFloat(),
+                          ui->yKiEdit->text().toFloat(),
+                          ui->yKpEdit->text().toFloat());
+
+}
+
+void MainWindow::on_btnPlayGame_clicked()
+{
+    if(ui->rBCenter->isChecked()){
+        emit ModeSent(1);
+        ui->textBMsg->append("Ball is Going to Center ");
+        ui->textBMsg->append("Be Patient !");
+    }else if(ui->rBCircle->isChecked()){
+        ui->textBMsg->append("Ball is Drawing Circle ");
+        ui->textBMsg->append("Be Patient !");
+        emit ModeSent(2);
+    }else if(ui->rBSquare->isChecked()){
+        ui->textBMsg->append("Ball is Drawing Square ");
+        ui->textBMsg->append("Be Patient !");
+        emit ModeSent(3);
+    }else if(ui->rBLightGame->isChecked()){
+        //TODO: Game Part
+        emit ModeSent(4);
+    }
+    else{
+        ui->textBMsg->append("Something Wrong about Radio Button");
+    }
 }

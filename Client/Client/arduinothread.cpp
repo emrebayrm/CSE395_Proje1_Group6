@@ -74,11 +74,22 @@ void ArduinoThread::terminate(){
     std::cerr<<"Arduino::termiante out"<<endl;
 }
 
-void ArduinoThread::updatePID(int kp, int ki, int kd)
+void ArduinoThread::updateXPID(float kp, float ki, float kd)
 {
     mtx->lock();
     char Buffer[15];
-    sprintf(Buffer,"U %d %d %d",kp,ki,kd);
+    sprintf(Buffer,"X %f %f %f",kp,ki,kd);
+    std::cout << "Buffer Writing : " << Buffer << std::endl;
+    com->write(Buffer);
+    std::cout << "Succefuly Updated" << std::endl;
+    mtx->unlock();
+}
+
+void ArduinoThread::updateYPID(float kp, float ki, float kd)
+{
+    mtx->lock();
+    char Buffer[15];
+    sprintf(Buffer,"Y %f %f %f",kp,ki,kd);
     std::cout << "Buffer Writing : " << Buffer << std::endl;
     com->write(Buffer);
     std::cout << "Succefuly Updated" << std::endl;
@@ -99,4 +110,23 @@ void ArduinoThread::HandleRequest(int mode){
         emit readySend(msg.ballX,msg.ballY,msg.motorXangle,msg.motorYangle);
     }
 
+}
+void ChangeMode(int mode){
+    char buffer[5];
+    switch (mode) {
+    case 1:
+        sprintf(buffer,"M C");
+        break;
+    case 2:
+        sprintf(buffer,"M O");
+        break;
+    case 3:
+        sprintf(buffer,"M S");
+        break;
+    case 4:
+        sprintf(buffer,"M L");
+        break;
+    default:
+        break;
+    }
 }

@@ -30,7 +30,9 @@ public:
 
 signals:
     void sim3DReq();
-    void UpdatePidSignal(int,int,int);
+    void UpdateXPidSignal(float,float,float);
+    void UpdateYPidSignal(float,float,float);
+    void ModeSent(int);
 private slots:
     void on_btnConnPlate_clicked();
 
@@ -40,8 +42,11 @@ private slots:
     void on_btnDisconnect_clicked();
     void on_btnOpen3D_clicked();
 
+    void on_xPIDUp_clicked();
 
-    void on_btnUpPID_clicked();
+    void on_yPIDUp_clicked();
+
+    void on_btnPlayGame_clicked();
 
 private:
 
