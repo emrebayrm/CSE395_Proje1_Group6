@@ -30,8 +30,8 @@ public:
 
 signals:
     void sim3DReq();
-    void UpdateXPidSignal(float,float,float);
-    void UpdateYPidSignal(float,float,float);
+    void UpdateXPidSignal(int,int,int);
+    void UpdateYPidSignal(int,int,int);
     void ModeSent(int);
 private slots:
     void on_btnConnPlate_clicked();

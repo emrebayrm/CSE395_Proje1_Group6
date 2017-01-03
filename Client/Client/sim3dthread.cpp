@@ -61,11 +61,9 @@ void Sim3DThread::run(){
 //            continue;
         if(recvBuff[0] == 'G'){
             select = 1;
-            char buffer[30];
             msg.readyData = -1;
             emit Request(select);
             //    terminate();
-                qDebug("Connection Lost");
 //                server->close();
 //                delete server;
 //                server= NULL;
@@ -74,6 +72,8 @@ void Sim3DThread::run(){
             select = 0;
             emit Request(select);
             connectionCompleted = false;
+            close(connfd);
+            terminate();
             qDebug("Connection Lost");
 //            server->close();
 //            delete server;

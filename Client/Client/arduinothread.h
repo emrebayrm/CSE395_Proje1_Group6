@@ -27,12 +27,13 @@ signals:
     void updateServoPlotDataArd(int mx,int my);
     void updateXYPlotDataArd(int bx,int by);
 public slots:
-    void updateXPID(float,float,float);
-    void updateYPID(float,float,float);
+    void updateXPID(int,int,int);
+    void updateYPID(int,int,int);
     void ChangeMode(int);
     void Started();
     void HandleRequest(int mode);
 private:
+    void takeCoinInfo(int* first,int* second,int* third);
     Communication *com = NULL;
     bool alive;
     bool connectionCompleted;

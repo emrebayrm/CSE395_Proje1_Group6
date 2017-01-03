@@ -15,8 +15,7 @@ Communication::Communication(string str, SerialPort::BaudRate baud) {
     cerr<<"new connection opened"<<endl;
     port = new SerialPort(str,baud);
 
-    communicationReady = true;
-    checkConnection();
+    communicationReady=checkConnection();
 //    if(checkConnection())
 //        makeHandShake();
     XMotorAngle = 999;
@@ -50,13 +49,11 @@ bool Communication::checkConnection() {
 
     if(!port->open()){
         cerr << "Open failed" << endl;
-        cerr << "Trying to connect again " << endl;
         return false;
     }
     if( !( port->prepare()) ){
         usleep(100);
         cerr << "Prepare failed" << endl;
-        cerr << "Trying to connect again " << endl;
         return false;
     }
     return true;

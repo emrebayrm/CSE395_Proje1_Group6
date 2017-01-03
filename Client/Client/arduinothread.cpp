@@ -22,7 +22,10 @@ void ArduinoThread::run(){
     alive=true;
 
     com = new Communication(msg.portName,msg.baudRate);
-    while(!com->isCommunicationReady());
+    if(!com->isCommunicationReady()){
+        delete com;
+        alive = false;
+    }
 
     while(isAlive()){
         mtx->lock();
@@ -78,22 +81,22 @@ void ArduinoThread::terminate(){
     std::cerr<<"Arduino::termiante out"<<endl;
 }
 
-void ArduinoThread::updateXPID(float kp, float ki, float kd)
+void ArduinoThread::updateXPID(int kp, int ki, int kd)
 {
     mtx->lock();
     char Buffer[15];
-    sprintf(Buffer,"X %f %f %f",kp,ki,kd);
+    sprintf(Buffer,"X %d %d %d",kp,ki,kd);
     std::cout << "Buffer Writing : " << Buffer << std::endl;
     com->write(Buffer);
     std::cout << "Succefuly Updated" << std::endl;
     mtx->unlock();
 }
 
-void ArduinoThread::updateYPID(float kp, float ki, float kd)
+void ArduinoThread::updateYPID(int kp, int ki, int kd)
 {
     mtx->lock();
     char Buffer[15];
-    sprintf(Buffer,"Y %f %f %f",kp,ki,kd);
+    sprintf(Buffer,"Y %d %d %d",kp,ki,kd);
     std::cout << "Buffer Writing : " << Buffer << std::endl;
     com->write(Buffer);
     std::cout << "Succefuly Updated" << std::endl;
@@ -109,7 +112,7 @@ void ArduinoThread::HandleRequest(int mode){
     if(mode == 0){
         simThread->terminate();
     }
-    else if(mode == 1)
+    else if(mode == 1 && sim3dStarted)
     {
         emit readySend(msg.ballX,msg.ballY,msg.motorXangle,msg.motorYangle);
     }
@@ -139,4 +142,7 @@ void ArduinoThread::ChangeMode(int mode){
     }
     std::cerr << "Mode : " << buffer << std::endl;
     com->write(buffer);
+}
+void takeCoinInfo(int* first,int* second,int* third){
+
 }

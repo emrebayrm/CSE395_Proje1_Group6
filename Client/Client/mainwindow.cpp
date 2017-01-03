@@ -34,8 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(simThread,SIGNAL(Request(int)),ardThread,SLOT(HandleRequest(int)));
     connect(this,SIGNAL(sim3DReq()),ardThread,SLOT(Started()));
     connect(ardThread,SIGNAL(readySend(int,int,int,int)),simThread,SLOT(SendData(int,int,int,int)));
-    connect(this,SIGNAL(UpdateXPidSignal(float,float,float)),ardThread,SLOT(updateXPID(float,float,float)));
-    connect(this,SIGNAL(UpdateYPidSignal(float,float,float)),ardThread,SLOT(updateYPID(float,float,float)));
+    connect(this,SIGNAL(UpdateXPidSignal(int,int,int)),ardThread,SLOT(updateXPID(int,int,int)));
+    connect(this,SIGNAL(UpdateYPidSignal(int,int,int)),ardThread,SLOT(updateYPID(int,int,int)));
     connect(this,SIGNAL(ModeSent(int)),ardThread,SLOT(ChangeMode(int)));
 }
 
@@ -234,14 +234,19 @@ void MainWindow::closeEvent (QCloseEvent *event)
 
 void MainWindow::on_btnOpen3D_clicked()
 {
-    if(!isSim3DConnected){
-        ui->textBMsg->append("3D Simulation is opennig ... ");
+    if(ardThread->isAlive()){
+        if(!isSim3DConnected){
+            ui->textBMsg->append("3D Simulation is opennig ... ");
 
-        ardThread->simThread = this->simThread;
-        simThread->start();
-        emit sim3DReq();
-    }else{
-        ui->textBMsg->append("Simulation already runnig");
+            ardThread->simThread = this->simThread;
+            simThread->start();
+            emit sim3DReq();
+        }else{
+            ui->textBMsg->append("Simulation already runnig");
+        }
+    }
+    else{
+        ui->textBMsg->append("Pls Connect Arduino first");
     }
 }
 
@@ -269,40 +274,54 @@ void MainWindow::on_btnDisconnect_clicked()
 
 void MainWindow::on_xPIDUp_clicked()
 {
-    emit UpdateXPidSignal(ui->xKpEdit->text().toFloat(),
-                          ui->xKiEdit->text().toFloat(),
-                          ui->xKpEdit->text().toFloat());
+    if(ardThread->isAlive()){
+        emit UpdateXPidSignal(ui->xKpEdit->text().toInt(),
+                              ui->xKiEdit->text().toInt(),
+                              ui->xKpEdit->text().toInt());
+    }
+    else{
+        ui->textBMsg->append("Connection Hasn't Opened yet");
+    }
 }
 
 void MainWindow::on_yPIDUp_clicked()
 {
-    emit UpdateYPidSignal(ui->yKpEdit->text().toFloat(),
-                          ui->yKiEdit->text().toFloat(),
-                          ui->yKpEdit->text().toFloat());
-
+    if(ardThread->isAlive()){
+    emit UpdateYPidSignal(ui->yKpEdit->text().toInt(),
+                          ui->yKiEdit->text().toInt(),
+                          ui->yKpEdit->text().toInt());
+    }
+    else{
+        ui->textBMsg->append("Connection Hasn't Opened yet");
+    }
 }
 
 void MainWindow::on_btnPlayGame_clicked()
 {
-    if(ui->rBCenter->isChecked()){
-        emit ModeSent(1);
-        ui->textBMsg->append("Ball is Going to Center ");
-        ui->textBMsg->append("Be Patient !");
-    }else if(ui->rBCircle->isChecked()){
-        ui->textBMsg->append("Ball is Drawing Circle ");
-        ui->textBMsg->append("Be Patient !");
-        emit ModeSent(2);
-    }else if(ui->rBSquare->isChecked()){
-        ui->textBMsg->append("Ball is Drawing Square ");
-        ui->textBMsg->append("Be Patient !");
-        emit ModeSent(3);
-    }else if(ui->rBLightGame->isChecked()){
-        ui->textBMsg->append("");
-        ui->textBMsg->append("Take The Ball ");
-        ui->textBMsg->append("Now Put your finger to three 3 points ");
-        emit ModeSent(4);
+    if(ardThread->isAlive()){
+        if(ui->rBCenter->isChecked()){
+            emit ModeSent(1);
+            ui->textBMsg->append("Ball is Going to Center ");
+            ui->textBMsg->append("Be Patient !");
+        }else if(ui->rBCircle->isChecked()){
+            ui->textBMsg->append("Ball is Drawing Circle ");
+            ui->textBMsg->append("Be Patient !");
+            emit ModeSent(2);
+        }else if(ui->rBSquare->isChecked()){
+            ui->textBMsg->append("Ball is Drawing Square ");
+            ui->textBMsg->append("Be Patient !");
+            emit ModeSent(3);
+        }else if(ui->rBLightGame->isChecked()){
+            ui->textBMsg->append("");
+            ui->textBMsg->append("Take The Ball ");
+            ui->textBMsg->append("Now Put your finger to three 3 points ");
+            emit ModeSent(4);
+        }
+        else{
+            ui->textBMsg->append("Something Wrong about Radio Button");
+        }
     }
     else{
-        ui->textBMsg->append("Something Wrong about Radio Button");
+        ui->textBMsg->append("Arduino Hasn't Connnected yet");
     }
 }
