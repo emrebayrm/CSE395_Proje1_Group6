@@ -142,7 +142,7 @@ public:
 	// Debug functions.
 	void printCoordinates();
 	void printYem();
-
+	int sampleTime = 0;
 	bool didConnect;
 	FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
 

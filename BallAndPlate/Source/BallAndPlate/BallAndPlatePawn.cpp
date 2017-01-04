@@ -102,15 +102,14 @@ void ABallAndPlatePawn::Tick(float DeltaTime)
 		OurVisibleComponent1->SetRelativeLocation(ballRelativeLocation);
 		UpdateLights();
 
-	/*	FRotator newRot = RootComponent->GetRelativeTransform().GetRotation().Rotator();
+		FRotator newRot = RootComponent->GetRelativeTransform().GetRotation().Rotator();
 
-		if (newRot.Roll != motorXAngle && newRot.Pitch != motorYAngle) {
-		newRot.Roll = motorXAngle;
-		newRot.Pitch = motorYAngle;
+		newRot.Roll = motorXAngle/2;
+		newRot.Pitch = motorYAngle/2;
 
 
 		RootComponent->SetRelativeRotation(newRot);
-	}*/
+	
 
 		if (IsGame) {
 
@@ -376,43 +375,42 @@ void ABallAndPlatePawn::readValueFromSocket() {
 }
 void ABallAndPlatePawn::parseInput(FString& input) {
 
-	TArray<FString> Parsed;
-	input.ParseIntoArray(Parsed, TEXT(" "));
-	if (input[0] == 'C' || input[0] == 'c')
-	{
-		ballXCoordinate = FCString::Atoi(*Parsed[1]);
-		if (ballXCoordinate == 400)
+	if (sampleTime == 3) {
+
+		TArray<FString> Parsed;
+		input.ParseIntoArray(Parsed, TEXT(" "));
+		if (input[0] == 'C' || input[0] == 'c')
 		{
-			ballXCoordinate = map(399,0,400,800,-800);
+			ballXCoordinate = FCString::Atoi(*Parsed[1]);
+			if (ballXCoordinate == 400)
+			{
+				ballXCoordinate = map(399, 0, 400, 800, -800);
+			}
+			else {
+				ballXCoordinate = map(ballXCoordinate, 0, 400, 800, -800);
+			}
+
+			ballYCoordinate = map(FCString::Atof(*(Parsed[2])), 0, 300, -600, 600);
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("y Before map : %d "), FCString::Atoi(*Parsed[2])));
+			//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT(" y After map : %s "), *Parsed[2]));
+			motorXAngle = map(FCString::Atoi(*Parsed[3]), 60, 120, -30, 30);
+			motorYAngle = map(FCString::Atoi(*Parsed[4]), 60, 120, -20, 40);
+
 		}
-		else {
-			ballXCoordinate = map(ballXCoordinate, 0, 400, 800, -800);
+		else if (input[0] == 'Y' || input[0] == 'y')
+		{
+			// map control yapilacak
+			yem1[0] = map(FCString::Atoi(*Parsed[1]), 0, 400, 800, -800);
+			yem1[1] = map(FCString::Atoi(*Parsed[2]), 0, 300, -600, 600);
+			yem2[0] = map(FCString::Atoi(*Parsed[3]), 0, 400, 800, -800);
+			yem2[1] = map(FCString::Atoi(*Parsed[4]), 0, 300, -600, 600);
+			yem3[0] = map(FCString::Atoi(*Parsed[5]), 0, 400, 800, -800);
+			yem3[1] = map(FCString::Atoi(*Parsed[6]), 0, 300, -600, 600);
+			GameMode(yem1[0], yem1[1], yem2[0], yem2[1], yem3[0], yem3[1]);
 		}
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" x len : %s "),ballXCoordinate));
-		///GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" y len : %s "), *Parsed[2]));
-		///GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" xm len : %s "), *Parsed[3]));
-		///GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT(" ym len : %s "), *Parsed[4]));
-
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("x After map : %s "), *Parsed[1]));
-
-		ballYCoordinate = map(FCString::Atof(*(Parsed[2])), 0, 300, -600, 600);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("y Before map : %d "), FCString::Atoi(*Parsed[2])));
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT(" y After map : %s "), *Parsed[2]));
-		motorXAngle = FCString::Atoi(*Parsed[3]);
-		motorYAngle = FCString::Atoi(*Parsed[4]);
-
+		sampleTime = 0;
 	}
-	else if (input[0] == 'Y' || input[0] == 'y')
-	{
-		// map control yapilacak
-		yem1[0] = map(FCString::Atoi(*Parsed[1]) , 0 , 400 , 800 ,-800) ;
-		yem1[1] = map(FCString::Atoi(*Parsed[2]), 0, 300, -600, 600);
-		yem2[0] = map(FCString::Atoi(*Parsed[3]), 0, 400, 800, -800);
-		yem2[1] = map(FCString::Atoi(*Parsed[4]), 0, 300, -600, 600);
-		yem3[0] = map(FCString::Atoi(*Parsed[5]), 0, 400, 800, -800);
-		yem3[1] = map(FCString::Atoi(*Parsed[6]), 0, 300, -600, 600);
-		GameMode(yem1[0], yem1[1], yem2[0], yem2[1], yem3[0], yem3[1]);
-	}
+	else ++sampleTime;
 }
 
 void ABallAndPlatePawn::checkConnection() {
